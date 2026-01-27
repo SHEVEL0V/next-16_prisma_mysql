@@ -1,5 +1,8 @@
 /** @format */
+
+/** @format */
 "use client";
+
 import React from "react";
 import { useActionState } from "react";
 import { actionLoginUser } from "@/actions/auth/login";
@@ -13,14 +16,13 @@ export default function Login() {
       action={formAction}
       className="flex flex-col gap-4 p-4 max-w-md mx-auto mt-32  border rounded-md shadow-lg bg-slate-50 dark:bg-gray-800 text-green-700"
     >
-      <h1 className="text-3xl font-bold text-center">Login</h1>
+      <h1 className="text-3xl font-bold text-center">Login NEM UI</h1>
       <TextField
         id="outlined-basic"
         label="Email"
         variant="outlined"
         name="email"
         color="success"
-        type="email"
       />
       <TextField
         id="outlined-basic"

@@ -1,0 +1,39 @@
+/** @format */
+
+import { NextResponse, NextRequest } from "next/server";
+import { decrypt } from "./lib/session";
+
+// 1. Specify protected and public routes
+const protectedRoutes = ["/profile"];
+const publicRoutes = ["/login", "/signup", "/"];
+
+export async function proxy(req: NextRequest) {
+  // 2. Check if the current route is protected or public
+  const path = req.nextUrl.pathname;
+
+  const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
+  const isPublicRoute = publicRoutes.includes(path);
+
+  // 3. Decrypt the session from the cookie
+  const cookie = req.cookies.get("session")?.value;
+  const session = await decrypt(cookie);
+
+  // 4. Redirect to /login if the user is not authenticated
+  if (isProtectedRoute && !session?.userName) {
+    return NextResponse.redirect(new URL("/login", req.nextUrl));
+  }
+
+  // 5. Redirect if the user is authenticated and tries to access public routes
+  if (isPublicRoute && session?.userName) {
+    return NextResponse.redirect(
+      new URL(`/profile/${session.userName}/menu`, req.nextUrl),
+    );
+  }
+
+  return NextResponse.next();
+}
+
+// Routes Middleware should not run on
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+};
