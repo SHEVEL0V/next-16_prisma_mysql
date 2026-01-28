@@ -2,8 +2,9 @@
 
 import { actionPost } from "@/actions/post";
 import Modal from "@/components/ui/modal";
+import type { FormField } from "@/types";
 
-const fields = [
+const fields: FormField[] = [
   { name: "surname", label: "Прізвище", type: "text" },
   { name: "name", label: "Імʼя", type: "text" },
   { name: "rank", label: "Звання", type: "text" },

@@ -1,9 +1,9 @@
 /** @format */
 
 import React from "react";
-import ButtonUser from "@/components/button/user";
-import ButtonDarkMode from "@/components/button/darkMode";
-import ButtonBack from "@/components/button/back";
+import ButtonUser from "@/components/ui/button/user";
+import ButtonDarkMode from "@/components/ui/button/darkMode";
+import ButtonBack from "@/components/ui/button/back";
 
 export default function Header() {
   return (

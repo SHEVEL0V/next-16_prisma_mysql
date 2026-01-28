@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function ButtonUser() {
   return (
-    <Link href="/user" className="cursor-pointer fill-neutral-700  dark:fill-white">
+    <Link href="/profile" className="cursor-pointer fill-neutral-700  dark:fill-white">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"

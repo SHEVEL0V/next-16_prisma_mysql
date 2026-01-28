@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import ButtonAdd from "@/components/button/add";
+import ButtonAdd from "@/components/ui/button/add";
 
 export default function Profile({
   children,

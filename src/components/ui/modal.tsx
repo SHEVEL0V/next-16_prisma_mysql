@@ -1,8 +1,8 @@
 /** @format */
 "use client";
 import { useActionState } from "react";
-
 import type { ActionType } from "@/types";
+import ButtonClose from "./button/close";
 
 interface ModalProps {
   fields: { name: string; label: string; type: string }[];
@@ -18,6 +18,9 @@ export default function Modal({ fields, title, action }: ModalProps) {
       className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
    p-6 bg-white rounded-lg shadow-xl text-black w-full max-w-lg mx-auto z-50"
     >
+      <div className="fixed top-4 right-4">
+        <ButtonClose />
+      </div>
       {title && <h2 className="text-xl text-center font-bold mb-4">{title}</h2>}
 
       <form action={actionForm} className="grid grid-cols-1 md:grid-cols-2 gap-4">
