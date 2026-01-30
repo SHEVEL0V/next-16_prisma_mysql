@@ -2,6 +2,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+
 }
 
 datasource db {
@@ -14,30 +15,54 @@ enum Role {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  password String // For simplicity; in real apps, use hashed passwords
-  role  Role    @default(USER)
-  posts Post[]
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(USER)
   
+  // links
+  profile   Profile?
+  posts     Post[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id       String  @id @default(uuid())
+  position String  // Посада
+  bio      String? // Додаткова інформація
+  
+   // links
+  userId   String  @unique
+  user     User    @relation(fields: [userId], references: [id])
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())   
-  surname     String 
-  name        String 
-  rank        String  
+  id          String   @id @default(uuid())
+  surname     String
+  name        String
+  rank        String   
   unit        String   
-  mos         String  
-  dateOfBirth DateTime  
-  bloodType   String 
-  status      String  
-  equipment   String?  
-
-  userId      Int // Foreign key to User
-  user        User     @relation(fields: [userId], references: [id]) // Relation to User
+  mos         String   
+  dateOfBirth String
+  bloodType   String   
+  status      String   
+  equipment   String  
+  
+  // System fields
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt @default(now())
-
+  updatedAt   DateTime @updatedAt
+  
+  // links
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
 }
+
+
+
+
+
+
+

@@ -26,7 +26,7 @@ export async function actionLoginUser(
     await createSession(String(user.id), user.name as string);
     console.log("🔑 User logged in:", user.name);
     revalidatePath("/");
-    redirect("/profile/" + user.name + "/menu");
+    redirect("/user/" + user.name + "/menu");
   }
   console.log("❌ Login failed for email:", email);
   return { message: "🔒 Please enter a valid email and password" };

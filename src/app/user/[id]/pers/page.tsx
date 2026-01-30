@@ -2,8 +2,8 @@
 
 import { actionPost } from "@/actions/post";
 
-export default async function Pesr() {
-  const posts = await actionPost.get();
+export default async function Pers() {
+  const posts = await actionPost.getAllPost();
 
   return (
     <div className="grid grid-cols-2 gap-4 p-4">

@@ -1,13 +1,13 @@
 /** @format */
 "use client";
 import { useActionState } from "react";
-import type { ActionType } from "@/types";
+import type { FormServerAction } from "@/types";
 import ButtonClose from "./button/close";
 
 interface ModalProps {
   fields: { name: string; label: string; type: string }[];
   title?: string;
-  action: ActionType;
+  action: FormServerAction;
 }
 
 export default function Modal({ fields, title, action }: ModalProps) {

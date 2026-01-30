@@ -10,10 +10,38 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_USER: ${MYSQL_USER} #  GRANT CREATE, ALTER, DROP, REFERENCES ON *.* TO 'user'@'%';
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "db",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  studio:
+    build: .
+    container_name: prisma_studio
+    ports:
+      - "5555:5555"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      BROWSER: none
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npx prisma studio --port 5555
 
   app:
     build:
@@ -25,12 +53,16 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: development
     volumes:
       - ./:/app
       - /app/node_modules
       - /app/.next
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   mysql_data:

@@ -1,48 +1,46 @@
 /** @format */
-import { ActionType } from "@/types";
-import { db_Post, PostInput } from "./db";
+
+import prisma from "@/lib/prisma";
+import { Prisma } from "../../../generated/prisma/client";
+import { userId } from "../cookies";
 import { revalidatePath } from "next/cache";
+import { FormServerAction } from "@/types";
 
-const getPostFields = (formData: FormData): PostInput =>
-  Object.fromEntries(formData.entries()) as unknown as PostInput;
+export type PostCreateInput = Omit<Prisma.PostCreateInput, "author" | "authorId">;
 
-const getPost = async () => {
-  try {
-    const res = await db_Post.get();
-    console.log("🟢 Getting posts success");
-    return res;
-  } catch (err) {
-    console.error("🔴 Getting posts error =>", (err as Error).message);
-    return [];
-  }
-};
+const getAllPost = async () =>
+  await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
-const createPost: ActionType = async (prevState, formData) => {
+const createPost: FormServerAction = async (prevState, formData) => {
   "use server";
-
   try {
-    const data = getPostFields(formData);
+    const data = Object.fromEntries(formData.entries()) as unknown as PostCreateInput;
 
-    const dob = new Date(data.dateOfBirth);
-
-    const fixedData: PostInput = {
-      ...data,
-      dateOfBirth: dob,
-    };
-
-    await db_Post.create(fixedData);
-    console.log("🟢 Post created successfully");
-
+    await prisma.post.create({
+      data: {
+        ...data,
+        authorId: await userId(),
+      },
+    });
     revalidatePath("/");
-
-    return { message: "Пост успішно створено!", success: true };
-  } catch (err) {
-    console.error("🔴 Error creating post:", (err as Error).message);
-    return {
-      message: "Помилка при створенні.",
-      success: false,
-    };
+    return { message: "Пост створено успішно ✅", success: true };
+  } catch (error) {
+    console.error("Create error:", error);
+    return { message: "Не вдалося створити пост ❌", success: false };
   }
 };
 
-export const actionPost = { get: getPost, create: createPost };
+const deleteById = async (id: string) => {
+  try {
+    await prisma.post.delete({ where: { id } });
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Delete error ❌:", error);
+    return { success: false };
+  }
+};
+
+export const actionPost = { getAllPost, createPost, deleteById };

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 const menu = [
   { name: "Персонал", link: "/pers" },
-  { name: "Створити запис", link: "/create" },
+  { name: "Користувач", link: "/card" },
   { name: "Документи", link: "/docs" },
   { name: "Звіти", link: "/report" },
   { name: "Новини", link: "/news" },

@@ -2,9 +2,9 @@
 
 import { actionPost } from "@/actions/post";
 import Modal from "@/components/ui/modal";
-import type { FormField } from "@/types";
+import type { FieldPost } from "@/types";
 
-const fields: FormField[] = [
+const fields: FieldPost = [
   { name: "surname", label: "Прізвище", type: "text" },
   { name: "name", label: "Імʼя", type: "text" },
   { name: "rank", label: "Звання", type: "text" },
@@ -18,6 +18,10 @@ const fields: FormField[] = [
 
 export default function FormAddUser() {
   return (
-    <Modal action={actionPost.create} fields={fields} title="Додати нового користувача" />
+    <Modal
+      action={actionPost.createPost}
+      fields={fields}
+      title="Додати нового користувача"
+    />
   );
 }

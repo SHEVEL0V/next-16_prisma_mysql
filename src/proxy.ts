@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { decrypt } from "./lib/session";
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/profile"];
+const protectedRoutes = ["/user"];
 const publicRoutes = ["/login", "/signup", "/"];
 
 export async function proxy(req: NextRequest) {
@@ -25,9 +25,7 @@ export async function proxy(req: NextRequest) {
 
   // 5. Redirect if the user is authenticated and tries to access public routes
   if (isPublicRoute && session?.userName) {
-    return NextResponse.redirect(
-      new URL(`/profile/${session.userName}/menu`, req.nextUrl),
-    );
+    return NextResponse.redirect(new URL(`/user/${session.userName}/menu`, req.nextUrl));
   }
 
   return NextResponse.next();
