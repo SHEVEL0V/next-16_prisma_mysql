@@ -1,8 +1,28 @@
 /** @format */
+
 "use client";
-import { useActionState } from "react";
+
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { FormServerAction } from "@/types";
-import ButtonClose from "./button/close";
+
+// MUI Components
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+
+// Icons
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save"; // Додамо іконку для збереження
 
 interface ModalProps {
   fields: { name: string; label: string; type: string }[];
@@ -12,55 +32,120 @@ interface ModalProps {
 
 export default function Modal({ fields, title, action }: ModalProps) {
   const [state, actionForm, pending] = useActionState(action, null);
+  const router = useRouter();
+
+  const handleClose = () => {
+    router.back();
+  };
+
+  // Автоматичне закриття модалки при успіху (опціонально)
+  useEffect(() => {
+    if (state?.success) {
+      // Можна додати затримку або закрити одразу
+      // handleClose();
+    }
+  }, [state?.success]);
 
   return (
-    <div
-      className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-   p-6 bg-white rounded-lg shadow-xl text-black w-full max-w-lg mx-auto z-50"
+    <Dialog
+      open={true}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="sm"
+      // Додаємо анімацію появи (PaperProps - стандартний спосіб стилізації "картки" діалогу)
+      PaperProps={{
+        sx: { borderRadius: 2 },
+      }}
     >
-      <div className="fixed top-4 right-4">
-        <ButtonClose />
-      </div>
-      {title && <h2 className="text-xl text-center font-bold mb-4">{title}</h2>}
+      {/* 1. Заголовок + Абсолютно позиційована кнопка закриття */}
+      <DialogTitle sx={{ m: 0, p: 2, pr: 6 }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+          {title || "Заповніть форму"}
+        </Typography>
 
-      <form action={actionForm} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {fields.map((field) => (
-          <div key={field.name} className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">{field.label}</label>
-            <input
-              name={field.name}
-              type={field.type}
-              className="border border-gray-300 p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              // required
-            />
-          </div>
-        ))}
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
-        <div className="md:col-span-2 mt-4 space-y-4">
-          {state?.message && (
-            <div
-              className={`p-3 rounded text-sm text-center font-medium ${
-                state.success
-                  ? "bg-green-100 text-green-700 border border-green-200"
-                  : "bg-red-100 text-red-700 border border-red-200"
-              }`}
-            >
+      <DialogContent dividers>
+        {/* Виводимо Alert зверху, якщо є помилка або успіх */}
+        {state?.message && (
+          <Box sx={{ mb: 2 }}>
+            <Alert severity={state.success ? "success" : "error"} onClose={() => {}}>
               {state.message}
-            </div>
-          )}
+            </Alert>
+          </Box>
+        )}
 
-          <button
-            type="submit"
-            disabled={pending}
-            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 disabled:bg-gray-400 transition-colors flex justify-center items-center gap-2"
-          >
-            {pending && (
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            )}
-            {pending ? "Обробка..." : "Зберегти"}
-          </button>
-        </div>
-      </form>
-    </div>
+        {/* Форма */}
+        <Box
+          component="form"
+          action={actionForm}
+          id="modal-form"
+          noValidate
+          autoComplete="off"
+          sx={{ mt: 1 }}
+        >
+          <Grid container spacing={2}>
+            {fields.map((field, index) => {
+              // Логіка для дат: якщо type="date", лейбл має бути завжди піднятий (shrink)
+              const isDate = field.type === "date";
+
+              return (
+                <Grid
+                  size={{ xs: 12, sm: 6 }} // sm краще ніж md для модалок
+                  key={field.name}
+                >
+                  <TextField
+                    margin="dense" // Трохи компактніший вигляд, стандарт для діалогів
+                    id={field.name}
+                    name={field.name}
+                    label={field.label}
+                    type={field.type}
+                    fullWidth
+                    required
+                    variant="outlined"
+                    // Спеціальні пропси для дати
+                    slotProps={{
+                      inputLabel: {
+                        shrink: isDate ? true : undefined,
+                      },
+                    }}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+      </DialogContent>
+
+      <DialogActions sx={{ p: 2, gap: 1 }}>
+        <Button onClick={handleClose} variant="text" color="inherit">
+          Скасувати
+        </Button>
+        <Button
+          type="submit"
+          form="modal-form"
+          variant="contained"
+          disabled={pending}
+          startIcon={
+            pending ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />
+          }
+          disableElevation // Робить кнопку пласкою (сучасний тренд), приберіть якщо не подобається
+        >
+          {pending ? "Збереження..." : "Зберегти"}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

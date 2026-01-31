@@ -2,7 +2,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import { redirect } from "next/navigation";
+import type { User } from "@/types";
 
 const secretKey = process.env.SESSION_SECRET;
 if (!secretKey) {
@@ -11,8 +11,9 @@ if (!secretKey) {
 const encodedKey = new TextEncoder().encode(secretKey);
 
 type SessionPayload = {
-  userId: string;
-  userName: string;
+  id: string;
+  name: string;
+  theme: string;
   expiresAt: number;
 };
 
@@ -38,11 +39,16 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
-export async function createSession(userId: string, userName: string) {
+export async function createSession(user: User) {
   const duration = 60 * 60 * 1000; // 1 h.
   const expiresAt = Date.now() + duration;
-
-  const session = await encrypt({ userId, userName, expiresAt });
+  const { id, name, theme } = user;
+  const session = await encrypt({
+    id,
+    name,
+    theme,
+    expiresAt,
+  });
   const cookieStore = await cookies();
 
   cookieStore.set("session", session, {
@@ -54,11 +60,12 @@ export async function createSession(userId: string, userName: string) {
   });
 }
 
-export async function deleteSession() {
-  (await cookies()).delete("session");
+export async function getSession() {
+  const sessionValue = (await cookies()).get("session")?.value;
+
+  return await decrypt(sessionValue);
 }
 
-export async function logout() {
-  await deleteSession();
-  redirect("/login");
+export async function deleteSession() {
+  (await cookies()).delete("session");
 }

@@ -1,19 +1,124 @@
 /** @format */
+"use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+// MUI Компоненти
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Divider from "@mui/material/Divider";
+import Tooltip from "@mui/material/Tooltip";
+
+// MUI Іконки
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Logout from "@mui/icons-material/Logout";
+import Person from "@mui/icons-material/Person";
+import { logout } from "@/actions/auth/login";
 
 export default function ButtonUser() {
+  const router = useRouter();
+
+  // Стан для керування меню (відкрито/закрито)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  // Відкриття меню при кліку на іконку
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Закриття меню
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Логіка виходу
+  const handleLogout = async () => {
+    handleClose(); // Спочатку закриваємо меню
+
+    try {
+      logout();
+      console.log("User logged out");
+      router.push("/login");
+      router.refresh(); // Оновлення стану сторінки
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
   return (
-    <Link href="/profile" className="cursor-pointer fill-neutral-700  dark:fill-white">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24px"
-        viewBox="0 -960 960 960"
-        width="24px"
-        fill=""
+    <>
+      {/* Кнопка-тригер */}
+      <Tooltip title="Налаштування профілю">
+        <IconButton
+          onClick={handleClick}
+          size="large"
+          color="inherit"
+          aria-controls={open ? "account-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          sx={{
+            "&:hover": { backgroundColor: "action.hover" },
+          }}
+        >
+          <AccountCircle fontSize="inherit" />
+        </IconButton>
+      </Tooltip>
+
+      {/* Випадаюче меню */}
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose} // Закривати меню при кліку на будь-який пункт
+        slotProps={{
+          paper: {
+            elevation: 4, // Тінь меню
+            sx: {
+              minWidth: 150,
+              mt: 1.5, // Відступ зверху
+              // Стилізація трикутника (стрілочки) зверху меню
+              "&::before": {
+                content: '""',
+                display: "block",
+                position: "absolute",
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: "background.paper",
+                transform: "translateY(-50%) rotate(45deg)",
+                zIndex: 0,
+              },
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" />
-      </svg>
-    </Link>
+        {/* Пункт 1: Профіль (посилання) */}
+        <MenuItem component={Link} href="/profile">
+          <ListItemIcon>
+            <Person fontSize="small" />
+          </ListItemIcon>
+          Профіль
+        </MenuItem>
+
+        <Divider />
+
+        {/* Пункт 2: Вихід (кнопка з логікою) */}
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" color="error" />
+          </ListItemIcon>
+          Вийти
+        </MenuItem>
+      </Menu>
+    </>
   );
 }

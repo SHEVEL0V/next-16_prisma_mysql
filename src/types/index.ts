@@ -12,6 +12,12 @@ export type FormFieldConfig<T> = {
   type: "text" | "date" | "number" | "email";
 };
 
+// type user
+export type User = Prisma.UserModel;
+
+// type post
 export type FieldPost = FormFieldConfig<Partial<Prisma.PostCreateInput>>[];
+
+export type FieldPostGet = Prisma.PostCreateInput;
 
 export type FieldProfile = FormFieldConfig<Partial<Prisma.ProfileCreateInput>>[];

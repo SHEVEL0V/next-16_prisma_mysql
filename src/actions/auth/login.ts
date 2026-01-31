@@ -4,7 +4,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createSession } from "@/lib/session";
+import { createSession, deleteSession } from "@/lib/session";
 import prisma from "../../lib/prisma";
 
 export async function actionLoginUser(
@@ -23,11 +23,16 @@ export async function actionLoginUser(
   });
 
   if (user) {
-    await createSession(String(user.id), user.name as string);
+    await createSession(user);
     console.log("🔑 User logged in:", user.name);
     revalidatePath("/");
     redirect("/user/" + user.name + "/menu");
   }
   console.log("❌ Login failed for email:", email);
   return { message: "🔒 Please enter a valid email and password" };
+}
+
+export async function logout() {
+  await deleteSession();
+  redirect("/login");
 }

@@ -1,16 +1,26 @@
 /** @format */
 
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function ButtonAdd() {
   return (
-    <Link
+    <Fab
+      color="primary"
+      aria-label="add"
+      component={Link}
       href="/user/balu/pers/add"
-      className="fixed z-50 bottom-10 right-8 w-16 h-16 rounded-full cursor-pointer
-     bg-blue-500 text-white shadow-lg flex items-center justify-center hover:bg-blue-600 transition-all"
+      sx={{
+        position: "fixed",
+        bottom: 40,
+        right: 32,
+        zIndex: 50,
+      }}
     >
-      Add
-    </Link>
+      <AddIcon />
+    </Fab>
   );
 }

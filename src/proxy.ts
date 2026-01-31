@@ -19,13 +19,13 @@ export async function proxy(req: NextRequest) {
   const session = await decrypt(cookie);
 
   // 4. Redirect to /login if the user is not authenticated
-  if (isProtectedRoute && !session?.userName) {
+  if (isProtectedRoute && !session?.name) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
   // 5. Redirect if the user is authenticated and tries to access public routes
-  if (isPublicRoute && session?.userName) {
-    return NextResponse.redirect(new URL(`/user/${session.userName}/menu`, req.nextUrl));
+  if (isPublicRoute && session?.name) {
+    return NextResponse.redirect(new URL(`/user/${session.name}/menu`, req.nextUrl));
   }
 
   return NextResponse.next();
