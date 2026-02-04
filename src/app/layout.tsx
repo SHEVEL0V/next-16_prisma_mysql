@@ -14,8 +14,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // get theme mode from cookie
   const themeMode = (await getTheme()) || "light";
-  console.log("Theme mode in layout:", themeMode);
+
   return (
     <html lang="en">
       <body className="bg-[url('/img/bg.jpeg')] bg-cover bg-center bg-no-repeat bg-fixed">

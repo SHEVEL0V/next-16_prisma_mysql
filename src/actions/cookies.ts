@@ -8,9 +8,9 @@ export const userId = async () => {
 
   const user = await decrypt(session);
 
-  if (!user?.userId) {
+  if (!user?.id) {
     throw new Error("Користувач не авторизований");
   }
 
-  return user?.userId;
+  return user?.id;
 };

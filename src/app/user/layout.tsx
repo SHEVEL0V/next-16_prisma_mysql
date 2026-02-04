@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import { Box, Container } from "@mui/material";
+import Box from "@mui/material/Box";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
@@ -9,25 +9,22 @@ export default function Profile({ children }: { children: React.ReactNode }) {
   return (
     <Box
       sx={{
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh",
+        alignItems: "stretch",
       }}
     >
       <Header />
-      <Container
+      <Box
         component="main"
-        maxWidth="xl"
         sx={{
+          overflow: "hidden",
           flexGrow: 1,
-          position: "sticky",
-          height: "100vh",
-          overflowY: "auto",
         }}
       >
         {children}
-      </Container>
-
+      </Box>
       <Footer />
     </Box>
   );

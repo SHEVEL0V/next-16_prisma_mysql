@@ -19,28 +19,26 @@ export function Grid({ data, onSelectionChange }: GridProps) {
   }));
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
-      <DataGrid
-        rows={data}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
-            },
+    <DataGrid
+      rows={data}
+      columns={columns}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 10,
           },
-        }}
-        pageSizeOptions={[10, 20]}
-        checkboxSelection
-        disableRowSelectionOnClick
-        showToolbar
-        onRowSelectionModelChange={(id) => {
-          console.log("Selected IDs:", id);
-          if (onSelectionChange) {
-            onSelectionChange(id);
-          }
-        }}
-      />
-    </Box>
+        },
+      }}
+      pageSizeOptions={[10, 20]}
+      checkboxSelection
+      disableRowSelectionOnClick
+      showToolbar
+      onRowSelectionModelChange={(id) => {
+        console.log("Selected IDs:", id);
+        if (onSelectionChange) {
+          onSelectionChange(id);
+        }
+      }}
+    />
   );
 }

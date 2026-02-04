@@ -18,7 +18,7 @@ export const getTheme = (mode: PaletteMode) => {
       h2: { fontWeight: 600 },
       h3: { fontWeight: 600 },
       button: {
-        textTransform: "none", // Сучасний стиль: без капсу на кнопках
+        textTransform: "none",
         fontWeight: 500,
       },
     },
@@ -28,14 +28,14 @@ export const getTheme = (mode: PaletteMode) => {
         ? {
             // --- LIGHT MODE ---
             primary: {
-              main: "#2563eb", // Більш сучасний "яскравий синій" (Tailwind style)
+              main: "#2563eb", //  "яскравий синій"
               contrastText: "#fff",
             },
             secondary: {
               main: "#7c3aed", // Сучасний фіолетовий
             },
             background: {
-              default: "#f8fafc", // Не чисто білий, а ледь сірий (Slate 50) для глибини
+              default: "#f8fafc", //  ледь сірий (Slate 50) для глибини
               paper: "#ffffff",
             },
             text: {
@@ -62,7 +62,7 @@ export const getTheme = (mode: PaletteMode) => {
           }),
     },
     shape: {
-      borderRadius: 12, // Більш заокруглені кути для карток та інпутів (тренд 2024-2025)
+      borderRadius: 12, // Більш заокруглені кути для карток
     },
     components: {
       MuiButton: {
@@ -76,10 +76,10 @@ export const getTheme = (mode: PaletteMode) => {
             },
           },
           containedPrimary: {
-             "&:hover": {
-                backgroundColor: mode === "light" ? "#1d4ed8" : "#2563eb",
-             }
-          }
+            "&:hover": {
+              backgroundColor: mode === "light" ? "#1d4ed8" : "#2563eb",
+            },
+          },
         },
       },
       MuiCard: {

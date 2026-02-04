@@ -12,76 +12,71 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-
-// Icons
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 export default function Login() {
   const [state, formAction, pending] = useActionState(actionLoginUser, { message: "" });
 
   return (
-    // Container центрує контент по горизонталі та обмежує ширину (xs = ~444px)
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8, // Відступ зверху
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {/* Картка форми */}
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Container component="main" maxWidth="xs">
         <Paper
-          elevation={3} // Тінь (аналог shadow-lg)
+          variant="outlined"
           sx={{
-            p: 4, // padding (аналог p-4)
-            width: "100%",
+            p: { xs: 3, md: 5 },
+            borderRadius: 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            borderRadius: 2, // заокруглення
           }}
         >
-          <>
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-              Login UI
+          {/* Заголовок */}
+          <Box sx={{ mb: 4, textAlign: "center" }}>
+            <Typography variant="body1" color="text.secondary">
+              Please enter your details to sign in
             </Typography>
-          </>
+          </Box>
 
+          {/* Форма */}
           <Box component="form" action={formAction} noValidate sx={{ width: "100%" }}>
-            <Stack spacing={2}>
+            <Stack spacing={2.5}>
               {" "}
-              {/* Stack автоматично додає відступи (gap) між елементами */}
+              {/* Збільшений відступ між полями для "повітря" */}
               <TextField
-                margin="normal"
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
                 autoComplete="email"
                 autoFocus
-                color="success" // Ваш вибір кольору
+                placeholder="name@example.com"
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                color="success"
-              />
-              {/* Блок помилок */}
+              <Box>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  placeholder="••••••"
+                />
+              </Box>
               {state?.message && (
-                <Alert severity="error" sx={{ mt: 1 }}>
+                <Alert
+                  severity="error"
+                  variant="outlined"
+                  sx={{ border: "none", bgcolor: "error.50" }}
+                >
                   {state.message}
                 </Alert>
               )}
@@ -89,18 +84,26 @@ export default function Login() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="success"
+                color="primary"
                 disabled={pending}
                 size="large"
-                sx={{ mt: 2, mb: 2, height: 48 }} // Висота кнопки (аналог h-12)
+                disableElevation
+                sx={{
+                  mt: 1,
+                  height: 48,
+                  textTransform: "none",
+                  fontSize: "1rem",
+                  fontWeight: 600,
+                  borderRadius: 2,
+                }}
                 startIcon={pending && <CircularProgress size={20} color="inherit" />}
               >
-                {pending ? "Signing in..." : "Sign In"}
+                {pending ? "Signing in..." : "Sign in"}
               </Button>
             </Stack>
           </Box>
         </Paper>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }
