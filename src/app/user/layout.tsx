@@ -1,15 +1,34 @@
 /** @format */
 
 import React from "react";
+import { Box, Container } from "@mui/material";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
 export default function Profile({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative   max-w-screen-xxl mx-auto flex flex-col min-h-screen">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <Header />
-      <main className="sticky h-screen">{children}</main>
+      <Container
+        component="main"
+        maxWidth="xl"
+        sx={{
+          flexGrow: 1,
+          position: "sticky",
+          height: "100vh",
+          overflowY: "auto",
+        }}
+      >
+        {children}
+      </Container>
+
       <Footer />
-    </div>
+    </Box>
   );
 }

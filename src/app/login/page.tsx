@@ -1,9 +1,7 @@
 /** @format */
-
 "use client";
-
 import React, { useActionState } from "react";
-import { actionLoginUser } from "@/actions/auth/login";
+import { actionLoginUser } from "@/actions/user";
 
 // MUI Components
 import Box from "@mui/material/Box";

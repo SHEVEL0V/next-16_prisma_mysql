@@ -17,7 +17,7 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
 import Person from "@mui/icons-material/Person";
-import { logout } from "@/actions/auth/login";
+import { logout } from "@/actions/user";
 
 export default function ButtonUser() {
   const router = useRouter();

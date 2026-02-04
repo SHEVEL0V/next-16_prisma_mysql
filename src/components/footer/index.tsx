@@ -11,16 +11,13 @@ export default function Footer() {
     <Box
       component="footer"
       sx={{
+        backgroundColor: (theme) => theme.palette.background.paper,
         height: 80, // Відповідає h-20 (20 * 4px = 80px)
         display: "flex",
         alignItems: "center", // Вертикальне центрування
         justifyContent: "center", // Горизонтальне центрування
         boxShadow: 3, // Відповідає shadow-lg
         mt: "auto", // Щоб футер притискався до низу, якщо сторінка коротка
-
-        // Логіка фону (світла/темна тема)
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "grey.800" : "grey.100",
       }}
     >
       <Container maxWidth="lg">

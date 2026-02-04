@@ -18,9 +18,7 @@ export default function Header() {
       position="sticky"
       elevation={2} // Трохи менша тінь для акуратності
       sx={{
-        // Адаптивний колір фону
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "grey.900" : "grey.50",
+        backgroundColor: (theme) => theme.palette.background.paper,
         color: "text.primary", // Краще використовувати стандартний колір тексту
         borderBottom: "1px solid",
         borderColor: "divider",

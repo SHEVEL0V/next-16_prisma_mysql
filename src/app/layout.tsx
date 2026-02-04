@@ -1,10 +1,8 @@
 /** @format */
-
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "@/theme";
-import { getSession } from "@/lib/session";
+import { getTheme } from "@/actions/theme";
+import ThemeClientProvider from "@/components/providers";
 
 export const metadata: Metadata = {
   title: "UI ⚙",
@@ -16,15 +14,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // auth
-  const user = await getSession();
-  // theme
-  const themeMode: "light" | "dark" = user?.theme === "DARK" ? "dark" : "light";
-
+  const themeMode = (await getTheme()) || "light";
+  console.log("Theme mode in layout:", themeMode);
   return (
     <html lang="en">
       <body className="bg-[url('/img/bg.jpeg')] bg-cover bg-center bg-no-repeat bg-fixed">
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        <ThemeClientProvider mode={themeMode}>{children}</ThemeClientProvider>
       </body>
     </html>
   );

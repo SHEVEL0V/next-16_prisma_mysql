@@ -1,45 +1,50 @@
 /** @format */
 "use client";
 
-import React from "react";
-import { useDarkMode } from "@/hooks/useDarkMode";
-
-// MUI компоненти
+import React, { useState, useTransition } from "react";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-
-// MUI іконки
 import Brightness4Icon from "@mui/icons-material/Brightness4"; // Місяць
 import Brightness7Icon from "@mui/icons-material/Brightness7"; // Сонце
+import { toggleTheme } from "@/actions/theme";
 
 export default function ButtonDarkMode() {
-  const [isDarkMode, toggleDarkMode] = useDarkMode();
+  // Використовуємо стан для миттєвої зміни іконки в браузері
+  const [mode, setMode] = useState("light");
+  const [isPending, startTransition] = useTransition();
+
+  const handleToggle = async () => {
+    const newMode = mode === "dark" ? "light" : "dark";
+
+    // 1. Оновлюємо UI миттєво
+    setMode(newMode);
+
+    // 2. Викликаємо Server Action для збереження в Cookies/DB
+    startTransition(async () => {
+      await toggleTheme();
+    });
+  };
 
   return (
-    <Tooltip title={isDarkMode ? "Увімкнути світлу тему" : "Увімкнути темну тему"}>
+    <Tooltip title={mode === "dark" ? "Увімкнути світлу тему" : "Увімкнути темну тему"}>
       <IconButton
-        onClick={() => toggleDarkMode()}
+        onClick={handleToggle}
+        disabled={isPending} // Вимикаємо під час запиту
         color="inherit"
         sx={{
-          ml: 1, // margin-left для відступу від сусідніх елементів
-          transition: "transform 0.4s ease-in-out", // Плавна анімація обертання
+          ml: 1,
+          transition: "transform 0.5s ease",
           "&:hover": {
-            transform: "rotate(180deg)", // Ефект при наведенні
-            backgroundColor: isDarkMode ? "grey.800" : "grey.200",
+            transform: "rotate(45deg)",
+            backgroundColor:
+              mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.04)",
           },
         }}
       >
-        {/* Логіка відображення: 
-            Якщо темна тема -> показуємо Місяць (або Сонце, залежно від того, 
-            чи хочете ви показати "поточний стан" чи "дію").
-            
-            Варіант нижче показує ПОТОЧНИЙ стан (як у вашому коді):
-            Dark = Місяць, Light = Сонце.
-        */}
-        {isDarkMode ? (
-          <Brightness4Icon sx={{ color: "yellow.400" }} /> // Жовтий місяць
+        {mode === "dark" ? (
+          <Brightness7Icon sx={{ color: "#ffb74d" }} /> // Сонце для переходу на світлу
         ) : (
-          <Brightness7Icon sx={{ color: "orange.500" }} /> // Помаранчеве сонце
+          <Brightness4Icon sx={{ color: "#1976d2" }} /> // Місяць для переходу на темну
         )}
       </IconButton>
     </Tooltip>
