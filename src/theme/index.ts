@@ -1,7 +1,6 @@
 /** @format */
 "use client";
-
-import { createTheme, PaletteMode } from "@mui/material";
+import { createTheme, PaletteMode, alpha, Theme } from "@mui/material";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
@@ -10,93 +9,101 @@ const roboto = Roboto({
   display: "swap",
 });
 
+const COLORS = {
+  dark: { primary: "#3b82f6", background: "#0f172a", paper: "#1e293b" },
+  light: { primary: "#2563eb", background: "#f8fafc", paper: "#ffffff" },
+};
+
+// --- КОНСТАНТИ РОЗМІРІВ ---
+const DRAWER_WIDTH = 240;
+const HEADER_HEIGHT = 70;
+const FOOTER_HEIGHT = 80;
+
+const getGlobalStyles = (theme: Theme, mode: PaletteMode) => ({
+  "html, body": {
+    height: "100%",
+  },
+  body: {
+    margin: 0,
+    padding: 0,
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    backgroundColor: theme.palette.background.default,
+  },
+
+  // Гнучкий контейнер для контенту
+  main: {
+    flex: "1 0 auto",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    // ВІДСТУП ВІД ХЕДЕРА:
+    paddingTop: `${HEADER_HEIGHT}px`,
+  },
+
+  header: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: `${HEADER_HEIGHT}px`,
+    zIndex: theme.zIndex.appBar,
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: alpha(theme.palette.background.paper, 0.8),
+    backdropFilter: "blur(10px)",
+    borderBottom: "1px solid",
+    borderColor: alpha(theme.palette.divider, 0.1),
+  },
+
+  footer: {
+    flexShrink: 0,
+    marginTop: "auto",
+    width: "100%",
+    minHeight: `${FOOTER_HEIGHT}px`,
+    borderTop: "1px solid",
+    borderColor: alpha(theme.palette.divider, 0.1),
+    padding: theme.spacing(2, 0),
+  },
+
+  ".glass-effect": {
+    backgroundColor: alpha(theme.palette.background.paper, 0.4),
+    backdropFilter: "blur(12px)",
+  },
+  ".bordered": {
+    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    borderRadius: theme.shape.borderRadius,
+  },
+});
+
 export const getTheme = (mode: PaletteMode) => {
+  const isDark = mode === "dark";
+  const colors = isDark ? COLORS.dark : COLORS.light;
+
   return createTheme({
-    typography: {
-      fontFamily: roboto.style.fontFamily,
-      h1: { fontWeight: 700 },
-      h2: { fontWeight: 600 },
-      h3: { fontWeight: 600 },
-      button: {
-        textTransform: "none",
-        fontWeight: 500,
-      },
-    },
     palette: {
       mode,
-      ...(mode === "light"
-        ? {
-            // --- LIGHT MODE ---
-            primary: {
-              main: "#2563eb", //  "яскравий синій"
-              contrastText: "#fff",
-            },
-            secondary: {
-              main: "#7c3aed", // Сучасний фіолетовий
-            },
-            background: {
-              default: "#f8fafc", //  ледь сірий (Slate 50) для глибини
-              paper: "#ffffff",
-            },
-            text: {
-              primary: "#1e293b", // Slate 800 - м'якше ніж чисто чорний
-              secondary: "#64748b",
-            },
-          }
-        : {
-            // --- DARK MODE ---
-            primary: {
-              main: "#3b82f6", // Трохи світліший синій для темного фону
-            },
-            secondary: {
-              main: "#8b5cf6",
-            },
-            background: {
-              default: "#0f172a", // Глибокий темно-синій (Slate 900), виглядає дорожче за #121212
-              paper: "#1e293b", // Slate 800
-            },
-            text: {
-              primary: "#f1f5f9",
-              secondary: "#94a3b8",
-            },
-          }),
+      primary: { main: colors.primary, contrastText: "#fff" },
+      background: { default: colors.background, paper: colors.paper },
     },
-    shape: {
-      borderRadius: 12, // Більш заокруглені кути для карток
+    typography: {
+      fontFamily: roboto.style.fontFamily,
+      button: { textTransform: "none", fontWeight: 600 },
     },
+    shape: { borderRadius: 16 },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: (theme) => getGlobalStyles(theme, mode),
+      },
+
       MuiButton: {
+        defaultProps: { disableElevation: true },
         styleOverrides: {
           root: {
-            borderRadius: 8, // Кнопки трохи менш круглі ніж картки
-            padding: "8px 16px",
-            boxShadow: "none",
-            "&:hover": {
-              boxShadow: "none", // Flat design
-            },
+            borderRadius: "10px",
+            "&:active": { transform: "scale(0.97)" },
           },
-          containedPrimary: {
-            "&:hover": {
-              backgroundColor: mode === "light" ? "#1d4ed8" : "#2563eb",
-            },
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            boxShadow:
-              mode === "light"
-                ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" // Soft shadow
-                : "none", // У темній темі тіні часто прибирають або роблять дуже слабкими
-            border: mode === "dark" ? "1px solid #334155" : "none",
-          },
-        },
-      },
-      MuiTextField: {
-        defaultProps: {
-          variant: "outlined",
-          size: "small", // Більш компактні інпути
         },
       },
     },

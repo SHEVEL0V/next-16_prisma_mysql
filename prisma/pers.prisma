@@ -1,0 +1,21 @@
+model Post {
+  id          String   @id @default(uuid())
+  surname     String
+  name        String
+  rank        String   
+  unit        String   
+  mos         String   
+  dateOfBirth String
+  bloodType   String   
+  status      String   
+  equipment   String  
+  
+  // System fields
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // links
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+}
+

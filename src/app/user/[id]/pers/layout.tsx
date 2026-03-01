@@ -11,7 +11,7 @@ export default function Profile({
   modal: React.ReactNode;
 }) {
   return (
-    <div className="absolute w-full h-full">
+    <div className=" w-full h-full">
       <ButtonAdd />
       {children}
       {modal}

@@ -5,70 +5,9 @@ generator client {
 
 }
 
-datasource db {
-  provider = "mysql"
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum Theme {
-  DARK
-  LIGHT
-}
-
-
-
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      Role     @default(USER)
-  theme     Theme    @default(DARK)
-  
-  // links
-  profile   Profile?
-  posts     Post[]
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-
-
-model Profile {
-  id       String  @id @default(uuid())
-  position String  // Посада
-  bio      String? // Додаткова інформація
-  
-   // links
-  userId   String  @unique
-  user     User    @relation(fields: [userId], references: [id])
-}
-
-model Post {
-  id          String   @id @default(uuid())
-  surname     String
-  name        String
-  rank        String   
-  unit        String   
-  mos         String   
-  dateOfBirth String
-  bloodType   String   
-  status      String   
-  equipment   String  
-  
-  // System fields
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // links
-  authorId    String
-  author      User     @relation(fields: [authorId], references: [id])
-}
+  datasource db {
+    provider = "mysql"
+  }
 
 
 

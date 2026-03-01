@@ -1,0 +1,61 @@
+
+// 1. ДОШКА/ПЛАНЕР (Головний контейнер)
+model Board {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Зв'язки
+  members     User[]   @relation("BoardMembers")
+  columns     Column[]
+}
+
+// 2. КОЛОНКИ (Стан виконання: "To Do", "In Progress", "Done")
+model Column {
+  id        String   @id @default(uuid())
+  title     String
+  order     Float    // Використовуємо Float для легкого пересування (Drag & Drop)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Зв'язки
+  boardId   String
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+}
+
+// Enum для різних типів завдань
+enum TaskType {
+  BUG
+  FEATURE
+  TASK
+  EPIC
+}
+
+// Enum для пріоритетів (опціонально, але дуже корисно)
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// 3. ЗАВДАННЯ / БЛОКИ
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String?  @db.Text // Для великого об'єму інфи в блоці
+  type        TaskType @default(TASK)
+  priority    Priority @default(MEDIUM)
+  order       Float    // Позиція в колонці (для пересування)
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Зв'язки
+  columnId    String
+  column      Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  assignees   User[]   @relation("TaskAssignees")
+}

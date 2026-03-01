@@ -2,7 +2,6 @@
 
 "use client";
 
-import Box from "@mui/material/Box";
 import { DataGrid, GridValidRowModel, GridRowSelectionModel } from "@mui/x-data-grid";
 
 interface GridProps {
@@ -11,7 +10,7 @@ interface GridProps {
 }
 
 export function Grid({ data, onSelectionChange }: GridProps) {
-  const columns = Object.keys(data[0]).map((key) => ({
+  const columns = Object.keys(data[0] || {}).map((key) => ({
     field: key,
     headerName: key.charAt(0).toUpperCase() + key.slice(1),
     width: 150,
@@ -20,6 +19,7 @@ export function Grid({ data, onSelectionChange }: GridProps) {
 
   return (
     <DataGrid
+      sx={{ height: "100vh", borderRadius: 0, border: "none" }}
       rows={data}
       columns={columns}
       initialState={{

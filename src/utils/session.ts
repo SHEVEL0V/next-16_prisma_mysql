@@ -1,8 +1,8 @@
 /** @format */
-import "server-only";
+"use server";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import type { User } from "@/types";
+import type { User } from "../../generated/prisma/client";
 
 const secretKey = process.env.SESSION_SECRET;
 if (!secretKey) {
@@ -13,7 +13,6 @@ const encodedKey = new TextEncoder().encode(secretKey);
 type SessionPayload = {
   id: string;
   name: string;
-  theme: string;
   expiresAt: number;
 };
 
@@ -42,11 +41,10 @@ export async function decrypt(session: string | undefined = "") {
 export async function createSession(user: User) {
   const duration = 60 * 60 * 1000; // 1 h.
   const expiresAt = Date.now() + duration;
-  const { id, name, theme } = user;
+  const { id, name } = user;
   const session = await encrypt({
     id,
     name,
-    theme,
     expiresAt,
   });
   const cookieStore = await cookies();
@@ -63,7 +61,7 @@ export async function createSession(user: User) {
 export async function getSession() {
   const sessionValue = (await cookies()).get("session")?.value;
 
-  return await decrypt(sessionValue);
+  return (await decrypt(sessionValue)) as SessionPayload | null;
 }
 
 export async function deleteSession() {

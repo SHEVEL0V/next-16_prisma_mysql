@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Brightness4Icon from "@mui/icons-material/Brightness4"; // Місяць
 import Brightness7Icon from "@mui/icons-material/Brightness7"; // Сонце
-import { toggleTheme } from "@/actions/theme";
+import { toggleTheme } from "@/utils/theme";
 
 export default function ButtonDarkMode() {
   // Використовуємо стан для миттєвої зміни іконки в браузері

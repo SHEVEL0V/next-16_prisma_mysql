@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { deleteSession } from "@/utils/session";
 
 // MUI Компоненти
 import IconButton from "@mui/material/IconButton";
@@ -17,7 +18,6 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
 import Person from "@mui/icons-material/Person";
-import { logout } from "@/actions/user";
 
 export default function ButtonUser() {
   const router = useRouter();
@@ -41,9 +41,10 @@ export default function ButtonUser() {
     handleClose(); // Спочатку закриваємо меню
 
     try {
-      logout();
+      await deleteSession(); // Викликаємо функцію для видалення сесії на сервері
+
       console.log("User logged out");
-      router.push("/login");
+      router.push("/signin"); // Перенаправляємо користувача на сторінку входу
       router.refresh(); // Оновлення стану сторінки
     } catch (error) {
       console.error("Logout failed", error);

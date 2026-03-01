@@ -2,87 +2,34 @@
 "use client";
 
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import { AppBar, Toolbar, Typography, Box, Container } from "@mui/material";
 
-// Ваші компоненти
 import ButtonUser from "@/components/ui/button/user";
 import ButtonDarkMode from "@/components/ui/button/darkMode";
 import ButtonBack from "@/components/ui/button/back";
 
 export default function Header() {
   return (
-    <AppBar
-      position="sticky"
-      elevation={2} // Трохи менша тінь для акуратності
-      sx={{
-        backgroundColor: (theme) => theme.palette.background.paper,
-        color: "text.primary", // Краще використовувати стандартний колір тексту
-        borderBottom: "1px solid",
-        borderColor: "divider",
-      }}
-    >
-      <Toolbar
-        sx={{
-          justifyContent: "space-between", // Розподіляє Ліво та Право по краях
-          minHeight: { xs: 64, sm: 70 }, // Фіксована висота для стабільності
-          px: { xs: 1, sm: 3 }, // Горизонтальні відступи
-        }}
-      >
-        {/* === ЛІВА СЕКЦІЯ === */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1, // Відступ між кнопками (8px)
-            zIndex: 10, // Щоб кнопки були поверх заголовка на малих екранах
-          }}
-        >
-          <ButtonBack />
-          <ButtonDarkMode />
-        </Box>
+    <AppBar component="header" elevation={0}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* ЛІВА СЕКЦІЯ: Фіксована ширина, щоб збалансувати центр */}
+          <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
+            <ButtonBack />
+          </Box>
 
-        {/* === ЦЕНТРАЛЬНА СЕКЦІЯ (ЗАГОЛОВОК) === */}
-        <Typography
-          variant="h5" // Оптимальний розмір для Header
-          component="h1"
-          noWrap // Обрізає текст трьома крапками, якщо він не влізає
-          sx={{
-            fontWeight: 700,
-            color: "success.main", // Ваш зелений колір
-            textAlign: "center",
+          {/* ЦЕНТРАЛЬНА СЕКЦІЯ: Завжди по центру */}
+          <Typography variant="h6" component="h1" className="header-title">
+            Welcome to UI
+          </Typography>
 
-            // Логіка абсолютного центрування
-            position: { xs: "static", md: "absolute" },
-            left: { md: "50%" },
-            transform: { md: "translateX(-50%)" },
-
-            // Адаптивність розміру шрифту
-            fontSize: { xs: "1.2rem", md: "1.5rem" },
-
-            // Якщо на мобільному місця мало — заголовок посунеться,
-            // а не налізе на кнопки
-            flexGrow: { xs: 1, md: 0 },
-            px: 2, // Відступ тексту від кнопок на мобільному
-          }}
-        >
-          Welcome to UI
-        </Typography>
-
-        {/* === ПРАВА СЕКЦІЯ === */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            zIndex: 10,
-          }}
-        >
-          <ButtonUser />
-        </Box>
-      </Toolbar>
+          {/* ПРАВА СЕКЦІЯ: Фіксована ширина, вирівнювання вправо */}
+          <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 1 }}>
+            <ButtonDarkMode />
+            <ButtonUser />
+          </Box>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 }

@@ -1,150 +1,86 @@
 /** @format */
-
 "use client";
 
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { FormServerAction } from "@/types";
-
-// MUI Components
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-
-// Icons
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Typography,
+  Box,
+  Grid,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import SaveIcon from "@mui/icons-material/Save"; // Додамо іконку для збереження
 
-interface ModalProps {
-  fields: { name: string; label: string; type: string }[];
+import { FormInput } from "./formInput";
+import { FormAlert } from "./formAlert";
+import { SubmitButton } from "./button/submit";
+import type { ActionResponse } from "@/types";
+
+interface ModalProps<T> {
+  fields: { name: string; label: string; type: string; required?: boolean }[];
   title?: string;
-  action: FormServerAction;
+  action: (
+    prevState: ActionResponse<T>,
+    formData: FormData,
+  ) => Promise<ActionResponse<T>>;
 }
 
-export default function Modal({ fields, title, action }: ModalProps) {
-  const [state, actionForm, pending] = useActionState(action, null);
+export default function DynamicModal<T>({ fields, title, action }: ModalProps<T>) {
   const router = useRouter();
+  const [state, formAction, isPending] = useActionState(action, { success: false });
 
-  const handleClose = () => {
-    router.back();
-  };
+  const handleClose = () => router.back();
 
-  // Автоматичне закриття модалки при успіху (опціонально)
   useEffect(() => {
-    if (state?.success) {
-      // Можна додати затримку або закрити одразу
-      // handleClose();
+    if (state.success) {
+      const timer = setTimeout(() => handleClose(), 1500);
+      return () => clearTimeout(timer);
     }
-  }, [state?.success]);
+  }, [state.success]);
 
   return (
-    <Dialog
-      open={true}
-      onClose={handleClose}
-      fullWidth
-      maxWidth="sm"
-      // Додаємо анімацію появи (PaperProps - стандартний спосіб стилізації "картки" діалогу)
-      PaperProps={{
-        sx: { borderRadius: 2 },
-      }}
-    >
-      {/* 1. Заголовок + Абсолютно позиційована кнопка закриття */}
+    <Dialog open onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle sx={{ m: 0, p: 2, pr: 6 }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography variant="h6" fontWeight="bold">
           {title || "Заповніть форму"}
         </Typography>
-
         <IconButton
-          aria-label="close"
           onClick={handleClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
+          sx={{ position: "absolute", right: 8, top: 8, color: "grey.500" }}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <DialogContent dividers>
-        {/* Виводимо Alert зверху, якщо є помилка або успіх */}
-        {state?.message && (
-          <Box sx={{ mb: 2 }}>
-            <Alert severity={state.success ? "success" : "error"} onClose={() => {}}>
-              {state.message}
-            </Alert>
-          </Box>
-        )}
+        <FormAlert message={state.message} success={state.success} />
 
-        {/* Форма */}
-        <Box
-          component="form"
-          action={actionForm}
-          id="modal-form"
-          noValidate
-          autoComplete="off"
-          sx={{ mt: 1 }}
-        >
+        <Box component="form" action={formAction} id="modal-form" noValidate>
           <Grid container spacing={2}>
-            {fields.map((field, index) => {
-              // Логіка для дат: якщо type="date", лейбл має бути завжди піднятий (shrink)
-              const isDate = field.type === "date";
-
-              return (
-                <Grid
-                  size={{ xs: 12, sm: 6 }} // sm краще ніж md для модалок
-                  key={field.name}
-                >
-                  <TextField
-                    margin="dense" // Трохи компактніший вигляд, стандарт для діалогів
-                    id={field.name}
-                    name={field.name}
-                    label={field.label}
-                    type={field.type}
-                    fullWidth
-                    required
-                    variant="outlined"
-                    // Спеціальні пропси для дати
-                    slotProps={{
-                      inputLabel: {
-                        shrink: isDate ? true : undefined,
-                      },
-                    }}
-                  />
-                </Grid>
-              );
-            })}
+            {fields.map((field) => (
+              <FormInput
+                key={field.name}
+                field={field}
+                disabled={isPending}
+                error={state.errors?.[field.name as keyof typeof state.errors]}
+              />
+            ))}
           </Grid>
         </Box>
       </DialogContent>
 
       <DialogActions sx={{ p: 2, gap: 1 }}>
-        <Button onClick={handleClose} variant="text" color="inherit">
-          Скасувати
-        </Button>
-        <Button
-          type="submit"
+        <SubmitButton
+          isPending={isPending}
+          label="Зберегти"
+          loadingText="Збереження..."
           form="modal-form"
-          variant="contained"
-          disabled={pending}
-          startIcon={
-            pending ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />
-          }
-          disableElevation // Робить кнопку пласкою (сучасний тренд), приберіть якщо не подобається
-        >
-          {pending ? "Збереження..." : "Зберегти"}
-        </Button>
+          sx={{ width: "auto", px: 4 }}
+        />
       </DialogActions>
     </Dialog>
   );

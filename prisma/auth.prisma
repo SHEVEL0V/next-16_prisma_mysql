@@ -1,0 +1,40 @@
+enum Role {
+  USER
+  ADMIN
+}
+
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(USER)
+
+  
+  // ------------links-------------
+  // profile
+  profile   Profile?
+  // posts
+  posts     Post[] 
+  // BoardMembers
+  boards        Board[]  @relation("BoardMembers")
+  assignedTasks Task[]   @relation("TaskAssignees")
+
+  // System fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Profile {
+  id       String  @id @default(uuid())
+  image    String? // URL до зображення профілю
+  position String  // Посада
+  bio      String? // Додаткова інформація
+  
+   // links
+  userId   String  @unique
+  user     User    @relation(fields: [userId], references: [id])
+}
