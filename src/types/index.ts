@@ -1,9 +1,11 @@
 /** @format */
 
 // action-response
-export type ActionResponse<T> = {
-  success: boolean;
-  message?: string;
-  data?: T | null;
-  errors?: Record<string, string[]>; // Для помилок Zod (field-level)
-};
+export type ActionResponse<T> =
+  | { success: true; data: T; message?: string }
+  | { success: false; message?: string; errors: Record<string, string[]> };
+
+export type ActionType<T> = (
+  _prevState: ActionResponse<T>,
+  formData: FormData,
+) => Promise<ActionResponse<T>>;

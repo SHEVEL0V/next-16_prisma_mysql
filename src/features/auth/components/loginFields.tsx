@@ -1,7 +1,7 @@
 /** @format */
 import { TextField, Stack, Alert } from "@mui/material";
 import { ActionResponse } from "@/types";
-import { SubmitButton } from "@/components/ui/button/submit";
+import { SubmitButton } from "@/components/ui/buttons/submit";
 
 interface LoginFieldsProps<T> {
   state: ActionResponse<T>;

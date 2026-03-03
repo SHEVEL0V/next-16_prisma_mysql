@@ -1,7 +1,9 @@
 /** @format */
 "use client";
-import { createTheme, PaletteMode, alpha, Theme } from "@mui/material";
+
+import { createTheme, PaletteMode, alpha } from "@mui/material";
 import { Roboto } from "next/font/google";
+import { DESIGN_TOKENS } from "./constants";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -9,100 +11,111 @@ const roboto = Roboto({
   display: "swap",
 });
 
-const COLORS = {
-  dark: { primary: "#3b82f6", background: "#0f172a", paper: "#1e293b" },
-  light: { primary: "#2563eb", background: "#f8fafc", paper: "#ffffff" },
-};
-
-// --- КОНСТАНТИ РОЗМІРІВ ---
-const DRAWER_WIDTH = 240;
-const HEADER_HEIGHT = 70;
-const FOOTER_HEIGHT = 80;
-
-const getGlobalStyles = (theme: Theme, mode: PaletteMode) => ({
-  "html, body": {
-    height: "100%",
-  },
-  body: {
-    margin: 0,
-    padding: 0,
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "100vh",
-    backgroundColor: theme.palette.background.default,
-  },
-
-  // Гнучкий контейнер для контенту
-  main: {
-    flex: "1 0 auto",
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    // ВІДСТУП ВІД ХЕДЕРА:
-    paddingTop: `${HEADER_HEIGHT}px`,
-  },
-
-  header: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: `${HEADER_HEIGHT}px`,
-    zIndex: theme.zIndex.appBar,
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: alpha(theme.palette.background.paper, 0.8),
-    backdropFilter: "blur(10px)",
-    borderBottom: "1px solid",
-    borderColor: alpha(theme.palette.divider, 0.1),
-  },
-
-  footer: {
-    flexShrink: 0,
-    marginTop: "auto",
-    width: "100%",
-    minHeight: `${FOOTER_HEIGHT}px`,
-    borderTop: "1px solid",
-    borderColor: alpha(theme.palette.divider, 0.1),
-    padding: theme.spacing(2, 0),
-  },
-
-  ".glass-effect": {
-    backgroundColor: alpha(theme.palette.background.paper, 0.4),
-    backdropFilter: "blur(12px)",
-  },
-  ".bordered": {
-    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-    borderRadius: theme.shape.borderRadius,
-  },
-});
+declare module "@mui/material/styles" {
+  interface Theme {
+    custom: typeof DESIGN_TOKENS;
+  }
+  interface ThemeOptions {
+    custom?: typeof DESIGN_TOKENS;
+  }
+}
 
 export const getTheme = (mode: PaletteMode) => {
   const isDark = mode === "dark";
-  const colors = isDark ? COLORS.dark : COLORS.light;
 
   return createTheme({
+    cssVariables: {
+      colorSchemeSelector: "class", // Дозволяє зручно перемикати теми через клас
+    },
     palette: {
       mode,
-      primary: { main: colors.primary, contrastText: "#fff" },
-      background: { default: colors.background, paper: colors.paper },
+      primary: {
+        main: isDark ? "#60a5fa" : "#2563eb", // Трохи м'якші кольори для dark mode
+        contrastText: "#fff",
+      },
+      background: {
+        default: isDark ? "#0f172a" : "#f8fafc",
+        paper: isDark ? "#1e293b" : "#ffffff",
+      },
+      divider: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)",
     },
     typography: {
       fontFamily: roboto.style.fontFamily,
       button: { textTransform: "none", fontWeight: 600 },
     },
-    shape: { borderRadius: 16 },
+    shape: { borderRadius: DESIGN_TOKENS.borderRadius },
+    custom: DESIGN_TOKENS,
+
     components: {
       MuiCssBaseline: {
-        styleOverrides: (theme) => getGlobalStyles(theme, mode),
+        styleOverrides: (theme) => ({
+          "html, body": {
+            height: "100%",
+            margin: 0,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+          },
+          body: {
+            backgroundColor: theme.palette.background.default,
+            transition: theme.transitions.create("background-color", { duration: 300 }),
+          },
+          ".glass-effect": {
+            backgroundColor: alpha(theme.palette.background.paper, 0.7),
+            backdropFilter: "blur(10px)",
+            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          },
+        }),
       },
-
+      MuiAppBar: {
+        defaultProps: { elevation: 0 },
+        styleOverrides: {
+          root: ({ theme }) => ({
+            height: DESIGN_TOKENS.headerHeight,
+            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+            backdropFilter: "blur(12px)",
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            color: theme.palette.text.primary,
+          }),
+        },
+      },
       MuiButton: {
         defaultProps: { disableElevation: true },
         styleOverrides: {
+          root: ({ theme }) => ({
+            borderRadius: Number(theme.shape.borderRadius) * 1.5,
+            padding: "8px 16px",
+            transition: theme.transitions.create(
+              ["transform", "background-color", "box-shadow"],
+              {
+                duration: 200,
+              },
+            ),
+            "&:active": { transform: "scale(0.96)" },
+          }),
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            backgroundImage: "none",
+            borderRadius: Number(theme.shape.borderRadius) * 2,
+            border: `1px solid ${theme.palette.divider}`,
+            transition: theme.transitions.create([
+              "box-shadow",
+              "border-color",
+              "transform",
+            ]),
+            "&:hover": {
+              boxShadow: isDark ? "0 8px 24px -8px rgba(0,0,0,0.5)" : theme.shadows[3],
+              borderColor: alpha(theme.palette.primary.main, 0.3),
+            },
+          }),
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
           root: {
-            borderRadius: "10px",
-            "&:active": { transform: "scale(0.97)" },
+            backgroundImage: "none",
           },
         },
       },

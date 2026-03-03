@@ -15,9 +15,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { FormInput } from "./formInput";
-import { FormAlert } from "./formAlert";
-import { SubmitButton } from "./button/submit";
+import { FormInput } from "./fields/input";
+import { FormAlert } from "./alert";
+import { SubmitButton } from "./buttons/submit";
 import type { ActionResponse } from "@/types";
 
 interface ModalProps<T> {
@@ -31,7 +31,10 @@ interface ModalProps<T> {
 
 export default function DynamicModal<T>({ fields, title, action }: ModalProps<T>) {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(action, { success: false });
+  const [state, formAction, isPending] = useActionState(action, {
+    success: false,
+    errors: {},
+  });
 
   const handleClose = () => router.back();
 
@@ -57,7 +60,7 @@ export default function DynamicModal<T>({ fields, title, action }: ModalProps<T>
       </DialogTitle>
 
       <DialogContent dividers>
-        <FormAlert message={state.message} success={state.success} />
+        {state.message && <FormAlert message={state.message} success={state.success} />}
 
         <Box component="form" action={formAction} id="modal-form" noValidate>
           <Grid container spacing={2}>
@@ -66,7 +69,11 @@ export default function DynamicModal<T>({ fields, title, action }: ModalProps<T>
                 key={field.name}
                 field={field}
                 disabled={isPending}
-                error={state.errors?.[field.name as keyof typeof state.errors]}
+                error={
+                  "errors" in state
+                    ? state.errors?.[field.name as keyof typeof state.errors]
+                    : undefined
+                }
               />
             ))}
           </Grid>

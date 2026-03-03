@@ -31,13 +31,10 @@ export const taskService = {
     });
   },
   // ------------------------------------------------------------------------------------------
-  update: async (taskId: string, data: { columnId?: string; order: number }) => {
+  update: async (taskId: string, data: Partial<Task>) => {
     return prisma.task.update({
       where: { id: taskId },
-      data: {
-        columnId: data.columnId,
-        order: data.order,
-      },
+      data: { title: data.title },
     });
   },
   // ------------------------------------------------------------------------------------------

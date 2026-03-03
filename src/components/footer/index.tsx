@@ -2,34 +2,65 @@
 "use client";
 
 import React from "react";
-import { Box, Container, Typography, Stack, Link } from "@mui/material";
+import { Box, Container, Typography, Stack, Link, alpha, useTheme } from "@mui/material";
 
 export default function Footer() {
+  const theme = useTheme();
   const currentYear = new Date().getFullYear();
 
   return (
-    <Box component="footer">
+    <Box
+      component="footer"
+      sx={{
+        // Використовуємо висоту з нашої дизайн-системи
+        minHeight: theme.custom.footerHeight,
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        mt: "auto",
+        borderTop: "1px solid",
+        borderColor: "divider",
+        // Додаємо легкий ефект скла, якщо потрібно
+        bgcolor: alpha(theme.palette.background.paper, 0.4),
+        backdropFilter: "blur(8px)",
+      }}
+    >
       <Container maxWidth="xl">
         <Stack
-          direction={{ xs: "column", sm: "row" }}
+          direction={{ xs: "column", md: "row" }}
           justifyContent="space-between"
           alignItems="center"
           spacing={2}
+          sx={{ py: 3 }}
         >
-          <Typography variant="body2" className="glass-text">
-            © {currentYear} UI Portal. All rights reserved.
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              fontWeight: 500,
+            }}
+          >
+            © {currentYear} UI Portal. Всі права захищені.
           </Typography>
 
-          <Stack direction="row" spacing={3}>
-            <Link href="#" className="footer-link" variant="caption">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="footer-link" variant="caption">
-              Terms of Service
-            </Link>
-            <Link href="#" className="footer-link" variant="caption">
-              Contact
-            </Link>
+          <Stack
+            direction="row"
+            spacing={{ xs: 2, sm: 4 }}
+            sx={{
+              "& a": {
+                color: "text.secondary",
+                textDecoration: "none",
+                transition: "color 0.2s ease",
+                fontSize: "0.85rem",
+                "&:hover": {
+                  color: "primary.main",
+                },
+              },
+            }}
+          >
+            <Link href="/privacy">Політика конфіденційності</Link>
+            <Link href="/terms">Умови використання</Link>
+            <Link href="/contact">Контакти</Link>
           </Stack>
         </Stack>
       </Container>

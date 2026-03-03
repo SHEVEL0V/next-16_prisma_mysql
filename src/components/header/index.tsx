@@ -2,28 +2,31 @@
 "use client";
 
 import React from "react";
+
 import { AppBar, Toolbar, Typography, Box, Container } from "@mui/material";
 
-import ButtonUser from "@/components/ui/button/user";
-import ButtonDarkMode from "@/components/ui/button/darkMode";
-import ButtonBack from "@/components/ui/button/back";
+import ButtonUser from "@/components/ui/buttons/user";
+import ButtonDarkMode from "@/components/ui/buttons/darkMode";
+import ButtonBack from "@/components/ui/buttons/back";
+import ButtonHome from "../ui/buttons/home";
 
 export default function Header() {
   return (
-    <AppBar component="header" elevation={0}>
+    <AppBar>
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-between" }}>
-          {/* ЛІВА СЕКЦІЯ: Фіксована ширина, щоб збалансувати центр */}
-          <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
+        <Toolbar disableGutters>
+          {/* ЛІВА СЕКЦІЯ */}
+          <Box sx={{ flex: 1, display: "flex" }}>
             <ButtonBack />
+            <ButtonHome />
           </Box>
 
-          {/* ЦЕНТРАЛЬНА СЕКЦІЯ: Завжди по центру */}
-          <Typography variant="h6" component="h1" className="header-title">
+          {/* ЦЕНТРАЛЬНА СЕКЦІЯ */}
+          <Typography variant="subtitle1" className="header-title">
             Welcome to UI
           </Typography>
 
-          {/* ПРАВА СЕКЦІЯ: Фіксована ширина, вирівнювання вправо */}
+          {/* ПРАВА СЕКЦІЯ */}
           <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 1 }}>
             <ButtonDarkMode />
             <ButtonUser />

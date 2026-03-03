@@ -1,5 +1,4 @@
 /** @format */
-
 import z from "zod";
 import { ActionResponse } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -20,29 +19,33 @@ export function createSafeAction<TInput, TOutput>(
     _prevState: ActionResponse<TOutput>,
     formData: FormData,
   ): Promise<ActionResponse<TOutput>> => {
-    //----------------------------------------------------------------------
+    // 1. Отримання даних з FormData
     const rawData = Object.fromEntries(formData.entries());
-
     const validatedFields = schema.safeParse(rawData);
 
+    // 2. Валідація
     if (!validatedFields.success) {
-      const flatErrors = validatedFields.error.flatten((issue) => issue.message);
-
-      console.warn("Validation Errors:", validatedFields.error.message);
+      const fieldErrors = validatedFields.error.flatten().fieldErrors;
 
       return {
         success: false,
         message: "Помилка валідації даних.",
-        errors: flatErrors.fieldErrors as ActionResponse<TOutput>["errors"],
+        errors: fieldErrors as Record<string, string[]>,
       };
     }
 
     let result: TOutput;
+    let shouldRedirect = false;
+    let targetPath = "";
 
     try {
-      const userId = (await getSession())?.id;
+      const session = await getSession();
+      const userId = session?.id;
+
+      // Викликаємо основну логіку
       result = await handler(validatedFields.data, userId);
 
+      // Revalidate (можна робити всередині try)
       if (options?.revalidatePath) {
         const path =
           typeof options.revalidatePath === "function"
@@ -50,22 +53,29 @@ export function createSafeAction<TInput, TOutput>(
             : options.revalidatePath;
         revalidatePath(path);
       }
-    } catch (error: unknown) {
-      // Якщо в самому handler був викликаний redirect() — прокидаємо його далі
-      //   if (isRedirectError(error)) throw error;
+
+      // Готуємо редирект
+      if (options?.redirectTo) {
+        targetPath =
+          typeof options.redirectTo === "function"
+            ? options.redirectTo(result)
+            : options.redirectTo;
+        shouldRedirect = true;
+      }
+    } catch (error: any) {
+      // Якщо це внутрішній редирект Next.js — прокидаємо далі
+      if (error.digest?.includes("NEXT_REDIRECT") || error.message === "NEXT_REDIRECT") {
+        throw error;
+      }
 
       console.error("Action Error:", error);
 
-      // Обробка помилок бази даних (Prisma)
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        error.code === "P2002"
-      ) {
+      // Обробка специфічних помилок БД (наприклад, Prisma)
+      if (error.code === "P2002") {
         return {
           success: false,
-          message: "Такий запис уже існує в базі даних.",
+          message: "Запис із такими даними вже існує.",
+          errors: {},
         };
       }
 
@@ -73,16 +83,13 @@ export function createSafeAction<TInput, TOutput>(
         success: false,
         message:
           error instanceof Error ? error.message : "Сталася непередбачувана помилка.",
+        errors: {},
       };
     }
 
-    // 4. Динамічний редирект (має бути поза try/catch)
-    if (options?.redirectTo) {
-      const target =
-        typeof options.redirectTo === "function"
-          ? options.redirectTo(result)
-          : options.redirectTo;
-      redirect(target);
+    // 3. Виконуємо редирект ПОЗА try/catch блоком
+    if (shouldRedirect && targetPath) {
+      redirect(targetPath);
     }
 
     return {

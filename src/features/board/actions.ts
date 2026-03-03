@@ -1,12 +1,20 @@
 /** @format */
 "use server";
 import { createSafeAction } from "@/utils/wrapperAction";
-import { revalidatePath } from "next/cache";
 
 import { boardService } from "./services/board";
 import { columnService } from "./services/column";
 import { taskService } from "./services/task";
-import { boardSchema, columnSchema, taskSchema, reorderTaskSchema } from "./schema";
+import {
+  boardSchema,
+  columnSchema,
+  reorderTaskSchema,
+  deleteTaskSchema,
+  deleteBoardSchema,
+  updateBoardSchema,
+  updateTaskSchema,
+  createTaskSchema,
+} from "./schema";
 
 export const createBoardAction = createSafeAction(
   boardSchema,
@@ -14,40 +22,45 @@ export const createBoardAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
+export const updateBoardAction = createSafeAction(
+  updateBoardSchema,
+  async ({ id, ...data }) => await boardService.update(id, data),
+  { revalidatePath: "/" },
+);
+
+export const deleteBoardAction = createSafeAction(
+  deleteBoardSchema,
+  async ({ id }) => await boardService.delete(id),
+  { revalidatePath: "/" },
+);
+
 export const createColumnAction = createSafeAction(
   columnSchema,
-  async ({ boardId, title }) => {
-    const column = await columnService.create(boardId, title);
-    revalidatePath(`/board/${boardId}`);
-    return column;
-  },
+  async ({ boardId, title }) => await columnService.create(boardId, title),
+  { revalidatePath: (data) => `/board/${data.boardId}` },
 );
 
 export const createTaskAction = createSafeAction(
-  taskSchema,
-  async ({ columnId, title, boardId }) => {
-    const task = await taskService.create(columnId, title);
-    if (boardId) revalidatePath(`/board/${boardId}`);
-    return task;
-  },
+  createTaskSchema,
+  async ({ columnId, title, boardId }) => await taskService.create(columnId, title),
+  { revalidatePath: "/" },
+);
+
+export const updateTaskAction = createSafeAction(
+  updateTaskSchema,
+  async ({ id, title }) => await taskService.update(id, { title }),
+  { revalidatePath: "/" },
 );
 
 export const reorderTaskAction = createSafeAction(
   reorderTaskSchema,
-  async ({ id, columnId, order, boardId }) => {
-    const updatedTask = await taskService.update(id, { columnId, order });
-    if (boardId) revalidatePath(`/board/${boardId}`);
-    return updatedTask;
-  },
+  async ({ id, columnId, order, boardId }) =>
+    await taskService.update(id, { columnId, order }),
+  { revalidatePath: "/" },
 );
 // ------------------------------------------------------------------------------------------
-export const deleteTaskAction = async (id: string) => {
-  try {
-    await taskService.delete(id);
-    revalidatePath(`/board`);
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting task:", error);
-    return { message: "Failed to delete task" };
-  }
-};
+export const deleteTaskAction = createSafeAction(
+  deleteTaskSchema,
+  async ({ id }) => await taskService.delete(id),
+  { revalidatePath: "/" },
+);

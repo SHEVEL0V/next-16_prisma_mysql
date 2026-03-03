@@ -1,7 +1,6 @@
 /** @format */
 
 import prisma from "@/lib/prisma";
-
 import { Prisma } from "@g/prisma/client";
 
 export const boardService = {
@@ -42,4 +41,11 @@ export const boardService = {
       },
     });
   },
+  update: async (id: string, data: Prisma.BoardUpdateInput) => {
+    return prisma.board.update({
+      where: { id },
+      data: { title: data.title },
+    });
+  },
+  delete: async (id: string) => prisma.board.delete({ where: { id } }),
 };
