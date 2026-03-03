@@ -6,7 +6,7 @@ import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
 import Link from "next/link";
 import { updateBoardAction, deleteBoardAction } from "../../actions";
 
-import Editor from "../editor";
+import InlineEditor from "@/components/ui/editor";
 
 interface SidebarItemProps {
   id: string;
@@ -53,7 +53,7 @@ export default function SidebarItem({ id, title, isActive, isOpen }: SidebarItem
               </ListItemIcon>
             </Link>
 
-            <Editor
+            <InlineEditor
               data={{ id, value: title, name: "title" }}
               update={updateBoardAction}
               remove={deleteBoardAction}

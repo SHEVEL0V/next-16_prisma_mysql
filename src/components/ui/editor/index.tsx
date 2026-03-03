@@ -1,23 +1,9 @@
 /** @format */
-"use client";
-
-import React, { useActionState, useState, useRef, useEffect, useCallback } from "react";
-import {
-  Box,
-  CircularProgress,
-  Tooltip,
-  TextField,
-  Typography,
-  FormHelperText,
-  IconButton,
-} from "@mui/material";
-import {
-  Edit as EditIcon,
-  Check as CheckIcon,
-  Close as CloseIcon,
-  Delete as DeleteIcon,
-} from "@mui/icons-material";
+import { Box, Typography, TextField } from "@mui/material";
+import { useActionState, useState, useRef, useEffect, useCallback } from "react";
 import type { ActionType } from "@/types/index";
+import EditorActions from "@/components/ui/editor/actionsBtn";
+import ErrorMessage from "@/components/ui/editor/message";
 
 interface EditorProps<T> {
   data: { id: string; value: string; name: string };
@@ -31,9 +17,9 @@ export default function InlineEditor<T>({
   remove,
 }: EditorProps<T>) {
   const [isEditing, setIsEditing] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // States для екшнів
   const [stateUpdate, actionUpdate, isPendingUpdate] = useActionState(update, {
     success: false,
     errors: {},
@@ -46,7 +32,6 @@ export default function InlineEditor<T>({
   const isPending = isPendingUpdate || isPendingDelete;
   const error = !stateUpdate.success ? stateUpdate?.errors?.[name]?.[0] : null;
 
-  // Авто-фокус та виділення тексту
   useEffect(() => {
     if (isEditing) {
       inputRef.current?.focus();
@@ -54,21 +39,11 @@ export default function InlineEditor<T>({
     }
   }, [isEditing]);
 
-  const handleToggleEdit = useCallback((state: boolean) => {
-    setIsEditing(state);
-  }, []);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      // Дозволяємо стандартну поведінку submit для форми
-    } else if (e.key === "Escape") {
-      handleToggleEdit(false);
-    }
-  };
+  const handleToggleEdit = useCallback((state: boolean) => setIsEditing(state), []);
 
   const handleSubmit = async (formData: FormData) => {
     const newValue = formData.get(name);
-    // Якщо значення не змінилося — просто закриваємо
+    // Якщо значення не змінилося — просто закриваємо режим редагування
     if (newValue === value) {
       handleToggleEdit(false);
       return;
@@ -77,8 +52,16 @@ export default function InlineEditor<T>({
     setIsEditing(false);
   };
 
+  // Функція для автоматичного сабміту при втраті фокусу
+  const handleBlur = () => {
+    if (isEditing && !isPending) {
+      formRef.current?.requestSubmit();
+    }
+  };
+
   return (
     <Box
+      ref={formRef}
       component="form"
       action={handleSubmit}
       sx={{
@@ -88,7 +71,6 @@ export default function InlineEditor<T>({
         minHeight: 48,
         px: 1.5,
         borderRadius: 1,
-        position: "relative",
         transition: "background 0.2s",
         "&:hover": { bgcolor: isEditing ? "transparent" : "action.hover" },
         "& .actions": { opacity: isEditing || isPending ? 1 : 0 },
@@ -97,7 +79,6 @@ export default function InlineEditor<T>({
     >
       <input type="hidden" name="id" value={id} />
 
-      {/* Секція контенту/вводу */}
       <Box sx={{ flexGrow: 1, position: "relative" }}>
         {isEditing ? (
           <>
@@ -107,21 +88,20 @@ export default function InlineEditor<T>({
               fullWidth
               variant="standard"
               defaultValue={value}
-              onKeyDown={handleKeyDown}
               disabled={isPending}
-              autoComplete="off"
+              onBlur={handleBlur} // Збереження при виході
+              onKeyDown={(e) => {
+                if (e.key === "Escape") handleToggleEdit(false);
+                if (e.key === "Enter") formRef.current?.requestSubmit(); // Збереження на Enter
+              }}
               slotProps={{
-                input: { sx: { fontSize: "0.875rem", fontWeight: 500 } },
+                input: {
+                  sx: { fontSize: "0.875rem", fontWeight: 500 },
+                  disableUnderline: false,
+                },
               }}
             />
-            {error && (
-              <FormHelperText
-                error
-                sx={{ position: "absolute", bottom: -20, fontSize: "0.65rem", m: 0 }}
-              >
-                {error}
-              </FormHelperText>
-            )}
+            <ErrorMessage message={error} />
           </>
         ) : (
           <Typography
@@ -142,42 +122,13 @@ export default function InlineEditor<T>({
         )}
       </Box>
 
-      {/* Секція кнопок */}
-      <Box className="actions" sx={{ display: "flex", gap: 0.5, ml: 1 }}>
-        {isPending ? (
-          <CircularProgress size={20} sx={{ m: 1 }} />
-        ) : !isEditing ? (
-          <>
-            <Tooltip title="Редагувати">
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={() => handleToggleEdit(true)}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Видалити">
-              <IconButton size="small" color="error" formAction={actionDelete}>
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </>
-        ) : (
-          <>
-            <Tooltip title="Зберегти">
-              <IconButton size="small" color="success" type="submit">
-                <CheckIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Скасувати">
-              <IconButton size="small" onClick={() => handleToggleEdit(false)}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </>
-        )}
-      </Box>
+      <EditorActions
+        isEditing={isEditing}
+        isPending={isPending}
+        onEdit={() => handleToggleEdit(true)}
+        onCancel={() => handleToggleEdit(false)}
+        onDelete={actionDelete}
+      />
     </Box>
   );
 }

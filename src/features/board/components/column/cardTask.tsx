@@ -4,7 +4,7 @@
 import { Card, CardContent, Stack, Chip } from "@mui/material";
 import { TaskType } from "../../types";
 import { deleteTaskAction, updateTaskAction } from "../../actions";
-import Editor from "../editor";
+import InlineEditor from "@/components/ui/editor";
 
 interface TaskCardProps {
   task: TaskType;
@@ -46,7 +46,7 @@ export default function TaskCard({ task }: TaskCardProps) {
               />
             )}
 
-            <Editor
+            <InlineEditor
               data={{ id: task.id, value: task.title, name: "title" }}
               update={updateTaskAction}
               remove={deleteTaskAction}
