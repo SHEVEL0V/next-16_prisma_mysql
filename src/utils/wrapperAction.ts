@@ -1,81 +1,82 @@
 /** @format */
 import z from "zod";
-import { ActionResponse } from "@/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";
 
-interface ActionOptions<TOutput> {
-  revalidatePath?: string | ((data: TOutput) => string);
-  redirectTo?: string | ((data: TOutput) => string);
+// Витягуємо типи помилок безпосередньо зі схеми Zod
+export type ActionState<TInput, TOutput> = {
+  success?: boolean;
+  message?: string;
+  errors?: z.inferFlattenedErrors<z.ZodSchema<TInput>>["fieldErrors"];
+  data?: TOutput;
+};
+
+interface ActionOptions<TInput, TOutput> {
+  revalidatePath?: string | ((data: TOutput, input: TInput) => string);
+  redirectTo?: string | ((data: TOutput, input: TInput) => string);
+}
+
+// Допоміжний тип для помилок бази даних (наприклад, Prisma)
+interface DatabaseError extends Error {
+  code?: string;
+  digest?: string;
 }
 
 export function createSafeAction<TInput, TOutput>(
   schema: z.ZodSchema<TInput>,
   handler: (data: TInput, userId: string | undefined) => Promise<TOutput>,
-  options?: ActionOptions<TOutput>,
+  options?: ActionOptions<TInput, TOutput>,
 ) {
   return async (
-    _prevState: ActionResponse<TOutput>,
+    _prevState: ActionState<TInput, TOutput>,
     formData: FormData,
-  ): Promise<ActionResponse<TOutput>> => {
-    // 1. Отримання даних з FormData
+  ): Promise<ActionState<TInput, TOutput>> => {
+    // 1. Валідація
     const rawData = Object.fromEntries(formData.entries());
     const validatedFields = schema.safeParse(rawData);
 
-    // 2. Валідація
     if (!validatedFields.success) {
-      const fieldErrors = validatedFields.error.flatten().fieldErrors;
-
       return {
         success: false,
         message: "Помилка валідації даних.",
-        errors: fieldErrors as Record<string, string[]>,
+        // flatten() повертає правильну структуру fieldErrors
+        errors: validatedFields.error.flatten().fieldErrors as ActionState<
+          TInput,
+          TOutput
+        >["errors"],
       };
     }
 
+    const inputData = validatedFields.data;
     let result: TOutput;
-    let shouldRedirect = false;
-    let targetPath = "";
 
     try {
       const session = await getSession();
-      const userId = session?.id;
+      result = await handler(inputData, session?.id);
 
-      // Викликаємо основну логіку
-      result = await handler(validatedFields.data, userId);
-
-      // Revalidate (можна робити всередині try)
       if (options?.revalidatePath) {
         const path =
           typeof options.revalidatePath === "function"
-            ? options.revalidatePath(result)
+            ? options.revalidatePath(result, inputData)
             : options.revalidatePath;
         revalidatePath(path);
       }
+    } catch (error: unknown) {
+      // Обробка помилок через перевірку типів (Type Guarding)
+      const dbError = error as DatabaseError;
 
-      // Готуємо редирект
-      if (options?.redirectTo) {
-        targetPath =
-          typeof options.redirectTo === "function"
-            ? options.redirectTo(result)
-            : options.redirectTo;
-        shouldRedirect = true;
-      }
-    } catch (error: any) {
-      // Якщо це внутрішній редирект Next.js — прокидаємо далі
-      if (error.digest?.includes("NEXT_REDIRECT") || error.message === "NEXT_REDIRECT") {
+      // Обов'язково для Next.js Redirects
+      if (dbError?.digest?.includes("NEXT_REDIRECT")) {
         throw error;
       }
 
-      console.error("Action Error:", error);
+      console.error("[ACTION_ERROR]:", error);
 
-      // Обробка специфічних помилок БД (наприклад, Prisma)
-      if (error.code === "P2002") {
+      if (dbError.code === "P2002") {
         return {
           success: false,
           message: "Запис із такими даними вже існує.",
-          errors: {},
         };
       }
 
@@ -83,13 +84,16 @@ export function createSafeAction<TInput, TOutput>(
         success: false,
         message:
           error instanceof Error ? error.message : "Сталася непередбачувана помилка.",
-        errors: {},
       };
     }
 
-    // 3. Виконуємо редирект ПОЗА try/catch блоком
-    if (shouldRedirect && targetPath) {
-      redirect(targetPath);
+    // Редирект поза try/catch
+    if (options?.redirectTo) {
+      const target =
+        typeof options.redirectTo === "function"
+          ? options.redirectTo(result, inputData)
+          : options.redirectTo;
+      redirect(target);
     }
 
     return {

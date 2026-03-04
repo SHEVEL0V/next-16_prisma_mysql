@@ -6,6 +6,10 @@ import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import TaskCard from "./cardTask";
 import TaskCreateForm from "./formTask"; // Імпортуємо форму
 import { ColumnType } from "../../services/column";
+import EditableTextField from "@/components/ui/fields/editor";
+import EditableTypography from "@/components/ui/fields/text";
+import { useEffect, useRef, useState } from "react";
+import TitleColumn from "./title";
 
 interface BoardColumnProps {
   column: ColumnType;
@@ -14,6 +18,15 @@ interface BoardColumnProps {
 
 export default function BoardColumn({ column, boardId }: BoardColumnProps) {
   const theme = useTheme();
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [isEditing]);
 
   return (
     <Paper
@@ -30,9 +43,8 @@ export default function BoardColumn({ column, boardId }: BoardColumnProps) {
         borderRadius: 3,
       }}
     >
-      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 700, px: 1 }}>
-        {column.title}
-      </Typography>
+      {/* Заголовок колонки */}
+      <TitleColumn id={column.id} title={column.title} />
 
       {/* Форма винесена в окремий клієнтський компонент */}
       <TaskCreateForm columnId={column.id} boardId={boardId} />

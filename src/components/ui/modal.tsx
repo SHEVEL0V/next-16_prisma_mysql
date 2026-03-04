@@ -4,6 +4,7 @@
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Alert,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -15,8 +16,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { FormInput } from "./fields/input";
-import { FormAlert } from "./alert";
+import FormInput from "./fields/auth";
 import { SubmitButton } from "./buttons/submit";
 import type { ActionResponse } from "@/types";
 
@@ -60,7 +60,11 @@ export default function DynamicModal<T>({ fields, title, action }: ModalProps<T>
       </DialogTitle>
 
       <DialogContent dividers>
-        {state.message && <FormAlert message={state.message} success={state.success} />}
+        {state.message && (
+          <Alert severity={state.success ? "success" : "error"} variant="outlined">
+            {state.message}
+          </Alert>
+        )}
 
         <Box component="form" action={formAction} id="modal-form" noValidate>
           <Grid container spacing={2}>

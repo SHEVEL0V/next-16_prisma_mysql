@@ -12,6 +12,11 @@ export const columnSchema = z.object({
   boardId: z.uuid(),
 });
 
+export const updateColumnSchema = z.object({
+  id: z.uuid(),
+  title: z.string().min(1, "Завдання не може бути порожнім"),
+});
+
 export const createTaskSchema = z.object({
   title: z.string().min(1, "Завдання не може бути порожнім"),
   columnId: z.uuid(),

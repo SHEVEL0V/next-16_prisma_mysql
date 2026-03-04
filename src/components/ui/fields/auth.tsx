@@ -1,5 +1,4 @@
 /** @format */
-import { memo } from "react";
 import { Grid, TextField, TextFieldProps } from "@mui/material";
 
 interface FormInputProps extends Omit<TextFieldProps, "error" | "helperText"> {
@@ -10,10 +9,9 @@ interface FormInputProps extends Omit<TextFieldProps, "error" | "helperText"> {
     required?: boolean;
   };
   error?: string[];
-  // Усі інші пропси (disabled, defaultValue, onChange тощо) потраплять у ...rest
 }
 
-export const FormInput = memo(({ field, error, ...rest }: FormInputProps) => {
+export default function FormInput({ field, error, ...rest }: FormInputProps) {
   const { name, label, type = "text", required = true } = field;
   const isDate = ["date", "time", "datetime-local"].includes(type);
 
@@ -26,8 +24,7 @@ export const FormInput = memo(({ field, error, ...rest }: FormInputProps) => {
         type={type}
         required={required !== false}
         error={!!error?.length}
-        helperText={error?.[0] || " "} // " " тримає місце, щоб верстка не "стрибала"
-        // Використовуємо спред для всіх інших пропсів (disabled, multiline, і т.д.)
+        helperText={error?.[0] || " "}
         {...rest}
         slotProps={{
           inputLabel: {
@@ -37,6 +34,4 @@ export const FormInput = memo(({ field, error, ...rest }: FormInputProps) => {
       />
     </Grid>
   );
-});
-
-FormInput.displayName = "FormInput";
+}

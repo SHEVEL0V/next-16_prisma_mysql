@@ -14,6 +14,7 @@ import {
   updateBoardSchema,
   updateTaskSchema,
   createTaskSchema,
+  updateColumnSchema,
 } from "./schema";
 
 export const createBoardAction = createSafeAction(
@@ -34,11 +35,21 @@ export const deleteBoardAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
+// ------------------------------------------------------------------------------------------
+
 export const createColumnAction = createSafeAction(
   columnSchema,
   async ({ boardId, title }) => await columnService.create(boardId, title),
   { revalidatePath: (data) => `/board/${data.boardId}` },
 );
+
+export const updateColumnAction = createSafeAction(
+  updateColumnSchema,
+  async ({ id, title }) => await columnService.update(id, { title }),
+  { revalidatePath: "/" },
+);
+
+// ------------------------------------------------------------------------------------------
 
 export const createTaskAction = createSafeAction(
   createTaskSchema,
@@ -54,7 +65,7 @@ export const updateTaskAction = createSafeAction(
 
 export const reorderTaskAction = createSafeAction(
   reorderTaskSchema,
-  async ({ id, columnId, order, boardId }) =>
+  async ({ id, columnId, order }) =>
     await taskService.update(id, { columnId, order }),
   { revalidatePath: "/" },
 );

@@ -1,20 +1,24 @@
 /** @format */
-import { Box, Typography, TextField } from "@mui/material";
-import { useActionState, useState, useRef, useEffect, useCallback } from "react";
+import { Box } from "@mui/material";
+import { useActionState, useState, useRef, useEffect, useMemo } from "react";
 import type { ActionType } from "@/types/index";
 import EditorActions from "@/components/ui/editor/actionsBtn";
 import ErrorMessage from "@/components/ui/editor/message";
+import EditableTypography from "@/components/ui/fields/text";
+import EditableTextField from "../fields/editor";
 
 interface EditorProps<T> {
   data: { id: string; value: string; name: string };
   update: ActionType<T>;
   remove: ActionType<T>;
+  children?: React.ReactNode;
 }
 
 export default function InlineEditor<T>({
   data: { id, name, value },
   update,
   remove,
+  children,
 }: EditorProps<T>) {
   const [isEditing, setIsEditing] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -24,13 +28,18 @@ export default function InlineEditor<T>({
     success: false,
     errors: {},
   });
-  const [stateDelete, actionDelete, isPendingDelete] = useActionState(remove, {
+
+  const [, actionDelete, isPendingDelete] = useActionState(remove, {
     success: false,
     errors: {},
   });
 
   const isPending = isPendingUpdate || isPendingDelete;
-  const error = !stateUpdate.success ? stateUpdate?.errors?.[name]?.[0] : null;
+
+  const fieldError = useMemo(
+    () => (!stateUpdate.success ? stateUpdate.errors?.[name]?.[0] : null),
+    [stateUpdate, name],
+  );
 
   useEffect(() => {
     if (isEditing) {
@@ -39,21 +48,8 @@ export default function InlineEditor<T>({
     }
   }, [isEditing]);
 
-  const handleToggleEdit = useCallback((state: boolean) => setIsEditing(state), []);
-
-  const handleSubmit = async (formData: FormData) => {
-    const newValue = formData.get(name);
-    // Якщо значення не змінилося — просто закриваємо режим редагування
-    if (newValue === value) {
-      handleToggleEdit(false);
-      return;
-    }
-    await actionUpdate(formData);
-    setIsEditing(false);
-  };
-
-  // Функція для автоматичного сабміту при втраті фокусу
-  const handleBlur = () => {
+  const handleBlur = (e: React.FocusEvent) => {
+    if (formRef.current?.contains(e.relatedTarget as Node)) return;
     if (isEditing && !isPending) {
       formRef.current?.requestSubmit();
     }
@@ -61,74 +57,84 @@ export default function InlineEditor<T>({
 
   return (
     <Box
-      ref={formRef}
-      component="form"
-      action={handleSubmit}
       sx={{
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        minHeight: 48,
-        px: 1.5,
+        position: "relative",
+        mb: 1,
         borderRadius: 1,
-        transition: "background 0.2s",
-        "&:hover": { bgcolor: isEditing ? "transparent" : "action.hover" },
-        "& .actions": { opacity: isEditing || isPending ? 1 : 0 },
-        "&:hover .actions": { opacity: 1 },
+        transition: "background-color 0.2s",
+        "&:hover": { bgcolor: "action.hover" },
       }}
     >
-      <input type="hidden" name="id" value={id} />
+      <Box
+        sx={{
+          display: "flex",
+          p: 1,
+          alignItems: "center",
+          minHeight: 40,
+        }}
+      >
+        {children}
 
-      <Box sx={{ flexGrow: 1, position: "relative" }}>
-        {isEditing ? (
-          <>
-            <TextField
-              inputRef={inputRef}
-              name={name}
-              fullWidth
-              variant="standard"
-              defaultValue={value}
-              disabled={isPending}
-              onBlur={handleBlur} // Збереження при виході
-              onKeyDown={(e) => {
-                if (e.key === "Escape") handleToggleEdit(false);
-                if (e.key === "Enter") formRef.current?.requestSubmit(); // Збереження на Enter
-              }}
-              slotProps={{
-                input: {
-                  sx: { fontSize: "0.875rem", fontWeight: 500 },
-                  disableUnderline: false,
-                },
-              }}
-            />
-            <ErrorMessage message={error} />
-          </>
-        ) : (
-          <Typography
-            variant="body2"
-            onClick={() => !isPending && handleToggleEdit(true)}
-            sx={{
-              fontWeight: 500,
-              cursor: isPending ? "default" : "pointer",
-              color: isPending ? "text.disabled" : "text.primary",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              "&:hover": { color: isPending ? "text.disabled" : "primary.main" },
-            }}
-          >
-            {value}
-          </Typography>
-        )}
+        <Box
+          sx={{
+            ml: "auto",
+            opacity: isEditing ? 1 : 0,
+            transition: "opacity 0.2s ease-in-out",
+            ".editor-group:hover &": {
+              opacity: 1,
+            },
+            ...(isPending && { opacity: 1 }),
+          }}
+        >
+          <EditorActions
+            isEditing={isEditing}
+            isPending={isPending}
+            onEdit={() => setIsEditing(true)}
+            onCancel={() => setIsEditing(false)}
+            id={id}
+            actionDelete={actionDelete}
+          />
+        </Box>
       </Box>
 
-      <EditorActions
-        isEditing={isEditing}
-        isPending={isPending}
-        onEdit={() => handleToggleEdit(true)}
-        onCancel={() => handleToggleEdit(false)}
-        onDelete={actionDelete}
-      />
+      <Box
+        ref={formRef}
+        component="form"
+        action={(formData) => {
+          actionUpdate(formData);
+          if (stateUpdate.success) setIsEditing(false);
+        }}
+        onBlur={handleBlur}
+        sx={{
+          px: 1.5,
+          pb: 1,
+          width: "100%",
+        }}
+      >
+        <input type="hidden" name="id" value={id} />
+
+        <Box sx={{ position: "relative", minHeight: 32 }}>
+          {isEditing ? (
+            <>
+              <EditableTextField
+                name={name}
+                defaultValue={value}
+                inputRef={inputRef}
+                formRef={formRef}
+                disabled={isPending}
+                handleToggleEdit={setIsEditing}
+              />
+              {fieldError && <ErrorMessage message={fieldError} />}
+            </>
+          ) : (
+            <EditableTypography
+              value={value}
+              isPending={isPending}
+              handleToggleEdit={() => setIsEditing(true)}
+            />
+          )}
+        </Box>
+      </Box>
     </Box>
   );
 }

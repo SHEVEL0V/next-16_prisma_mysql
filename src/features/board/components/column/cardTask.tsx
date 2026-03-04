@@ -31,26 +31,26 @@ export default function TaskCard({ task }: TaskCardProps) {
           spacing={1}
         >
           <Stack spacing={1} sx={{ flexGrow: 1 }}>
-            {/* Відображення пріоритету */}
-            {task.priority && (
-              <Chip
-                label={task.priority}
-                size="small"
-                color={PRIORITY_CONFIG[task.priority.toLowerCase()]?.color || "primary"}
-                sx={{
-                  height: 20,
-                  fontSize: "0.65rem",
-                  fontWeight: 700,
-                  width: "fit-content",
-                }}
-              />
-            )}
-
             <InlineEditor
               data={{ id: task.id, value: task.title, name: "title" }}
               update={updateTaskAction}
               remove={deleteTaskAction}
-            />
+            >
+              {/* Відображення пріоритету */}
+              {task.priority && (
+                <Chip
+                  label={task.priority}
+                  size="small"
+                  color={PRIORITY_CONFIG[task.priority.toLowerCase()]?.color || "primary"}
+                  sx={{
+                    height: 20,
+                    fontSize: "0.65rem",
+                    fontWeight: 700,
+                    width: "fit-content",
+                  }}
+                />
+              )}
+            </InlineEditor>
           </Stack>
         </Stack>
       </CardContent>

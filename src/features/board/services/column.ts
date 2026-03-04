@@ -37,6 +37,13 @@ export const columnService = {
     });
   },
   // ------------------------------------------------------------------------------------------
+  update: async (id: string, data: { title?: string }) => {
+    return await prisma.column.update({
+      where: { id },
+      data,
+    });
+  },
+  // ------------------------------------------------------------------------------------------
   reorder: async (id: string, newOrder: number) => {
     return prisma.column.update({
       where: { id },
