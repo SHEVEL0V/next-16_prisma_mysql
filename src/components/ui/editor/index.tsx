@@ -57,12 +57,17 @@ export default function InlineEditor<T>({
 
   return (
     <Box
+      className="editor-card"
       sx={{
         position: "relative",
         mb: 1,
         borderRadius: 1,
-        transition: "background-color 0.2s",
-        "&:hover": { bgcolor: "action.hover" },
+        transition: "0.2s",
+        border: "1px solid transparent",
+        "&:hover": {
+          bgcolor: "action.hover",
+          borderColor: "divider",
+        },
       }}
     >
       <Box
@@ -78,12 +83,11 @@ export default function InlineEditor<T>({
         <Box
           sx={{
             ml: "auto",
-            opacity: isEditing ? 1 : 0,
+            opacity: isEditing || isPending ? 1 : 0,
             transition: "opacity 0.2s ease-in-out",
-            ".editor-group:hover &": {
+            ".editor-card:hover &": {
               opacity: 1,
             },
-            ...(isPending && { opacity: 1 }),
           }}
         >
           <EditorActions

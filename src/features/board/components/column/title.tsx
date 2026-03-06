@@ -41,11 +41,13 @@ export default function TitleColumn({ id, title }: BoardColumnProps) {
       component="form"
       ref={formRef}
       action={action}
-      sx={{ mb: 2, textAlign: "center" }}
+      sx={{ mb: 2, textAlign: "center", display: "flex", justifyContent: "center" }}
     >
       <input type="hidden" name="id" value={id} />
+
       {!isEditing ? (
         <EditableTypography
+          sx={{ mx: "auto" }}
           value={title}
           isPending={isPending}
           handleToggleEdit={() => setIsEditing(true)}

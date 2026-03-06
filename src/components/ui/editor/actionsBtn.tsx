@@ -52,10 +52,7 @@ export default function EditorActions({
     );
 
   return (
-    <Box
-      className="actions"
-      sx={{ minHeight: 40, display: "flex", gap: 0.5, ml: "auto" }}
-    >
+    <Box sx={{ minHeight: 40, display: "flex", gap: 0.5, ml: "auto" }}>
       {isEditing ? (
         <>
           {/* <Tooltip title="Зберегти">

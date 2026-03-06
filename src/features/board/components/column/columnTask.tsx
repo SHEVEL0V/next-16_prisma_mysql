@@ -6,8 +6,6 @@ import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import TaskCard from "./cardTask";
 import TaskCreateForm from "./formTask"; // Імпортуємо форму
 import { ColumnType } from "../../services/column";
-import EditableTextField from "@/components/ui/fields/editor";
-import EditableTypography from "@/components/ui/fields/text";
 import { useEffect, useRef, useState } from "react";
 import TitleColumn from "./title";
 

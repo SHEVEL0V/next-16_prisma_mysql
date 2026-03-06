@@ -4,13 +4,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";
 
-// Витягуємо типи помилок безпосередньо зі схеми Zod
-export type ActionState<TInput, TOutput> = {
-  success?: boolean;
-  message?: string;
-  errors?: z.inferFlattenedErrors<z.ZodSchema<TInput>>["fieldErrors"];
-  data?: TOutput;
-};
+export type ActionState<TInput, TOutput> =
+  | {
+      success: true;
+      data: TOutput;
+      message?: string;
+    }
+  | {
+      success: false;
+      message?: string;
+      errors: z.ZodFlattenedError<z.ZodSchema<TInput>>["fieldErrors"];
+    };
 
 interface ActionOptions<TInput, TOutput> {
   revalidatePath?: string | ((data: TOutput, input: TInput) => string);
@@ -41,10 +45,7 @@ export function createSafeAction<TInput, TOutput>(
         success: false,
         message: "Помилка валідації даних.",
         // flatten() повертає правильну структуру fieldErrors
-        errors: validatedFields.error.flatten().fieldErrors as ActionState<
-          TInput,
-          TOutput
-        >["errors"],
+        errors: validatedFields.error.flatten().fieldErrors,
       };
     }
 
@@ -77,6 +78,7 @@ export function createSafeAction<TInput, TOutput>(
         return {
           success: false,
           message: "Запис із такими даними вже існує.",
+          errors: {},
         };
       }
 
@@ -84,6 +86,7 @@ export function createSafeAction<TInput, TOutput>(
         success: false,
         message:
           error instanceof Error ? error.message : "Сталася непередбачувана помилка.",
+        errors: {},
       };
     }
 

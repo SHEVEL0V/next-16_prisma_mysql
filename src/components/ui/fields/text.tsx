@@ -41,7 +41,6 @@ const EditableTypography = memo(
           color: isPending ? "text.disabled" : "text.primary",
           overflow: "hidden",
           textOverflow: "ellipsis",
-
           display: "block",
           transition: "color 0.2s ease",
           outline: "none",
