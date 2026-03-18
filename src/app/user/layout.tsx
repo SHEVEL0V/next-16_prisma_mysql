@@ -3,8 +3,8 @@
 
 import React from "react";
 import { Box, useTheme } from "@mui/material";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const theme = useTheme();

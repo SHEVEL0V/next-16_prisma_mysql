@@ -1,6 +1,6 @@
 /** @format */
 
-import Modal from "@/components/ui/modal";
+import Modal from "@/components/ui/CustomModal";
 import { postCreateAction } from "@/features/post/actions";
 import type { PostInputType } from "@/features/post/types";
 

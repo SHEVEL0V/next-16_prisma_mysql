@@ -17,7 +17,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 import FormInput from "./fields/auth";
-import { SubmitButton } from "./buttons/submit";
+import { SubmitButton } from "./SubmitButton";
 import type { ActionResponse } from "@/types";
 
 interface ModalProps<T> {

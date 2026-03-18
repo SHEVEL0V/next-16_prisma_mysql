@@ -3,7 +3,7 @@
 
 import { useActionState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
-import SubmitButton from "@/components/ui/buttons/add";
+import AddButton from "@/components/ui/AddButton";
 import { createBoardAction } from "../../actions";
 
 export default function CreateBoardForm({ isOpen }: { isOpen: boolean }) {
@@ -34,7 +34,7 @@ export default function CreateBoardForm({ isOpen }: { isOpen: boolean }) {
             // error={!!state.errors}
           />
         )}
-        <SubmitButton isPending={isPending} title="Створити дошку" />
+        <AddButton isPending={isPending} title="Створити дошку" />
       </form>
 
       {isOpen && !state.success && state.message && (

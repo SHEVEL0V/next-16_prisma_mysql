@@ -4,7 +4,7 @@
 import { Box } from "@mui/material";
 import Sidebar from "@/features/board/components/sidebar/bar";
 import { getBoards, getBoardById } from "@/features/board/queries";
-import CenteredMessage from "@/components/ui/message";
+import CenteredMessage from "@/components/ui/CenteredMessage";
 import DragDropWrapper from "@/features/board/components/dragDrop";
 
 export default async function Board({ boardId }: { boardId?: string }) {

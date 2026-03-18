@@ -5,10 +5,10 @@ import React from "react";
 
 import { AppBar, Toolbar, Typography, Box, Container } from "@mui/material";
 
-import ButtonUser from "@/components/ui/buttons/user";
-import ButtonDarkMode from "@/components/ui/buttons/darkMode";
-import ButtonBack from "@/components/ui/buttons/back";
-import ButtonHome from "../ui/buttons/home";
+import UserButton from "@/components/ui/UserButton";
+import DarkModeButton from "@/components/ui/DarkModeButton";
+import BackButton from "@/components/ui/BackButton";
+import HomeButton from "../ui/HomeButton";
 
 export default function Header() {
   return (
@@ -17,19 +17,19 @@ export default function Header() {
         <Toolbar disableGutters>
           {/* ЛІВА СЕКЦІЯ */}
           <Box sx={{ flex: 1, display: "flex" }}>
-            <ButtonBack />
-            <ButtonHome />
+            <BackButton />
+            <HomeButton />
           </Box>
 
           {/* ЦЕНТРАЛЬНА СЕКЦІЯ */}
-          <Typography variant="subtitle1" className="header-title">
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
             Welcome to UI
           </Typography>
 
           {/* ПРАВА СЕКЦІЯ */}
           <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: 1 }}>
-            <ButtonDarkMode />
-            <ButtonUser />
+            <DarkModeButton />
+            <UserButton />
           </Box>
         </Toolbar>
       </Container>

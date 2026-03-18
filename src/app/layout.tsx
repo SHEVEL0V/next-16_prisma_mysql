@@ -1,7 +1,7 @@
 /** @format */
-
+import "./globals.css";
 import { getTheme } from "@/utils/theme"; // Приклад твого імпорту
-import ThemeProvider from "@/components/layout/muiThem"; // Приклад твого імпорту
+import ThemeProvider from "@/components/layout/MuiThemeProvider"; // Приклад твого імпорту
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 export default async function RootLayout({

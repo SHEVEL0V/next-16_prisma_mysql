@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import Dashboard from "@/components/ui/dashboard";
+import DashboardGrid from "@/components/ui/DashboardGrid";
 import Container from "@mui/material/Container";
 
 const card = [
@@ -13,7 +13,7 @@ const card = [
 export default function Menu() {
   return (
     <Container maxWidth="xl">
-      <Dashboard menu={card} />
+      <DashboardGrid menu={card} />
     </Container>
   );
 }

@@ -23,7 +23,7 @@ export default function Dashboard({ menu }: MenuProps) {
       <Grid container spacing={3} columns={16}>
         {menu.map((item, i) => (
           <Grid size={{ xs: 16, sm: 8, md: 4 }} key={i}>
-            <Card className="glass-effect hover-lift" sx={{ height: 180 }}>
+            <Card className="glass-effect" sx={{ height: 180, transition: "0.2s", transform: "translateY(0)", "&:hover": { transform: "translateY(-4px)" } }}>
               <CardActionArea
                 component={Link}
                 href={`${basePath}${item.link}`}
@@ -35,7 +35,7 @@ export default function Dashboard({ menu }: MenuProps) {
                   p: 3,
                 }}
               >
-                <Typography variant="h6" className="glass-text" textAlign="center">
+                <Typography variant="h6" color="text.primary" textAlign="center">
                   {item.name}
                 </Typography>
               </CardActionArea>

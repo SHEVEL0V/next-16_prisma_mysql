@@ -5,10 +5,15 @@
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import Column from "./column/column";
 import { Stack } from "@mui/material";
-import { reorderColumnAction } from "../actions";
-import { useActionState, useOptimistic, startTransition } from "react";
+import { reorderAction } from "../actions";
+import { useOptimistic, startTransition, useTransition } from "react";
 import { ColumnType } from "../types";
 
+/**
+ * Main wrapper for Kanban drag-and-drop features.
+ * Integrates Next.js 16 optimal features: `useOptimistic` and `useTransition` for 
+ * instant client-side rendering without waiting for server action completion.
+ */
 export default function DragDropWrapper({
   initialData,
   boardId,
@@ -16,18 +21,17 @@ export default function DragDropWrapper({
   initialData: ColumnType[];
   boardId: string;
 }) {
-  // 1. Ініціалізуємо Server Action
-  const [, formAction, isPending] = useActionState(reorderColumnAction, {
-    success: false,
-    errors: {},
-  });
+  const [isPending, startTransitionAction] = useTransition();
 
-  // 2. Використовуємо useOptimistic замість useState + useEffect
   const [optimisticColumns, setOptimisticColumns] = useOptimistic<
     ColumnType[],
     ColumnType[]
   >(initialData, (_currentColumns, newColumns) => newColumns);
 
+  /**
+   * Evaluates drop destination and performs optimistic local array mutations. 
+   * Submits final repositioned indexes to server via form data.
+   */
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
 
@@ -39,25 +43,50 @@ export default function DragDropWrapper({
       return;
     }
 
-    if (type === "column") {
-      // Створюємо новий масив колонок
+    startTransitionAction(() => {
       const newColumns = Array.from(optimisticColumns);
-      const [movedColumn] = newColumns.splice(source.index, 1);
-      newColumns.splice(destination.index, 0, movedColumn);
+      const formData = new FormData();
+      formData.append("id", draggableId);
+      formData.append("type", type);
 
-      // 3. Запускаємо транзакцію для оптимістичного оновлення та виклику екшену
-      startTransition(() => {
-        // Миттєво оновлюємо UI
+      if (type === "column") {
+        const [movedColumn] = newColumns.splice(source.index, 1);
+        newColumns.splice(destination.index, 0, movedColumn);
+
         setOptimisticColumns(newColumns);
-
-        // Відправляємо дані на сервер
-        const formData = new FormData();
-        formData.append("id", draggableId);
         formData.append("order", destination.index.toString());
+      }
 
-        formAction(formData);
-      });
-    }
+      if (type === "task") {
+        const sourceColIndex = newColumns.findIndex((col) => col.id === source.droppableId);
+        const destColIndex = newColumns.findIndex((col) => col.id === destination.droppableId);
+
+        if (sourceColIndex !== -1 && destColIndex !== -1) {
+          const sourceColumn = newColumns[sourceColIndex];
+          const destColumn = newColumns[destColIndex];
+
+          const sourceTasks = Array.from(sourceColumn.tasks);
+          const destTasks = source.droppableId === destination.droppableId ? sourceTasks : Array.from(destColumn.tasks);
+
+          const [movedTask] = sourceTasks.splice(source.index, 1);
+          const order = (destination.index + 1) * 1000;
+          movedTask.order = order;
+          
+          destTasks.splice(destination.index, 0, movedTask);
+
+          newColumns[sourceColIndex] = { ...sourceColumn, tasks: sourceTasks };
+          newColumns[destColIndex] = { ...destColumn, tasks: destTasks };
+
+          setOptimisticColumns(newColumns);
+          
+          formData.append("columnId", destination.droppableId);
+          formData.append("order", order.toString());
+        }
+      }
+
+      // Call action directly
+      reorderAction({ success: false, errors: {} }, formData);
+    });
   };
 
   return (
@@ -70,7 +99,6 @@ export default function DragDropWrapper({
             direction="row"
             spacing={3}
             sx={{ p: 3, overflowX: "auto", minHeight: "80vh" }}
-            // Можна додати візуальний індикатор завантаження, якщо isPending === true
             style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.2s" }}
           >
             {optimisticColumns.map((column, index) => (

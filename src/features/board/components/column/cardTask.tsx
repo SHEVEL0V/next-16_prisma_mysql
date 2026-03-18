@@ -5,9 +5,11 @@ import { Card, CardContent, Stack, Chip } from "@mui/material";
 import { TaskType } from "../../types";
 import { deleteTaskAction, updateTaskAction } from "../../actions";
 import InlineEditor from "@/components/ui/editor";
+import { Draggable } from "@hello-pangea/dnd";
 
 interface TaskCardProps {
   task: TaskType;
+  index: number;
 }
 
 const PRIORITY_CONFIG: Record<
@@ -19,41 +21,52 @@ const PRIORITY_CONFIG: Record<
   low: { color: "success" },
 };
 
-export default function TaskCard({ task }: TaskCardProps) {
+export default function TaskCard({ task, index }: TaskCardProps) {
   return (
-    <Card className="glass-effect bordered">
-      <input type="hidden" name="id" value={task.id} />
-      <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          spacing={1}
+    <Draggable draggableId={task.id} index={index}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          style={provided.draggableProps.style}
         >
-          <Stack spacing={1} sx={{ flexGrow: 1 }}>
-            <InlineEditor
-              data={{ id: task.id, value: task.title, name: "title" }}
-              update={updateTaskAction}
-              remove={deleteTaskAction}
-            >
-              {/* Відображення пріоритету */}
-              {task.priority && (
-                <Chip
-                  label={task.priority}
-                  size="small"
-                  color={PRIORITY_CONFIG[task.priority.toLowerCase()]?.color || "primary"}
-                  sx={{
-                    height: 20,
-                    fontSize: "0.65rem",
-                    fontWeight: 700,
-                    width: "fit-content",
-                  }}
-                />
-              )}
-            </InlineEditor>
-          </Stack>
-        </Stack>
-      </CardContent>
-    </Card>
+          <Card className="glass-effect bordered">
+            <input type="hidden" name="id" value={task.id} />
+            <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                spacing={1}
+              >
+                <Stack spacing={1} sx={{ flexGrow: 1 }}>
+                  <InlineEditor
+                    data={{ id: task.id, value: task.title, name: "title" }}
+                    update={updateTaskAction}
+                    remove={deleteTaskAction}
+                  >
+                    {/* Відображення пріоритету */}
+                    {task.priority && (
+                      <Chip
+                        label={task.priority}
+                        size="small"
+                        color={PRIORITY_CONFIG[task.priority.toLowerCase()]?.color || "primary"}
+                        sx={{
+                          height: 20,
+                          fontSize: "0.65rem",
+                          fontWeight: 700,
+                          width: "fit-content",
+                        }}
+                      />
+                    )}
+                  </InlineEditor>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </Draggable>
   );
 }

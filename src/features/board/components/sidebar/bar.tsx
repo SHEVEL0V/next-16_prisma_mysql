@@ -47,7 +47,6 @@ export default function Sidebar({ boards, activeBoard }: SidebarProps) {
           <Typography
             id="board-title"
             variant="h6"
-            className="glass-text"
             sx={{ fontWeight: "bold" }}
           >
             Дошки

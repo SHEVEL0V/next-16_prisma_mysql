@@ -8,16 +8,19 @@ import { taskService } from "./services/task";
 import {
   boardSchema,
   columnSchema,
-  // reorderTaskSchema,
+  reorderSchema,
   deleteTaskSchema,
   deleteBoardSchema,
   updateBoardSchema,
   updateTaskSchema,
   createTaskSchema,
   updateColumnTitleSchema,
-  updateColumnOrderSchema,
 } from "./schema";
 
+/**
+ * Creates a new Kanban board.
+ * @param data - The validated board title payload.
+ */
 export const createBoardAction = createSafeAction(
   boardSchema,
   async (data) => await boardService.create(data),
@@ -50,10 +53,20 @@ export const updateColumnAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
-export const reorderColumnAction = createSafeAction(
-  updateColumnOrderSchema,
-  async ({ id, order }) => await columnService.update(id, { order: parseInt(order) }),
-  { revalidatePath: (data) => `/board?id=${data.id}` },
+/**
+ * Universal reordering action. Handles both columns and tasks within a given board.
+ * Resolves optimal target coordinates and triggers backend mutation without duplicate states.
+ */
+export const reorderAction = createSafeAction(
+  reorderSchema,
+  async ({ id, type, order, columnId }) => {
+    if (type === "column") {
+      return await columnService.update(id, { order: parseInt(order) });
+    } else if (type === "task" && columnId) {
+      return await taskService.reorder(id, parseInt(order), columnId);
+    }
+  },
+  { revalidatePath: "/" },
 );
 
 // ------------------------------------------------------------------------------------------
@@ -70,11 +83,7 @@ export const updateTaskAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
-// export const reorderTaskAction = createSafeAction(
-//   reorderTaskSchema,
-//   async ({ id, columnId, order }) => await taskService.reorder(id, order, columnId),
-//   { revalidatePath: "/" },
-// );
+// Reorder action combined above
 // ------------------------------------------------------------------------------------------
 export const deleteTaskAction = createSafeAction(
   deleteTaskSchema,
