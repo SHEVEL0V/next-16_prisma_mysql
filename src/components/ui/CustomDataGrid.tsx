@@ -19,7 +19,6 @@ export function Grid({ data, onSelectionChange }: GridProps) {
 
   return (
     <DataGrid
-      sx={{ height: "100vh", borderRadius: 0, border: "none" }}
       rows={data}
       columns={columns}
       initialState={{

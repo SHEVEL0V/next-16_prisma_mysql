@@ -41,6 +41,14 @@ export default function InlineEditor<T>({
     [stateUpdate, name],
   );
 
+  const prevPending = useRef(isPendingUpdate);
+  useEffect(() => {
+    if (prevPending.current && !isPendingUpdate && stateUpdate.success) {
+      setIsEditing(false);
+    }
+    prevPending.current = isPendingUpdate;
+  }, [isPendingUpdate, stateUpdate.success]);
+
   useEffect(() => {
     if (isEditing) {
       inputRef.current?.focus();
@@ -50,6 +58,13 @@ export default function InlineEditor<T>({
 
   const handleBlur = (e: React.FocusEvent) => {
     if (formRef.current?.contains(e.relatedTarget as Node)) return;
+    
+    // Close immediately without submitting if value hasn't changed
+    if (inputRef.current?.value === value) {
+      setIsEditing(false);
+      return;
+    }
+
     if (isEditing && !isPending) {
       formRef.current?.requestSubmit();
     }
@@ -104,10 +119,7 @@ export default function InlineEditor<T>({
       <Box
         ref={formRef}
         component="form"
-        action={(formData) => {
-          actionUpdate(formData);
-          if (stateUpdate.success) setIsEditing(false);
-        }}
+        action={actionUpdate}
         onBlur={handleBlur}
         sx={{
           px: 1.5,

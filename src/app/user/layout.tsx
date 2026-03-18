@@ -21,10 +21,6 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
           paddingTop: `${theme.custom.headerHeight}px`,
 
           animation: "fadeIn 0.5s ease-in-out",
-          "@keyframes fadeIn": {
-            from: { opacity: 0, transform: "translateY(10px)" },
-            to: { opacity: 1, transform: "translateY(0)" },
-          },
         }}
       >
         {children}

@@ -4,6 +4,7 @@
 import { createTheme, PaletteMode, alpha } from "@mui/material";
 import { Roboto } from "next/font/google";
 import { DESIGN_TOKENS } from "./constants";
+import type {} from "@mui/x-data-grid/themeAugmentation";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -17,6 +18,12 @@ declare module "@mui/material/styles" {
   }
   interface ThemeOptions {
     custom?: typeof DESIGN_TOKENS;
+  }
+}
+
+declare module "@mui/material/Paper" {
+  interface PaperPropsVariantOverrides {
+    boardColumn: true;
   }
 }
 
@@ -63,6 +70,21 @@ export const getTheme = (mode: PaletteMode) => {
             backgroundColor: alpha(theme.palette.background.paper, 0.7),
             backdropFilter: "blur(10px)",
             border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          },
+          "*::-webkit-scrollbar": {
+            width: 6,
+            height: 6,
+          },
+          "*::-webkit-scrollbar-thumb": {
+            backgroundColor: alpha(theme.palette.divider, 0.2),
+            borderRadius: 4,
+            "&:hover": {
+              backgroundColor: alpha(theme.palette.divider, 0.4),
+            },
+          },
+          "@keyframes fadeIn": {
+            from: { opacity: 0, transform: "translateY(10px)" },
+            to: { opacity: 1, transform: "translateY(0)" },
           },
         }),
       },
@@ -116,6 +138,31 @@ export const getTheme = (mode: PaletteMode) => {
         styleOverrides: {
           root: {
             backgroundImage: "none",
+          },
+        },
+        variants: [
+          {
+            props: { variant: "boardColumn" },
+            style: ({ theme }) => ({
+              padding: theme.spacing(2),
+              minWidth: 320,
+              width: 320,
+              height: "fit-content",
+              maxHeight: "88vh",
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: alpha(theme.palette.background.default, 0.4),
+              borderRadius: Number(theme.shape.borderRadius) * 3,
+            }),
+          },
+        ],
+      },
+      MuiDataGrid: {
+        styleOverrides: {
+          root: {
+            border: "none",
+            borderRadius: 0,
+            height: "100vh",
           },
         },
       },
