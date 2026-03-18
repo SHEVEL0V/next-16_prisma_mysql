@@ -8,13 +8,14 @@ import { taskService } from "./services/task";
 import {
   boardSchema,
   columnSchema,
-  reorderTaskSchema,
+  // reorderTaskSchema,
   deleteTaskSchema,
   deleteBoardSchema,
   updateBoardSchema,
   updateTaskSchema,
   createTaskSchema,
-  updateColumnSchema,
+  updateColumnTitleSchema,
+  updateColumnOrderSchema,
 } from "./schema";
 
 export const createBoardAction = createSafeAction(
@@ -44,16 +45,22 @@ export const createColumnAction = createSafeAction(
 );
 
 export const updateColumnAction = createSafeAction(
-  updateColumnSchema,
+  updateColumnTitleSchema,
   async ({ id, title }) => await columnService.update(id, { title }),
   { revalidatePath: "/" },
+);
+
+export const reorderColumnAction = createSafeAction(
+  updateColumnOrderSchema,
+  async ({ id, order }) => await columnService.update(id, { order: parseInt(order) }),
+  { revalidatePath: (data) => `/board?id=${data.id}` },
 );
 
 // ------------------------------------------------------------------------------------------
 
 export const createTaskAction = createSafeAction(
   createTaskSchema,
-  async ({ columnId, title, boardId }) => await taskService.create(columnId, title),
+  async ({ columnId, title }) => await taskService.create(columnId, title),
   { revalidatePath: "/" },
 );
 
@@ -63,12 +70,11 @@ export const updateTaskAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
-export const reorderTaskAction = createSafeAction(
-  reorderTaskSchema,
-  async ({ id, columnId, order }) =>
-    await taskService.update(id, { columnId, order }),
-  { revalidatePath: "/" },
-);
+// export const reorderTaskAction = createSafeAction(
+//   reorderTaskSchema,
+//   async ({ id, columnId, order }) => await taskService.reorder(id, order, columnId),
+//   { revalidatePath: "/" },
+// );
 // ------------------------------------------------------------------------------------------
 export const deleteTaskAction = createSafeAction(
   deleteTaskSchema,

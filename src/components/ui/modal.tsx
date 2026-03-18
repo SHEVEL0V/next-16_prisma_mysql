@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Alert,
@@ -36,14 +36,14 @@ export default function DynamicModal<T>({ fields, title, action }: ModalProps<T>
     errors: {},
   });
 
-  const handleClose = () => router.back();
+  const handleClose = useCallback(() => router.back(), [router]);
 
   useEffect(() => {
     if (state.success) {
       const timer = setTimeout(() => handleClose(), 1500);
       return () => clearTimeout(timer);
     }
-  }, [state.success]);
+  }, [state.success, handleClose]);
 
   return (
     <Dialog open onClose={handleClose} fullWidth maxWidth="sm">

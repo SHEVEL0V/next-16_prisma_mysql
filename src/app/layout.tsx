@@ -1,19 +1,22 @@
 /** @format */
 
 import { getTheme } from "@/utils/theme"; // Приклад твого імпорту
-import ThemeClientProvider from "@/components/layout/muiThem"; // Приклад твого імпорту
+import ThemeProvider from "@/components/layout/muiThem"; // Приклад твого імпорту
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const themeMode = (await getTheme()) || "light";
+  const theme = (await getTheme()) || "light";
 
   return (
-    <html lang="en">
+    <html lang="uk">
       <body>
-        <ThemeClientProvider mode={themeMode}>{children}</ThemeClientProvider>
+        <AppRouterCacheProvider>
+          <ThemeProvider mode={theme}>{children}</ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

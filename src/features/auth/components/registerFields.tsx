@@ -34,6 +34,8 @@ const FIELDS = [
 ] as const;
 
 export function RegisterFields<T>({ state, isPending }: RegisterFieldsProps<T>) {
+  const errors = "errors" in state ? state.errors : undefined;
+
   return (
     <Stack spacing={2.5}>
       {FIELDS.map((field) => (
@@ -42,8 +44,8 @@ export function RegisterFields<T>({ state, isPending }: RegisterFieldsProps<T>) 
           fullWidth
           required
           disabled={isPending}
-          error={!!state.errors?.[field.name as keyof typeof state.errors]}
-          helperText={state.errors?.[field.name as keyof typeof state.errors]?.[0]}
+          error={!!errors?.[field.name as keyof typeof errors]}
+          helperText={errors?.[field.name as keyof typeof errors]?.[0]}
           {...field}
         />
       ))}

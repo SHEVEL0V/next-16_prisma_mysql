@@ -28,6 +28,7 @@ export const authService = {
     await createSession(user);
 
     // Видаляємо пароль перед поверненням
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   },
@@ -56,6 +57,7 @@ export const authService = {
 
     await createSession(user);
     // Видаляємо пароль перед поверненням
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   },

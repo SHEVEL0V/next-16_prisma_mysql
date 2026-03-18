@@ -40,12 +40,12 @@ export const taskService = {
   // ------------------------------------------------------------------------------------------
   delete: async (id: string) => await prisma.task.delete({ where: { id } }),
   // ------------------------------------------------------------------------------------------
-  reorder: async (taskId: string, newOrder: number, newColumnId: string) => {
+  reorder: async (id: string, order: number, columnId: string) => {
     return await prisma.task.update({
-      where: { id: taskId },
+      where: { id },
       data: {
-        order: newOrder,
-        columnId: newColumnId,
+        order: order,
+        columnId: columnId,
       },
     });
   },

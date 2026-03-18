@@ -12,7 +12,7 @@ export default function Profile({
 }) {
   return (
     <div className=" w-full h-full">
-      <ButtonAdd />
+      <ButtonAdd isPending={false} />
       {children}
       {modal}
     </div>

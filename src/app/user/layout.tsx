@@ -10,7 +10,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   const theme = useTheme();
 
   return (
-    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
 
       <Box
@@ -31,6 +31,6 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
       </Box>
 
       <Footer />
-    </main>
+    </div>
   );
 }

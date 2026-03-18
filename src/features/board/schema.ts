@@ -12,9 +12,14 @@ export const columnSchema = z.object({
   boardId: z.uuid(),
 });
 
-export const updateColumnSchema = z.object({
+export const updateColumnTitleSchema = z.object({
   id: z.uuid(),
   title: z.string().min(1, "Завдання не може бути порожнім"),
+});
+
+export const updateColumnOrderSchema = z.object({
+  id: z.uuid(),
+  order: z.string(),
 });
 
 export const createTaskSchema = z.object({
@@ -32,7 +37,7 @@ export const reorderTaskSchema = z.object({
   id: z.uuid(),
   columnId: z.uuid(),
   order: z.number(),
-  boardId: z.uuid().optional(),
+  // boardId: z.uuid().optional(),
 });
 
 export const updateBoardSchema = z.object({

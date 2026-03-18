@@ -8,7 +8,7 @@ import { RegisterFields } from "./registerFields";
 import NextLink from "next/link";
 import ContainerForm from "./container";
 
-const initialState = { success: false, message: "", errors: {} };
+const initialState = { success: false as const, message: "", errors: {} };
 
 export default function RegisterForm() {
   const [state, formAction, isPending] = useActionState(registerAction, initialState);

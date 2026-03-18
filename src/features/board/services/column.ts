@@ -37,7 +37,7 @@ export const columnService = {
     });
   },
   // ------------------------------------------------------------------------------------------
-  update: async (id: string, data: { title?: string }) => {
+  update: async (id: string, data: { title?: string; order?: number }) => {
     return await prisma.column.update({
       where: { id },
       data,

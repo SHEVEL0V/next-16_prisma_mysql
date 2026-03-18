@@ -17,7 +17,7 @@ export default function TitleColumn({ id, title }: BoardColumnProps) {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, action, isPending] = useActionState(updateColumnAction, {
+  const [, action, isPending] = useActionState(updateColumnAction, {
     success: false,
     errors: {},
   });

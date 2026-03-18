@@ -6,7 +6,6 @@ import React, { useTransition } from "react";
 import { Box, Tooltip, IconButton, CircularProgress } from "@mui/material";
 import {
   Edit as EditIcon,
-  Check as CheckIcon,
   Close as CloseIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";

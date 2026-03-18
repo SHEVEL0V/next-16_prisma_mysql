@@ -27,6 +27,8 @@ const LOGIN_FIELDS = [
 ] as const;
 
 export function LoginFields<T>({ state, isPending }: LoginFieldsProps<T>) {
+  const errors = "errors" in state ? state.errors : undefined;
+
   return (
     <Stack spacing={2.5}>
       {LOGIN_FIELDS.map((field) => (
@@ -35,8 +37,8 @@ export function LoginFields<T>({ state, isPending }: LoginFieldsProps<T>) {
           fullWidth
           required
           disabled={isPending}
-          error={!!state.errors?.[field.name as keyof typeof state.errors]}
-          helperText={state.errors?.[field.name as keyof typeof state.errors]?.[0]}
+          error={!!errors?.[field.name as keyof typeof errors]}
+          helperText={errors?.[field.name as keyof typeof errors]?.[0]}
           {...field}
         />
       ))}

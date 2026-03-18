@@ -4,9 +4,8 @@
 
 import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import TaskCard from "./cardTask";
-import TaskCreateForm from "./formTask"; // Імпортуємо форму
+import TaskCreateForm from "./formTask";
 import { ColumnType } from "../../services/column";
-import { useEffect, useRef, useState } from "react";
 import TitleColumn from "./title";
 
 interface BoardColumnProps {
@@ -16,15 +15,6 @@ interface BoardColumnProps {
 
 export default function BoardColumn({ column, boardId }: BoardColumnProps) {
   const theme = useTheme();
-  const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isEditing) {
-      inputRef.current?.focus();
-      inputRef.current?.select();
-    }
-  }, [isEditing]);
 
   return (
     <Paper
