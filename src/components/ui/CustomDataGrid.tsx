@@ -13,7 +13,7 @@ export function Grid({ data, onSelectionChange }: GridProps) {
   const columns = Object.keys(data[0] || {}).map((key) => ({
     field: key,
     headerName: key.charAt(0).toUpperCase() + key.slice(1),
-    width: 150,
+    width: 200,
     editable: true,
   }));
 

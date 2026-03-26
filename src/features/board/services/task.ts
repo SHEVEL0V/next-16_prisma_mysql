@@ -49,4 +49,15 @@ export const taskService = {
       },
     });
   },
+  getAllInfo: async () => {
+    return await prisma.task.findMany({
+      include: {
+        column: {
+          include: {
+            board: true,
+          },
+        },
+      },
+    });
+  },
 };
