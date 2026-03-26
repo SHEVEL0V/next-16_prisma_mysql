@@ -15,8 +15,6 @@ model User {
   // ------------links-------------
   // profile
   profile   Profile?
-  // posts
-  posts     Post[] 
   // BoardMembers
   boards        Board[]  @relation("BoardMembers")
   assignedTasks Task[]   @relation("TaskAssignees")
