@@ -12,11 +12,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
-
       <Box
         component="main"
         sx={{
-          flex: "1 0 auto", // Дозволяє контенту розширюватися, штовхаючи футер
+          flex: "1 0 auto",
           width: "100%",
           paddingTop: `${theme.custom.headerHeight}px`,
 

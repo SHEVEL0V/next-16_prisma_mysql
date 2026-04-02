@@ -96,7 +96,10 @@ export default function DragDropWrapper({
             ref={provided.innerRef}
             direction="row"
             spacing={3}
-            sx={{ p: 3, overflowX: "auto", minHeight: "80vh", alignItems: "flex-start" }}
+            sx={{
+              p: 3,
+              overflowX: "auto",
+            }}
             style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.2s" }}
           >
             {optimisticColumns.map((column, index) => (

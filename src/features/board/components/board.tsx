@@ -20,23 +20,13 @@ export default async function Board({ boardId }: { boardId?: string }) {
   const board = boardResponse?.data;
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+    <Box sx={{ display: "flex" }}>
       <Sidebar boards={boards} activeBoard={activeBoard} />
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {board ? (
-          <DragDropWrapper boardId={activeBoard} initialData={board.columns} />
-        ) : (
-          <CenteredMessage message="Дошку не знайдено або сталася помилка." />
-        )}
-      </Box>
+      {board ? (
+        <DragDropWrapper boardId={activeBoard} initialData={board.columns} />
+      ) : (
+        <CenteredMessage message="Дошку не знайдено або сталася помилка." />
+      )}
     </Box>
   );
 }

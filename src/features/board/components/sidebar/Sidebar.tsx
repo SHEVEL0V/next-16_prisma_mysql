@@ -8,7 +8,7 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import BoardItem from "./SidebarItem";
 import CreateBoardForm from "./CreateBoardForm";
 
-const DRAWER_WIDTH = 320;
+const DRAWER_WIDTH = 280;
 const COLLAPSED_WIDTH = 80;
 
 type SidebarProps = {
@@ -25,7 +25,7 @@ export default function Sidebar({ boards, activeBoard }: SidebarProps) {
       component="aside"
       className="glass-effect"
       sx={{
-        width: isOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+        minWidth: isOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
         transition: "width 0.3s ease",
         display: "flex",
         flexDirection: "column",
@@ -44,11 +44,7 @@ export default function Sidebar({ boards, activeBoard }: SidebarProps) {
         }}
       >
         {isOpen && (
-          <Typography
-            id="board-title"
-            variant="h6"
-            sx={{ fontWeight: "bold" }}
-          >
+          <Typography id="board-title" variant="h6" sx={{ fontWeight: "bold" }}>
             Дошки
           </Typography>
         )}
