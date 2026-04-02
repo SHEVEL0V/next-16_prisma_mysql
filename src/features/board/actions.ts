@@ -15,6 +15,8 @@ import {
   updateTaskSchema,
   createTaskSchema,
   updateColumnTitleSchema,
+  updateTaskPrioritySchema,
+  updateTaskDetailsSchema,
 } from "./schema";
 
 /**
@@ -53,10 +55,6 @@ export const updateColumnAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
-/**
- * Universal reordering action. Handles both columns and tasks within a given board.
- * Resolves optimal target coordinates and triggers backend mutation without duplicate states.
- */
 export const reorderAction = createSafeAction(
   reorderSchema,
   async ({ id, type, order, columnId }) => {
@@ -83,7 +81,18 @@ export const updateTaskAction = createSafeAction(
   { revalidatePath: "/" },
 );
 
-// Reorder action combined above
+export const updateTaskPriorityAction = createSafeAction(
+  updateTaskPrioritySchema,
+  async ({ id, priority }) => await taskService.update(id, { priority }),
+  { revalidatePath: "/" },
+);
+
+export const updateTaskDetailsAction = createSafeAction(
+  updateTaskDetailsSchema,
+  async ({ id, title, description }) => await taskService.update(id, { title, description }),
+  { revalidatePath: "/" },
+);
+
 // ------------------------------------------------------------------------------------------
 export const deleteTaskAction = createSafeAction(
   deleteTaskSchema,

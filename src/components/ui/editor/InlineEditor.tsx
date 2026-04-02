@@ -2,16 +2,17 @@
 import { Box } from "@mui/material";
 import { useActionState, useState, useRef, useEffect, useMemo } from "react";
 import type { ActionType } from "@/types/index";
-import EditorActions from "@/components/ui/editor/actionsBtn";
-import ErrorMessage from "@/components/ui/editor/message";
-import EditableTypography from "@/components/ui/fields/text";
-import EditableTextField from "../fields/editor";
+import EditorActions from "@/components/ui/editor/EditorActions";
+import ErrorMessage from "@/components/ui/editor/ErrorMessage";
+import EditableTypography from "@/components/ui/fields/EditableTypography";
+import EditableTextField from "../fields/EditableTextField";
 
 interface EditorProps<T> {
   data: { id: string; value: string; name: string };
   update: ActionType<T>;
   remove: ActionType<T>;
   children?: React.ReactNode;
+  onViewDetails?: () => void;
 }
 
 export default function InlineEditor<T>({
@@ -19,6 +20,7 @@ export default function InlineEditor<T>({
   update,
   remove,
   children,
+  onViewDetails,
 }: EditorProps<T>) {
   const [isEditing, setIsEditing] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -146,7 +148,7 @@ export default function InlineEditor<T>({
             <EditableTypography
               value={value}
               isPending={isPending}
-              handleToggleEdit={() => setIsEditing(true)}
+              handleToggleEdit={onViewDetails ? onViewDetails : () => setIsEditing(true)}
             />
           )}
         </Box>

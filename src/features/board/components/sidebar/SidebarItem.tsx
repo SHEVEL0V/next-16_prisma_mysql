@@ -13,7 +13,7 @@ import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
 import Link from "next/link";
 import { updateBoardAction, deleteBoardAction } from "../../actions";
 import MoreButton from "@/components/ui/MoreButton";
-import EditableTextField from "@/components/ui/fields/editor";
+import EditableTextField from "@/components/ui/fields/EditableTextField";
 
 interface SidebarItemProps {
   id: string;

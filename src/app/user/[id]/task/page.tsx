@@ -2,7 +2,6 @@
 
 import { Grid } from "@/components/ui/CustomDataGrid";
 import { getTasksAll } from "@/features/board/queries";
-import { id } from "zod/v4/locales";
 
 export default async function Tasks() {
   const tasks = (await getTasksAll()).data || [];
@@ -20,11 +19,11 @@ export default async function Tasks() {
   const rows = tasks.map((task) => ({
     id: task.id,
     date: parsDate(task.createdAt),
+    status: task.column.title,
     title: task.title,
     description: task.description,
     board_title: task.column.board.title,
     priority: task.priority,
-    column: task.column.order,
   }));
 
   return <Grid data={rows} />;

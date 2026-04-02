@@ -4,9 +4,10 @@
 import React, { useActionState } from "react";
 import { registerAction } from "@/features/auth/actions";
 import { Box, Typography, Link } from "@mui/material";
-import { RegisterFields } from "./registerFields";
+import { RegisterFields } from "./RegisterFields";
+
 import NextLink from "next/link";
-import ContainerForm from "./container";
+import ContainerForm from "./ContainerForm";
 
 const initialState = { success: false as const, message: "", errors: {} };
 

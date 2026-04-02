@@ -10,10 +10,7 @@ export type TaskCreateType = TaskCreateInput;
 
 export const taskService = {
   // ------------------------------------------------------------------------------------------
-  get: async () =>
-    await prisma.task.findMany({
-      orderBy: { order: "asc" },
-    }),
+
   // ------------------------------------------------------------------------------------------
   getById: async (id: string) => await prisma.task.findUnique({ where: { id } }),
   // ------------------------------------------------------------------------------------------
@@ -34,7 +31,7 @@ export const taskService = {
   update: async (taskId: string, data: Partial<Task>) => {
     return prisma.task.update({
       where: { id: taskId },
-      data: { title: data.title },
+      data,
     });
   },
   // ------------------------------------------------------------------------------------------

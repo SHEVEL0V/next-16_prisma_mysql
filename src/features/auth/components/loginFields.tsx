@@ -45,7 +45,7 @@ export function LoginFields<T>({ state, isPending }: LoginFieldsProps<T>) {
 
       {/* Alert лише при помилці */}
       {!state.success && state.message && (
-        <Alert severity="error" variant="filled" sx={{ borderRadius: 2 }}>
+        <Alert severity="error" variant="filled">
           {state.message}
         </Alert>
       )}

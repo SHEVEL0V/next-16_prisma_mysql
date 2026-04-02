@@ -145,8 +145,13 @@ export const getTheme = (mode: PaletteMode) => {
             props: { variant: "boardColumn" },
             style: ({ theme }) => ({
               padding: theme.spacing(2),
-              minWidth: 320,
-              width: 320,
+              minWidth: 280,
+              width: 280,
+              flexShrink: 0,
+              [theme.breakpoints.up("sm")]: {
+                minWidth: 320,
+                width: 320,
+              },
               height: "fit-content",
               maxHeight: "88vh",
               display: "flex",
@@ -156,6 +161,28 @@ export const getTheme = (mode: PaletteMode) => {
             }),
           },
         ],
+      },
+      MuiDialogActions: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(2, 3),
+          }),
+        },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            borderRadius: Number(theme.shape.borderRadius) * 2,
+          }),
+        },
+      },
+      MuiCardContent: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(1.5),
+            "&:last-child": { paddingBottom: theme.spacing(1.5) },
+          }),
+        },
       },
       MuiDataGrid: {
         styleOverrides: {

@@ -12,7 +12,6 @@ export default function Footer() {
     <Box
       component="footer"
       sx={{
-        // Використовуємо висоту з нашої дизайн-системи
         minHeight: theme.custom.footerHeight,
         display: "flex",
         alignItems: "center",
@@ -20,7 +19,6 @@ export default function Footer() {
         mt: "auto",
         borderTop: "1px solid",
         borderColor: "divider",
-        // Додаємо легкий ефект скла, якщо потрібно
         bgcolor: alpha(theme.palette.background.paper, 0.4),
         backdropFilter: "blur(8px)",
       }}

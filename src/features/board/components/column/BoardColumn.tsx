@@ -2,19 +2,20 @@
 
 "use client";
 
+import { memo } from "react";
 import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import { Droppable } from "@hello-pangea/dnd";
-import TaskCard from "./cardTask";
-import TaskCreateForm from "./formTask";
+import TaskCard from "./TaskCard";
+import TaskCreateForm from "./TaskForm";
 import { ColumnType } from "../../services/column";
-import TitleColumn from "./title";
+import TitleColumn from "./ColumnTitle";
 
 interface BoardColumnProps {
   column: ColumnType;
   boardId: string;
 }
 
-export default function BoardColumn({ column, boardId }: BoardColumnProps) {
+export default memo(function BoardColumn({ column, boardId }: BoardColumnProps) {
   const theme = useTheme();
 
   return (
@@ -68,4 +69,4 @@ export default function BoardColumn({ column, boardId }: BoardColumnProps) {
       </Droppable>
     </Paper>
   );
-}
+});

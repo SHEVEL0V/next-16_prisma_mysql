@@ -3,17 +3,13 @@
 "use client";
 
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import Column from "./column/column";
+import Column from "./column/BoardColumn";
 import { Stack } from "@mui/material";
 import { reorderAction } from "../actions";
-import { useOptimistic, startTransition, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import { ColumnType } from "../types";
+import ColumnCreateForm from "./column/ColumnCreateForm";
 
-/**
- * Main wrapper for Kanban drag-and-drop features.
- * Integrates Next.js 16 optimal features: `useOptimistic` and `useTransition` for 
- * instant client-side rendering without waiting for server action completion.
- */
 export default function DragDropWrapper({
   initialData,
   boardId,
@@ -28,10 +24,6 @@ export default function DragDropWrapper({
     ColumnType[]
   >(initialData, (_currentColumns, newColumns) => newColumns);
 
-  /**
-   * Evaluates drop destination and performs optimistic local array mutations. 
-   * Submits final repositioned indexes to server via form data.
-   */
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
 
@@ -58,33 +50,39 @@ export default function DragDropWrapper({
       }
 
       if (type === "task") {
-        const sourceColIndex = newColumns.findIndex((col) => col.id === source.droppableId);
-        const destColIndex = newColumns.findIndex((col) => col.id === destination.droppableId);
+        const sourceColIndex = newColumns.findIndex(
+          (col) => col.id === source.droppableId,
+        );
+        const destColIndex = newColumns.findIndex(
+          (col) => col.id === destination.droppableId,
+        );
 
         if (sourceColIndex !== -1 && destColIndex !== -1) {
           const sourceColumn = newColumns[sourceColIndex];
           const destColumn = newColumns[destColIndex];
 
           const sourceTasks = Array.from(sourceColumn.tasks);
-          const destTasks = source.droppableId === destination.droppableId ? sourceTasks : Array.from(destColumn.tasks);
+          const destTasks =
+            source.droppableId === destination.droppableId
+              ? sourceTasks
+              : Array.from(destColumn.tasks);
 
           const [movedTask] = sourceTasks.splice(source.index, 1);
           const order = (destination.index + 1) * 1000;
           movedTask.order = order;
-          
+
           destTasks.splice(destination.index, 0, movedTask);
 
           newColumns[sourceColIndex] = { ...sourceColumn, tasks: sourceTasks };
           newColumns[destColIndex] = { ...destColumn, tasks: destTasks };
 
           setOptimisticColumns(newColumns);
-          
+
           formData.append("columnId", destination.droppableId);
           formData.append("order", order.toString());
         }
       }
 
-      // Call action directly
       reorderAction({ success: false, errors: {} }, formData);
     });
   };
@@ -98,7 +96,7 @@ export default function DragDropWrapper({
             ref={provided.innerRef}
             direction="row"
             spacing={3}
-            sx={{ p: 3, overflowX: "auto", minHeight: "80vh" }}
+            sx={{ p: 3, overflowX: "auto", minHeight: "80vh", alignItems: "flex-start" }}
             style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.2s" }}
           >
             {optimisticColumns.map((column, index) => (
@@ -116,6 +114,7 @@ export default function DragDropWrapper({
               </Draggable>
             ))}
             {provided.placeholder}
+            <ColumnCreateForm boardId={boardId} />
           </Stack>
         )}
       </Droppable>

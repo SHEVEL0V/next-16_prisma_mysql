@@ -2,10 +2,10 @@
 
 // features/board/components/board-canvas.tsx
 import { Box } from "@mui/material";
-import Sidebar from "@/features/board/components/sidebar/bar";
+import Sidebar from "@/features/board/components/sidebar/Sidebar";
 import { getBoards, getBoardById } from "@/features/board/queries";
 import CenteredMessage from "@/components/ui/CenteredMessage";
-import DragDropWrapper from "@/features/board/components/dragDrop";
+import DragDropWrapper from "@/features/board/components/DragDrop";
 
 export default async function Board({ boardId }: { boardId?: string }) {
   const boards = (await getBoards())?.data ?? [];

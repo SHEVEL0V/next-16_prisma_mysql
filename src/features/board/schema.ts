@@ -35,6 +35,17 @@ export const updateTaskSchema = z.object({
   title: z.string().min(1, "Завдання не може бути порожнім"),
 });
 
+export const updateTaskPrioritySchema = z.object({
+  id: z.uuid(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]),
+});
+
+export const updateTaskDetailsSchema = z.object({
+  id: z.uuid(),
+  title: z.string().min(1, "Назва обов'язкова").max(100),
+  description: z.string().max(1000).optional(),
+});
+
 export const updateBoardSchema = z.object({
   id: z.uuid(),
   title: z.string().min(1, "Назва обов'язкова"),

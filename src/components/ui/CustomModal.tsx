@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import FormInput from "./fields/auth";
+import FormInput from "./fields/FormInput";
 import { SubmitButton } from "./SubmitButton";
 import type { ActionResponse } from "@/types";
 

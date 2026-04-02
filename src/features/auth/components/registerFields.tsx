@@ -51,7 +51,7 @@ export function RegisterFields<T>({ state, isPending }: RegisterFieldsProps<T>) 
       ))}
 
       {!state.success && state.message && (
-        <Alert severity="error" variant="filled" sx={{ borderRadius: 2 }}>
+        <Alert severity="error" variant="filled">
           {state.message}
         </Alert>
       )}

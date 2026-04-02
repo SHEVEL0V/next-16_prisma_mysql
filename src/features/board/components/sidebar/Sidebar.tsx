@@ -5,8 +5,8 @@ import { useState } from "react";
 import { List, Divider, Box, Typography, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import BoardItem from "./item";
-import CreateBoardForm from "./form";
+import BoardItem from "./SidebarItem";
+import CreateBoardForm from "./CreateBoardForm";
 
 const DRAWER_WIDTH = 320;
 const COLLAPSED_WIDTH = 80;

@@ -23,7 +23,7 @@ export default function Dashboard({ menu }: MenuProps) {
       <Grid container spacing={3} columns={16}>
         {menu.map((item, i) => (
           <Grid size={{ xs: 16, sm: 8, md: 4 }} key={i}>
-            <Card className="glass-effect" sx={{ height: 180, transition: "0.2s", transform: "translateY(0)", "&:hover": { transform: "translateY(-4px)" } }}>
+            <Card className="glass-effect" sx={{ height: 180, "&:hover": { transform: "translateY(-4px)" } }}>
               <CardActionArea
                 component={Link}
                 href={`${basePath}${item.link}`}

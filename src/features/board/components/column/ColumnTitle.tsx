@@ -3,8 +3,8 @@
 "use client";
 
 import { Box } from "@mui/material";
-import EditableTextField from "@/components/ui/fields/editor";
-import EditableTypography from "@/components/ui/fields/text";
+import EditableTextField from "@/components/ui/fields/EditableTextField";
+import EditableTypography from "@/components/ui/fields/EditableTypography";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { updateColumnAction } from "../../actions";
 

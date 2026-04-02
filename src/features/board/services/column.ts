@@ -9,16 +9,7 @@ export type ColumnType = Prisma.ColumnGetPayload<{
 
 export const columnService = {
   // ------------------------------------------------------------------------------------------
-  get: async () => {
-    return await prisma.column.findMany({
-      orderBy: { order: "asc" },
-      include: {
-        tasks: {
-          orderBy: { order: "asc" },
-        },
-      },
-    });
-  },
+
   // ------------------------------------------------------------------------------------------
   getById: async (id: string) => await prisma.column.findUnique({ where: { id } }),
   // ------------------------------------------------------------------------------------------
@@ -44,12 +35,7 @@ export const columnService = {
     });
   },
   // ------------------------------------------------------------------------------------------
-  reorder: async (id: string, newOrder: number) => {
-    return prisma.column.update({
-      where: { id },
-      data: { order: newOrder },
-    });
-  },
+
   // ------------------------------------------------------------------------------------------
   delete: async (id: string) => {
     return prisma.column.delete({ where: { id } });

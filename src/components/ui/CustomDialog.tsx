@@ -51,7 +51,7 @@ export default function DialogDelete<T>({
           </Typography>
         )}
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2 }}>
+      <DialogActions>
         <Button
           onClick={handleClose}
           disabled={isPending}
