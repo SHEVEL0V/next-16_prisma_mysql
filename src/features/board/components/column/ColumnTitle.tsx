@@ -2,22 +2,29 @@
 
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import EditableTextField from "@/components/ui/fields/EditableTextField";
 import EditableTypography from "@/components/ui/fields/EditableTypography";
 import { useActionState, useEffect, useRef, useState } from "react";
-import { updateColumnAction } from "../../actions";
+import { updateColumnAction, deleteColumnAction } from "../../actions";
+import DeleteIcon from "@mui/icons-material/DeleteOutline";
 
 interface BoardColumnProps {
   id: string;
   title: string;
+  taskCount?: number;
 }
 
-export default function TitleColumn({ id, title }: BoardColumnProps) {
+export default function TitleColumn({ id, title, taskCount = 0 }: BoardColumnProps) {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [, action, isPending] = useActionState(updateColumnAction, {
+  const [, actionUpdate, isPendingUpdate] = useActionState(updateColumnAction, {
+    success: false,
+    errors: {},
+  });
+
+  const [, actionDelete, isPendingDelete] = useActionState(deleteColumnAction, {
     success: false,
     errors: {},
   });
@@ -30,38 +37,71 @@ export default function TitleColumn({ id, title }: BoardColumnProps) {
   }, [isEditing]);
 
   const handleBlur = () => {
-    if (!isPending) {
+    if (!isPendingUpdate) {
       formRef.current?.requestSubmit();
       setIsEditing(false);
     }
   };
 
-  return (
-    <Box
-      component="form"
-      ref={formRef}
-      action={action}
-      sx={{ mb: 2, textAlign: "center", display: "flex", justifyContent: "center" }}
-    >
-      <input type="hidden" name="id" value={id} />
+  const hasTasks = taskCount > 0;
 
-      {!isEditing ? (
-        <EditableTypography
-          sx={{ mx: "auto" }}
-          value={title}
-          isPending={isPending}
-          handleToggleEdit={() => setIsEditing(true)}
-        />
-      ) : (
-        <EditableTextField
-          formRef={formRef}
-          name="title"
-          defaultValue={title}
-          handleToggleEdit={() => setIsEditing(false)}
-          inputRef={inputRef}
-          onBlur={handleBlur}
-        />
-      )}
+  return (
+    <Box sx={{ mb: 2, position: "relative", minHeight: 32 }}>
+      <Box
+        component="form"
+        ref={formRef}
+        action={actionUpdate}
+        sx={{ mx: 4, textAlign: "center", display: "flex", justifyContent: "center" }}
+      >
+        <input type="hidden" name="id" value={id} />
+
+        {!isEditing ? (
+          <EditableTypography
+            sx={{ mx: "auto" }}
+            value={title}
+            isPending={isPendingUpdate}
+            handleToggleEdit={() => setIsEditing(true)}
+          />
+        ) : (
+          <EditableTextField
+            formRef={formRef}
+            name="title"
+            defaultValue={title}
+            handleToggleEdit={() => setIsEditing(false)}
+            inputRef={inputRef}
+            onBlur={handleBlur}
+          />
+        )}
+      </Box>
+
+      {/* Delete Column Form */}
+      <Box 
+        component="form" 
+        action={actionDelete} 
+        sx={{ 
+          position: "absolute", 
+          right: 0, 
+          top: "50%", 
+          transform: "translateY(-50%)" 
+        }}
+      >
+        <input type="hidden" name="id" value={id} />
+        <Tooltip 
+          title={hasTasks ? "Очистіть колонку від завдань, щоб видалити" : "Видалити колонку"}
+          placement="top"
+        >
+          <span>
+            <IconButton
+              type="submit"
+              size="small"
+              disabled={isPendingDelete || hasTasks}
+              sx={{ color: "text.secondary", "&:hover": { color: hasTasks ? "inherit" : "error.main" } }}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
     </Box>
   );
 }

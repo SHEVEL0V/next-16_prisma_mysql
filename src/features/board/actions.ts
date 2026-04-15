@@ -17,6 +17,7 @@ import {
   updateColumnTitleSchema,
   updateTaskPrioritySchema,
   updateTaskDetailsSchema,
+  deleteColumnSchema,
 } from "./schema";
 
 /**
@@ -52,6 +53,12 @@ export const createColumnAction = createSafeAction(
 export const updateColumnAction = createSafeAction(
   updateColumnTitleSchema,
   async ({ id, title }) => await columnService.update(id, { title }),
+  { revalidatePath: "/" },
+);
+
+export const deleteColumnAction = createSafeAction(
+  deleteColumnSchema,
+  async ({ id }) => await columnService.delete(id),
   { revalidatePath: "/" },
 );
 

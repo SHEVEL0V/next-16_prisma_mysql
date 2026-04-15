@@ -103,7 +103,7 @@ export default function ButtonUser() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {/* Пункт 1: Профіль (посилання) */}
-        <MenuItem component={Link} href="/profile">
+        <MenuItem component={Link} href="/user/profile">
           <ListItemIcon>
             <Person fontSize="small" />
           </ListItemIcon>

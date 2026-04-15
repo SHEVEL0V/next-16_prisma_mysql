@@ -38,6 +38,15 @@ export const columnService = {
 
   // ------------------------------------------------------------------------------------------
   delete: async (id: string) => {
-    return prisma.column.delete({ where: { id } });
+    return await prisma.$transaction(async (tx) => {
+      const column = await tx.column.findUnique({
+        where: { id },
+        include: { _count: { select: { tasks: true } } },
+      });
+      if (column && column._count.tasks > 0) {
+        throw new Error("Не можна видалити колонку, в якій є завдання.");
+      }
+      return tx.column.delete({ where: { id } });
+    });
   },
 };

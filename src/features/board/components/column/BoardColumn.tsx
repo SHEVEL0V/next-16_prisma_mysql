@@ -24,7 +24,7 @@ export default memo(function BoardColumn({ column, boardId }: BoardColumnProps) 
       className="glass-effect bordered"
     >
       {/* Заголовок колонки */}
-      <TitleColumn id={column.id} title={column.title} />
+      <TitleColumn id={column.id} title={column.title} taskCount={column.tasks.length} />
 
       {/* Форма винесена в окремий клієнтський компонент */}
       <TaskCreateForm columnId={column.id} boardId={boardId} />

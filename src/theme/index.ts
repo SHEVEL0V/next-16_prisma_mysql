@@ -40,11 +40,15 @@ export const getTheme = (mode: PaletteMode) => {
         main: isDark ? "#60a5fa" : "#2563eb", // Трохи м'якші кольори для dark mode
         contrastText: "#fff",
       },
+      text: {
+        primary: isDark ? "#f8fafc" : "#0f172a", // Більш глибокий і контрастний текст
+        secondary: isDark ? "#94a3b8" : "#475569", // Чіткіший відтінок сірого
+      },
       background: {
-        default: isDark ? "#0f172a" : "#f8fafc",
+        default: isDark ? "#0f172a" : "#f1f5f9", // Темніший відтінок світлого фону, щоб плашки яскраво виділялися
         paper: isDark ? "#1e293b" : "#ffffff",
       },
-      divider: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)",
+      divider: isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(15, 23, 42, 0.12)", // Більш чіткі лінії та бордери
     },
     typography: {
       fontFamily: roboto.style.fontFamily,
@@ -67,9 +71,9 @@ export const getTheme = (mode: PaletteMode) => {
             transition: theme.transitions.create("background-color", { duration: 300 }),
           },
           ".glass-effect": {
-            backgroundColor: alpha(theme.palette.background.paper, 0.7),
+            backgroundColor: alpha(theme.palette.background.paper, 0.8),
             backdropFilter: "blur(10px)",
-            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            border: `1px solid ${theme.palette.divider}`, // Використовуємо чіткіший бордер замість прозорого
           },
           "*::-webkit-scrollbar": {
             width: 6,
