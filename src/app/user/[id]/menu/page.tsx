@@ -5,14 +5,14 @@ import DashboardGrid from "@/components/ui/DashboardGrid";
 import Container from "@mui/material/Container";
 
 const card = [
-  { name: "Дошка", link: "/board" },
-  { name: "Список завдань", link: "/task" },
+	{ name: "Дошка", link: "/board" },
+	{ name: "Список завдань", link: "/task" },
 ];
 
 export default function Menu() {
-  return (
-    <Container maxWidth="xl">
-      <DashboardGrid menu={card} />
-    </Container>
-  );
+	return (
+		<Container maxWidth="xl">
+			<DashboardGrid menu={card} />
+		</Container>
+	);
 }

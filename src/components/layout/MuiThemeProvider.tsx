@@ -7,18 +7,18 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { getTheme } from "@/theme";
 
 export default function ThemeClientProvider({
-  children,
-  mode,
+	children,
+	mode,
 }: {
-  children: React.ReactNode;
-  mode: "light" | "dark";
+	children: React.ReactNode;
+	mode: "light" | "dark";
 }) {
-  const theme = createTheme(getTheme(mode));
+	const theme = createTheme(getTheme(mode));
 
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
-  );
+	return (
+		<ThemeProvider theme={theme}>
+			<CssBaseline />
+			{children}
+		</ThemeProvider>
+	);
 }

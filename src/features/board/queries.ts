@@ -8,7 +8,7 @@ import { taskService } from "./services/task";
 export const getBoards = cache(() => safeQuery(boardService.get));
 
 export const getBoardById = cache((id: string) =>
-  safeQuery(() => boardService.getById(id)),
+	safeQuery(() => boardService.getById(id)),
 );
 
 export const getTasksAll = cache(() => safeQuery(taskService.getAllInfo));

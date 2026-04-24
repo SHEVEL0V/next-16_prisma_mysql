@@ -3,52 +3,52 @@
 import z from "zod";
 
 export const boardSchema = z.object({
-  title: z.string().min(1, "Назва обов'язкова").max(50),
-  description: z.string().max(255).optional(),
+	title: z.string().min(1, "Назва обов'язкова").max(50),
+	description: z.string().max(255).optional(),
 });
 
 export const columnSchema = z.object({
-  title: z.string().min(1, "Назва обов'язкова"),
-  boardId: z.uuid(),
+	title: z.string().min(1, "Назва обов'язкова"),
+	boardId: z.uuid(),
 });
 
 export const updateColumnTitleSchema = z.object({
-  id: z.uuid(),
-  title: z.string().min(1, "Завдання не може бути порожнім"),
+	id: z.uuid(),
+	title: z.string().min(1, "Завдання не може бути порожнім"),
 });
 
 export const reorderSchema = z.object({
-  id: z.uuid(),
-  type: z.enum(["column", "task"]),
-  order: z.string(),
-  columnId: z.uuid().optional(),
+	id: z.uuid(),
+	type: z.enum(["column", "task"]),
+	order: z.string(),
+	columnId: z.uuid().optional(),
 });
 
 export const createTaskSchema = z.object({
-  title: z.string().min(1, "Завдання не може бути порожнім"),
-  columnId: z.uuid(),
-  boardId: z.uuid().optional(),
+	title: z.string().min(1, "Завдання не може бути порожнім"),
+	columnId: z.uuid(),
+	boardId: z.uuid().optional(),
 });
 
 export const updateTaskSchema = z.object({
-  id: z.uuid(),
-  title: z.string().min(1, "Завдання не може бути порожнім"),
+	id: z.uuid(),
+	title: z.string().min(1, "Завдання не може бути порожнім"),
 });
 
 export const updateTaskPrioritySchema = z.object({
-  id: z.uuid(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]),
+	id: z.uuid(),
+	priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]),
 });
 
 export const updateTaskDetailsSchema = z.object({
-  id: z.uuid(),
-  title: z.string().min(1, "Назва обов'язкова").max(100),
-  description: z.string().max(1000).optional(),
+	id: z.uuid(),
+	title: z.string().min(1, "Назва обов'язкова").max(100),
+	description: z.string().max(1000).optional(),
 });
 
 export const updateBoardSchema = z.object({
-  id: z.uuid(),
-  title: z.string().min(1, "Назва обов'язкова"),
+	id: z.uuid(),
+	title: z.string().min(1, "Назва обов'язкова"),
 });
 
 export const deleteTaskSchema = z.object({ id: z.uuid() });

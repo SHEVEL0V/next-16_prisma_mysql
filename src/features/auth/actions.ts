@@ -6,20 +6,20 @@ import { createSafeAction } from "@/utils/wrapperAction";
 import { authService } from "./services";
 
 export const registerAction = createSafeAction(
-  registerSchema,
-  async (data) => await authService.register(data),
-  {
-    revalidatePath: "/",
-    redirectTo: (user) => `/user/${user.name}/menu`,
-  },
+	registerSchema,
+	async (data) => await authService.register(data),
+	{
+		revalidatePath: "/",
+		redirectTo: (user) => `/user/${user.name}/menu`,
+	},
 );
 
 export const loginAction = createSafeAction(
-  loginSchema,
-  async (data) => await authService.login(data),
+	loginSchema,
+	async (data) => await authService.login(data),
 
-  {
-    revalidatePath: "/",
-    redirectTo: (user) => `/user/${user.name}/menu`,
-  },
+	{
+		revalidatePath: "/",
+		redirectTo: (user) => `/user/${user.name}/menu`,
+	},
 );

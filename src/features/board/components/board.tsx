@@ -8,25 +8,27 @@ import CenteredMessage from "@/components/ui/CenteredMessage";
 import DragDropWrapper from "@/features/board/components/DragDrop";
 
 export default async function Board({ boardId }: { boardId?: string }) {
-  const boards = (await getBoards())?.data ?? [];
+	const boards = (await getBoards())?.data ?? [];
 
-  const activeBoard = boardId || boards[0]?.id;
+	const activeBoard = boardId || boards[0]?.id;
 
-  if (!activeBoard) {
-    return <CenteredMessage message="Будь ласка, створіть або виберіть дошку." />;
-  }
+	if (!activeBoard) {
+		return (
+			<CenteredMessage message="Будь ласка, створіть або виберіть дошку." />
+		);
+	}
 
-  const boardResponse = await getBoardById(activeBoard!);
-  const board = boardResponse?.data;
+	const boardResponse = await getBoardById(activeBoard!);
+	const board = boardResponse?.data;
 
-  return (
-    <Box sx={{ display: "flex" }}>
-      <Sidebar boards={boards} activeBoard={activeBoard} />
-      {board ? (
-        <DragDropWrapper boardId={activeBoard} initialData={board.columns} />
-      ) : (
-        <CenteredMessage message="Дошку не знайдено або сталася помилка." />
-      )}
-    </Box>
-  );
+	return (
+		<Box sx={{ display: "flex" }}>
+			<Sidebar boards={boards} activeBoard={activeBoard} />
+			{board ? (
+				<DragDropWrapper boardId={activeBoard} initialData={board.columns} />
+			) : (
+				<CenteredMessage message="Дошку не знайдено або сталася помилка." />
+			)}
+		</Box>
+	);
 }

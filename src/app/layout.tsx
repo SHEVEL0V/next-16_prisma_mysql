@@ -5,19 +5,19 @@ import ThemeProvider from "@/components/layout/MuiThemeProvider"; // Прикл�
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 export default async function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const theme = (await getTheme()) || "light";
+	const theme = (await getTheme()) || "light";
 
-  return (
-    <html lang="uk">
-      <body>
-        <AppRouterCacheProvider>
-          <ThemeProvider mode={theme}>{children}</ThemeProvider>
-        </AppRouterCacheProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="uk">
+			<body>
+				<AppRouterCacheProvider>
+					<ThemeProvider mode={theme}>{children}</ThemeProvider>
+				</AppRouterCacheProvider>
+			</body>
+		</html>
+	);
 }

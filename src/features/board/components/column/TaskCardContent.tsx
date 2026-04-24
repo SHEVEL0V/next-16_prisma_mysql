@@ -4,65 +4,72 @@ import { Card, CardContent, Stack } from "@mui/material";
 import { TaskType } from "../../types";
 import { deleteTaskAction, updateTaskAction } from "../../actions";
 import InlineEditor from "@/components/ui/editor/InlineEditor";
-import { type DraggableStateSnapshot, type DraggableProvided } from "@hello-pangea/dnd";
+import {
+	type DraggableStateSnapshot,
+	type DraggableProvided,
+} from "@hello-pangea/dnd";
 import TaskPriorityToggle from "./TaskPriorityToggle";
 import TaskDetailsModal from "./TaskDetailsModal";
 
 interface TaskCardContentProps {
-  task: TaskType;
-  snapshot: DraggableStateSnapshot;
-  provided: DraggableProvided;
+	task: TaskType;
+	snapshot: DraggableStateSnapshot;
+	provided: DraggableProvided;
 }
 
-export default memo(function TaskCardContent({ task, snapshot, provided }: TaskCardContentProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export default memo(function TaskCardContent({
+	task,
+	snapshot,
+	provided,
+}: TaskCardContentProps) {
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
-    <>
-      <div
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-        style={provided.draggableProps.style}
-      >
-        <Card 
-          className="glass-effect" 
-          sx={{ 
-            ...(snapshot.isDragging 
-                ? { boxShadow: 6, transform: "scale(1.02)", cursor: "grabbing" } 
-                : { cursor: "grab" }) 
-          }}
-        >
-          <input type="hidden" name="id" value={task.id} />
-          <CardContent>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              spacing={1}
-            >
-              <Stack spacing={1} sx={{ flexGrow: 1 }}>
-                <InlineEditor
-                  data={{ id: task.id, value: task.title, name: "title" }}
-                  update={updateTaskAction}
-                  remove={deleteTaskAction}
-                  onViewDetails={() => setIsModalOpen(true)}
-                >
-                  <TaskPriorityToggle task={task} />
-                </InlineEditor>
-              </Stack>
-            </Stack>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {isModalOpen && (
-        <TaskDetailsModal 
-          open={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-          task={task} 
-        />
-      )}
-    </>
-  );
+	return (
+		<>
+			<div
+				ref={provided.innerRef}
+				{...provided.draggableProps}
+				{...provided.dragHandleProps}
+				style={provided.draggableProps.style}
+			>
+				<Card
+					className="glass-effect"
+					sx={{
+						...(snapshot.isDragging
+							? { boxShadow: 6, transform: "scale(1.02)", cursor: "grabbing" }
+							: { cursor: "grab" }),
+					}}
+				>
+					<input type="hidden" name="id" value={task.id} />
+					<CardContent>
+						<Stack
+							direction="row"
+							justifyContent="space-between"
+							alignItems="flex-start"
+							spacing={1}
+						>
+							<Stack spacing={1} sx={{ flexGrow: 1 }}>
+								<InlineEditor
+									data={{ id: task.id, value: task.title, name: "title" }}
+									update={updateTaskAction}
+									remove={deleteTaskAction}
+									onViewDetails={() => setIsModalOpen(true)}
+								>
+									<TaskPriorityToggle task={task} />
+								</InlineEditor>
+							</Stack>
+						</Stack>
+					</CardContent>
+				</Card>
+			</div>
+
+			{isModalOpen && (
+				<TaskDetailsModal
+					open={isModalOpen}
+					onClose={() => setIsModalOpen(false)}
+					task={task}
+				/>
+			)}
+		</>
+	);
 });

@@ -6,11 +6,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/navigation";
 
 export default function ButtonClose() {
-  const router = useRouter();
+	const router = useRouter();
 
-  return (
-    <IconButton onClick={() => router.back()} aria-label="Закрити">
-      <CloseIcon />
-    </IconButton>
-  );
+	return (
+		<IconButton onClick={() => router.back()} aria-label="Закрити">
+			<CloseIcon />
+		</IconButton>
+	);
 }

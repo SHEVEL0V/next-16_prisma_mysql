@@ -20,106 +20,106 @@ import Logout from "@mui/icons-material/Logout";
 import Person from "@mui/icons-material/Person";
 
 export default function ButtonUser() {
-  const router = useRouter();
+	const router = useRouter();
 
-  // Стан для керування меню (відкрито/закрито)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+	// Стан для керування меню (відкрито/закрито)
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const open = Boolean(anchorEl);
 
-  // Відкриття меню при кліку на іконку
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+	// Відкриття меню при кліку на іконку
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
 
-  // Закриття меню
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+	// Закриття меню
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
 
-  // Логіка виходу
-  const handleLogout = async () => {
-    handleClose(); // Спочатку закриваємо меню
+	// Логіка виходу
+	const handleLogout = async () => {
+		handleClose(); // Спочатку закриваємо меню
 
-    try {
-      await deleteSession(); // Викликаємо функцію для видалення сесії на сервері
+		try {
+			await deleteSession(); // Викликаємо функцію для видалення сесії на сервері
 
-      console.log("User logged out");
-      router.push("/signin"); // Перенаправляємо користувача на сторінку входу
-      router.refresh(); // Оновлення стану сторінки
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-  };
+			console.log("User logged out");
+			router.push("/signin"); // Перенаправляємо користувача на сторінку входу
+			router.refresh(); // Оновлення стану сторінки
+		} catch (error) {
+			console.error("Logout failed", error);
+		}
+	};
 
-  return (
-    <>
-      {/* Кнопка-тригер */}
-      <Tooltip title="Налаштування профілю">
-        <IconButton
-          onClick={handleClick}
-          size="large"
-          color="inherit"
-          aria-controls={open ? "account-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          sx={{
-            "&:hover": { backgroundColor: "action.hover" },
-          }}
-        >
-          <AccountCircle fontSize="inherit" />
-        </IconButton>
-      </Tooltip>
+	return (
+		<>
+			{/* Кнопка-тригер */}
+			<Tooltip title="Налаштування профілю">
+				<IconButton
+					onClick={handleClick}
+					size="large"
+					color="inherit"
+					aria-controls={open ? "account-menu" : undefined}
+					aria-haspopup="true"
+					aria-expanded={open ? "true" : undefined}
+					sx={{
+						"&:hover": { backgroundColor: "action.hover" },
+					}}
+				>
+					<AccountCircle fontSize="inherit" />
+				</IconButton>
+			</Tooltip>
 
-      {/* Випадаюче меню */}
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose} // Закривати меню при кліку на будь-який пункт
-        slotProps={{
-          paper: {
-            elevation: 4, // Тінь меню
-            sx: {
-              minWidth: 150,
-              mt: 1.5, // Відступ зверху
-              // Стилізація трикутника (стрілочки) зверху меню
-              "&::before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
-              },
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        {/* Пункт 1: Профіль (посилання) */}
-        <MenuItem component={Link} href="/user/profile">
-          <ListItemIcon>
-            <Person fontSize="small" />
-          </ListItemIcon>
-          Профіль
-        </MenuItem>
+			{/* Випадаюче меню */}
+			<Menu
+				anchorEl={anchorEl}
+				id="account-menu"
+				open={open}
+				onClose={handleClose}
+				onClick={handleClose} // Закривати меню при кліку на будь-який пункт
+				slotProps={{
+					paper: {
+						elevation: 4, // Тінь меню
+						sx: {
+							minWidth: 150,
+							mt: 1.5, // Відступ зверху
+							// Стилізація трикутника (стрілочки) зверху меню
+							"&::before": {
+								content: '""',
+								display: "block",
+								position: "absolute",
+								top: 0,
+								right: 14,
+								width: 10,
+								height: 10,
+								bgcolor: "background.paper",
+								transform: "translateY(-50%) rotate(45deg)",
+								zIndex: 0,
+							},
+						},
+					},
+				}}
+				transformOrigin={{ horizontal: "right", vertical: "top" }}
+				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+			>
+				{/* Пункт 1: Профіль (посилання) */}
+				<MenuItem component={Link} href="/user/profile">
+					<ListItemIcon>
+						<Person fontSize="small" />
+					</ListItemIcon>
+					Профіль
+				</MenuItem>
 
-        <Divider />
+				<Divider />
 
-        {/* Пункт 2: Вихід (кнопка з логікою) */}
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" color="error" />
-          </ListItemIcon>
-          Вийти
-        </MenuItem>
-      </Menu>
-    </>
-  );
+				{/* Пункт 2: Вихід (кнопка з логікою) */}
+				<MenuItem onClick={handleLogout}>
+					<ListItemIcon>
+						<Logout fontSize="small" color="error" />
+					</ListItemIcon>
+					Вийти
+				</MenuItem>
+			</Menu>
+		</>
+	);
 }
