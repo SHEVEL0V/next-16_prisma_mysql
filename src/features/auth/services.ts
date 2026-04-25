@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { createSession } from "@/utils/session";
-import { User } from "../../../generated/prisma/client";
+import type { User } from "../../../generated/prisma/client";
 
 // Виносимо сіль (salt rounds) у константу
 const SALT_ROUNDS = 10;

@@ -12,7 +12,7 @@ import {
 	DialogActions,
 	Button,
 } from "@mui/material";
-import { ActionResponse } from "@/types/index";
+import type { ActionResponse } from "@/types/index";
 
 export default function DialogDelete<T>({
 	isPending,

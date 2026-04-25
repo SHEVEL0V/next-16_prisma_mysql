@@ -11,7 +11,7 @@ import {
 	IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { TaskType } from "../../types";
+import type { TaskType } from "../../types";
 import { updateTaskDetailsAction } from "../../actions";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 

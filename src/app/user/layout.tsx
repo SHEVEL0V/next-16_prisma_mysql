@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import React from "react";
+import type React from "react";
 import { Box, useTheme } from "@mui/material";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";

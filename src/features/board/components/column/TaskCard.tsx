@@ -2,7 +2,7 @@
 
 "use client";
 import { memo } from "react";
-import { TaskType } from "../../types";
+import type { TaskType } from "../../types";
 import { Draggable } from "@hello-pangea/dnd";
 import { createPortal } from "react-dom";
 import TaskCardContent from "./TaskCardContent";

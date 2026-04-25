@@ -2,7 +2,7 @@
 import { Chip } from "@mui/material";
 import { useActionState } from "react";
 import { updateTaskPriorityAction } from "../../actions";
-import { TaskType } from "../../types";
+import type { TaskType } from "../../types";
 
 const PRIORITY_CONFIG: Record<
 	string,

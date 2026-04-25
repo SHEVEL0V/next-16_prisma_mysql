@@ -1,12 +1,12 @@
 "use client";
 import { memo, useState } from "react";
 import { Card, CardContent, Stack } from "@mui/material";
-import { TaskType } from "../../types";
+import type { TaskType } from "../../types";
 import { deleteTaskAction, updateTaskAction } from "../../actions";
 import InlineEditor from "@/components/ui/editor/InlineEditor";
-import {
-	type DraggableStateSnapshot,
-	type DraggableProvided,
+import type {
+	DraggableStateSnapshot,
+	DraggableProvided,
 } from "@hello-pangea/dnd";
 import TaskPriorityToggle from "./TaskPriorityToggle";
 import TaskDetailsModal from "./TaskDetailsModal";

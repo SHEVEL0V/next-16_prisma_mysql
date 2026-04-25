@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import { createTheme, PaletteMode, alpha } from "@mui/material";
+import { createTheme, type PaletteMode, alpha } from "@mui/material";
 import { Roboto } from "next/font/google";
 import { DESIGN_TOKENS } from "./constants";
 import type {} from "@mui/x-data-grid/themeAugmentation";

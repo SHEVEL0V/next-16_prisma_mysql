@@ -1,7 +1,7 @@
 /** @format */
 
 import prisma from "@/lib/prisma";
-import { Prisma } from "@g/prisma/client";
+import type { Prisma } from "@g/prisma/client";
 
 export type ColumnType = Prisma.ColumnGetPayload<{
 	include: { tasks: true };

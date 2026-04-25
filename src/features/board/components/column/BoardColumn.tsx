@@ -7,7 +7,7 @@ import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskCard from "./TaskCard";
 import TaskCreateForm from "./TaskForm";
-import { ColumnType } from "../../services/column";
+import type { ColumnType } from "../../services/column";
 import TitleColumn from "./ColumnTitle";
 
 interface BoardColumnProps {

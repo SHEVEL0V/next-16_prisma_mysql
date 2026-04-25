@@ -4,8 +4,8 @@
 
 import {
 	DataGrid,
-	GridValidRowModel,
-	GridRowSelectionModel,
+	type GridValidRowModel,
+	type GridRowSelectionModel,
 } from "@mui/x-data-grid";
 
 interface GridProps {

@@ -1,5 +1,5 @@
 /** @format */
-import { Grid, TextField, TextFieldProps } from "@mui/material";
+import { Grid, TextField, type TextFieldProps } from "@mui/material";
 
 interface FormInputProps extends Omit<TextFieldProps, "error" | "helperText"> {
 	field: {

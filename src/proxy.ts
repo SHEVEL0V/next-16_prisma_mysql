@@ -1,6 +1,6 @@
 /** @format */
 
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { decrypt } from "./utils/session";
 
 const PROTECTED_ROUTES = new Set(["/user", "/"]);

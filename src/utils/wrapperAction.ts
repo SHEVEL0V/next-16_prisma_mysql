@@ -1,6 +1,6 @@
 /** @format */
 
-import z from "zod";
+import type z from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";

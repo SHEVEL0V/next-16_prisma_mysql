@@ -3,8 +3,11 @@
 "use client";
 
 import React, { memo } from "react";
-import { Typography as MuiTypography, TypographyProps } from "@mui/material";
-import { SxProps, Theme } from "@mui/material/styles";
+import {
+	Typography as MuiTypography,
+	type TypographyProps,
+} from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface EditableTypographyProps {
 	value: string;

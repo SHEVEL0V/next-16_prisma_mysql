@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import type React from "react";
 import { Box, Container, Paper } from "@mui/material";
 
 export default function ContainerForm({

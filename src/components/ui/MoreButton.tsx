@@ -1,6 +1,7 @@
 /** @format */
 "use client";
-import React, { useState, useTransition, useCallback } from "react";
+import type React from "react";
+import { useState, useTransition, useCallback } from "react";
 import {
 	IconButton,
 	Menu,

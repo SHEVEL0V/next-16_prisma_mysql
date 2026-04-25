@@ -2,8 +2,8 @@
 
 import prisma from "@/lib/prisma";
 
-import { TaskCreateInput } from "../../../../generated/prisma/models";
-import { Task } from "@g/prisma/client";
+import type { TaskCreateInput } from "../../../../generated/prisma/models";
+import type { Task } from "@g/prisma/client";
 
 export type TaskType = Omit<Task, "createdAt" | "updatedAt">;
 export type TaskCreateType = TaskCreateInput;

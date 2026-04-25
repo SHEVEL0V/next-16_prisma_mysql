@@ -1,9 +1,9 @@
 /** @format */
 "use client";
-import React from "react";
+import type React from "react";
 import {
 	TextField,
-	TextFieldProps,
+	type TextFieldProps,
 	IconButton,
 	InputAdornment,
 } from "@mui/material";

@@ -6,13 +6,13 @@ import {
 	DragDropContext,
 	Droppable,
 	Draggable,
-	DropResult,
+	type DropResult,
 } from "@hello-pangea/dnd";
 import Column from "./column/BoardColumn";
 import { Stack } from "@mui/material";
 import { reorderAction } from "../actions";
 import { useOptimistic, useTransition } from "react";
-import { ColumnType } from "../types";
+import type { ColumnType } from "../types";
 import ColumnCreateForm from "./column/ColumnCreateForm";
 
 export default function DragDropWrapper({

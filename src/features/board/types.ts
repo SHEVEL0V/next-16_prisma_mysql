@@ -1,6 +1,6 @@
 /** @format */
 
-import { Prisma } from "@g/prisma/client";
+import type { Prisma } from "@g/prisma/client";
 
 export type BoardType = Prisma.BoardGetPayload<{
 	include: { columns: { include: { tasks: true } } };

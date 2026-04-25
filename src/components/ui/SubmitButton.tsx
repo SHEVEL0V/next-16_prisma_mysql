@@ -1,5 +1,5 @@
 /** @format */
-import { Button, CircularProgress, ButtonProps } from "@mui/material";
+import { Button, CircularProgress, type ButtonProps } from "@mui/material";
 
 interface SubmitButtonProps extends ButtonProps {
 	isPending: boolean;
