@@ -3,129 +3,129 @@
 "use client";
 
 import {
-	DragDropContext,
-	Droppable,
-	Draggable,
-	type DropResult,
+  DragDropContext,
+  Draggable,
+  Droppable,
+  type DropResult,
 } from "@hello-pangea/dnd";
-import Column from "./column/BoardColumn";
 import { Stack } from "@mui/material";
-import { reorderAction } from "../actions";
 import { useOptimistic, useTransition } from "react";
+import { reorderAction } from "../actions";
 import type { ColumnType } from "../types";
+import Column from "./column/BoardColumn";
 import ColumnCreateForm from "./column/ColumnCreateForm";
 
 export default function DragDropWrapper({
-	initialData,
-	boardId,
+  initialData,
+  boardId,
 }: {
-	initialData: ColumnType[];
-	boardId: string;
+  initialData: ColumnType[];
+  boardId: string;
 }) {
-	const [isPending, startTransitionAction] = useTransition();
+  const [isPending, startTransitionAction] = useTransition();
 
-	const [optimisticColumns, setOptimisticColumns] = useOptimistic<
-		ColumnType[],
-		ColumnType[]
-	>(initialData, (_currentColumns, newColumns) => newColumns);
+  const [optimisticColumns, setOptimisticColumns] = useOptimistic<
+    ColumnType[],
+    ColumnType[]
+  >(initialData, (_currentColumns, newColumns) => newColumns);
 
-	const onDragEnd = (result: DropResult) => {
-		const { destination, source, draggableId, type } = result;
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId, type } = result;
 
-		if (
-			!destination ||
-			(destination.droppableId === source.droppableId &&
-				destination.index === source.index)
-		) {
-			return;
-		}
+    if (
+      !destination ||
+      (destination.droppableId === source.droppableId &&
+        destination.index === source.index)
+    ) {
+      return;
+    }
 
-		startTransitionAction(() => {
-			const newColumns = Array.from(optimisticColumns);
-			const formData = new FormData();
-			formData.append("id", draggableId);
-			formData.append("type", type);
+    startTransitionAction(() => {
+      const newColumns = Array.from(optimisticColumns);
+      const formData = new FormData();
+      formData.append("id", draggableId);
+      formData.append("type", type);
 
-			if (type === "column") {
-				const [movedColumn] = newColumns.splice(source.index, 1);
-				newColumns.splice(destination.index, 0, movedColumn);
+      if (type === "column") {
+        const [movedColumn] = newColumns.splice(source.index, 1);
+        newColumns.splice(destination.index, 0, movedColumn);
 
-				setOptimisticColumns(newColumns);
-				formData.append("order", destination.index.toString());
-			}
+        setOptimisticColumns(newColumns);
+        formData.append("order", destination.index.toString());
+      }
 
-			if (type === "task") {
-				const sourceColIndex = newColumns.findIndex(
-					(col) => col.id === source.droppableId,
-				);
-				const destColIndex = newColumns.findIndex(
-					(col) => col.id === destination.droppableId,
-				);
+      if (type === "task") {
+        const sourceColIndex = newColumns.findIndex(
+          (col) => col.id === source.droppableId,
+        );
+        const destColIndex = newColumns.findIndex(
+          (col) => col.id === destination.droppableId,
+        );
 
-				if (sourceColIndex !== -1 && destColIndex !== -1) {
-					const sourceColumn = newColumns[sourceColIndex];
-					const destColumn = newColumns[destColIndex];
+        if (sourceColIndex !== -1 && destColIndex !== -1) {
+          const sourceColumn = newColumns[sourceColIndex];
+          const destColumn = newColumns[destColIndex];
 
-					const sourceTasks = Array.from(sourceColumn.tasks);
-					const destTasks =
-						source.droppableId === destination.droppableId
-							? sourceTasks
-							: Array.from(destColumn.tasks);
+          const sourceTasks = Array.from(sourceColumn.tasks);
+          const destTasks =
+            source.droppableId === destination.droppableId
+              ? sourceTasks
+              : Array.from(destColumn.tasks);
 
-					const [movedTask] = sourceTasks.splice(source.index, 1);
-					const order = (destination.index + 1) * 1000;
-					movedTask.order = order;
+          const [movedTask] = sourceTasks.splice(source.index, 1);
+          const order = (destination.index + 1) * 1000;
+          movedTask.order = order;
 
-					destTasks.splice(destination.index, 0, movedTask);
+          destTasks.splice(destination.index, 0, movedTask);
 
-					newColumns[sourceColIndex] = { ...sourceColumn, tasks: sourceTasks };
-					newColumns[destColIndex] = { ...destColumn, tasks: destTasks };
+          newColumns[sourceColIndex] = { ...sourceColumn, tasks: sourceTasks };
+          newColumns[destColIndex] = { ...destColumn, tasks: destTasks };
 
-					setOptimisticColumns(newColumns);
+          setOptimisticColumns(newColumns);
 
-					formData.append("columnId", destination.droppableId);
-					formData.append("order", order.toString());
-				}
-			}
+          formData.append("columnId", destination.droppableId);
+          formData.append("order", order.toString());
+        }
+      }
 
-			reorderAction({ success: false, errors: {} }, formData);
-		});
-	};
+      reorderAction({ success: false, errors: {} }, formData);
+    });
+  };
 
-	return (
-		<DragDropContext onDragEnd={onDragEnd}>
-			<Droppable droppableId="board" type="column" direction="horizontal">
-				{(provided) => (
-					<Stack
-						{...provided.droppableProps}
-						ref={provided.innerRef}
-						direction="row"
-						spacing={3}
-						sx={{
-							p: 3,
-							overflowX: "auto",
-						}}
-						style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.2s" }}
-					>
-						{optimisticColumns.map((column, index) => (
-							<Draggable key={column.id} draggableId={column.id} index={index}>
-								{(provided) => (
-									<div
-										ref={provided.innerRef}
-										{...provided.draggableProps}
-										{...provided.dragHandleProps}
-										style={provided.draggableProps.style}
-									>
-										<Column column={column} boardId={boardId} />
-									</div>
-								)}
-							</Draggable>
-						))}
-						{provided.placeholder}
-						<ColumnCreateForm boardId={boardId} />
-					</Stack>
-				)}
-			</Droppable>
-		</DragDropContext>
-	);
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="board" type="column" direction="horizontal">
+        {(provided) => (
+          <Stack
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            direction="row"
+            spacing={3}
+            sx={{
+              p: 3,
+              overflowX: "auto",
+            }}
+            style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.2s" }}
+          >
+            {optimisticColumns.map((column, index) => (
+              <Draggable key={column.id} draggableId={column.id} index={index}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={provided.draggableProps.style}
+                  >
+                    <Column column={column} boardId={boardId} />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+            <ColumnCreateForm boardId={boardId} />
+          </Stack>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
 }
