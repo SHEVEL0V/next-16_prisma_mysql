@@ -7,7 +7,7 @@ import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskCard from "./TaskCard";
 import TaskCreateForm from "./TaskForm";
-import type { ColumnType } from "../../services/column";
+import type { ColumnType } from "../../types";
 import TitleColumn from "./ColumnTitle";
 
 interface BoardColumnProps {
@@ -47,7 +47,7 @@ export default memo(function BoardColumn({
 							minHeight: 20, // Щоб було куди кидати завдання при Drag-n-Drop
 						}}
 					>
-						{column.tasks.map((task, index) => (
+						{column.tasks.map((task: any, index: number) => (
 							<TaskCard key={task.id} task={task} index={index} />
 						))}
 

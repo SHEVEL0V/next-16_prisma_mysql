@@ -52,11 +52,12 @@ export function createSafeAction<TInput, TOutput>(
 		formData: FormData,
 	): Promise<ActionState<TInput, TOutput>> => {
 		const actionCtx = options?.actionName || "UnnamedAction";
-		console.log(`[ACTION_START] [${actionCtx}] Ініціалізація...`);
+		const isDev = process.env.NODE_ENV === "development";
+		
+		// Development logging only
+		if (isDev) console.log(`[ACTION_START] [${actionCtx}] Ініціалізація...`);
 
-		// 1. Валідація
-		// Примітка: Object.fromEntries губить множинні значення (наприклад, масиви чекбоксів).
-		// Якщо використовуєте масиви у формах, краще використовувати zod-form-data.
+		// Parse and validate form data
 		const rawData = Object.fromEntries(formData.entries());
 		const validatedFields = schema.safeParse(rawData);
 
@@ -64,10 +65,12 @@ export function createSafeAction<TInput, TOutput>(
 			const fieldErrors = validatedFields.error.flatten()
 				.fieldErrors as Partial<Record<keyof TInput, string[]>>;
 
-			console.warn(`[ACTION_VALIDATION_ERROR] [${actionCtx}]`, {
-				input: rawData,
-				errors: fieldErrors,
-			});
+			if (isDev) {
+				console.warn(`[ACTION_VALIDATION_ERROR] [${actionCtx}]`, {
+					input: rawData,
+					errors: fieldErrors,
+				});
+			}
 
 			return {
 				success: false,
@@ -79,43 +82,52 @@ export function createSafeAction<TInput, TOutput>(
 		const inputData = validatedFields.data;
 		let result: TOutput;
 
-		// 2. Виконання Handler'а
+		// Execute the handler with session
 		try {
 			const session = await getSession();
 			result = await handler(inputData, session?.id);
 
-			console.log(`[ACTION_SUCCESS] [${actionCtx}] Успішно виконано.`);
+			if (isDev) {
+				console.log(`[ACTION_SUCCESS] [${actionCtx}] Успішно виконано.`);
+			}
 
+			// Revalidate cache if specified
 			if (options?.revalidatePath) {
 				const path =
 					typeof options.revalidatePath === "function"
 						? options.revalidatePath(result, inputData)
 						: options.revalidatePath;
 				revalidatePath(path);
-				console.log(
-					`[ACTION_REVALIDATE] [${actionCtx}] Шлях оновлено: ${path}`,
-				);
+				if (isDev) {
+					console.log(
+						`[ACTION_REVALIDATE] [${actionCtx}] Шлях оновлено: ${path}`,
+					);
+				}
 			}
 		} catch (error: unknown) {
-			// Пропускаємо Next.js Redirects/NotFounds, щоб фреймворк працював коректно
+			// Let Next.js routing errors propagate
 			if (isNextjsRoutingError(error)) {
-				console.log(
-					`[ACTION_ROUTING] [${actionCtx}] Перехоплено Next.js роутинг (redirect/notFound).`,
-				);
+				if (isDev) {
+					console.log(
+						`[ACTION_ROUTING] [${actionCtx}] Перехоплено Next.js роутинг (redirect/notFound).`,
+					);
+				}
 				throw error;
 			}
 
 			const dbError = error as DatabaseError;
 
-			// Обробка відомих помилок БД (напр. Prisma унікальність)
+			// Handle database conflicts (e.g., unique constraint violations)
 			if (dbError.code === "P2002") {
-				console.warn(
-					`[ACTION_DB_CONFLICT] [${actionCtx}] Конфлікт унікальності (P2002):`,
-					{
-						input: inputData,
-						errorMessage: dbError.message,
-					},
-				);
+				if (isDev) {
+					console.warn(
+						`[ACTION_DB_CONFLICT] [${actionCtx}] Конфлікт унікальності (P2002):`,
+						{
+							input: inputData,
+							errorMessage: dbError.message,
+						},
+					);
+				}
 
 				return {
 					success: false,
@@ -124,11 +136,14 @@ export function createSafeAction<TInput, TOutput>(
 				};
 			}
 
-			// Непередбачувані помилки
-			console.error(`[ACTION_UNKNOWN_ERROR] [${actionCtx}] Критична помилка:`, {
-				error: error instanceof Error ? error.stack : error,
-				input: inputData,
-			});
+			// Handle unexpected errors
+			console.error(`[ACTION_ERROR] [${actionCtx}] ${error instanceof Error ? error.message : "Непередбачувана помилка"}`);
+			if (isDev) {
+				console.error({
+					stack: error instanceof Error ? error.stack : error,
+					input: inputData,
+				});
+			}
 
 			return {
 				success: false,
@@ -140,16 +155,18 @@ export function createSafeAction<TInput, TOutput>(
 			};
 		}
 
-		// 3. Редирект поза try/catch
+		// Redirect after successful action
 		if (options?.redirectTo) {
 			const target =
 				typeof options.redirectTo === "function"
 					? options.redirectTo(result, inputData)
 					: options.redirectTo;
 
-			console.log(
-				`[ACTION_REDIRECT] [${actionCtx}] Виконується редирект на: ${target}`,
-			);
+			if (isDev) {
+				console.log(
+					`[ACTION_REDIRECT] [${actionCtx}] Виконується редирект на: ${target}`,
+				);
+			}
 			redirect(target);
 		}
 

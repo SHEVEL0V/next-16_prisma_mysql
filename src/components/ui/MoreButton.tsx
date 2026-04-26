@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import type React from "react";
-import { useState, useTransition, useCallback } from "react";
+import { memo, useState, useTransition, useCallback } from "react";
 import {
 	IconButton,
 	Menu,
@@ -20,7 +20,7 @@ interface MoreButtonProps {
 	deleteAction: (payload: FormData) => void;
 }
 
-export default function MoreButton({
+function MoreButton({
 	onEdit,
 	id,
 	deleteAction,
@@ -30,22 +30,30 @@ export default function MoreButton({
 
 	const open = Boolean(anchorEl);
 
-	const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) =>
+	// Open menu
+	const handleOpen = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
 		setAnchorEl(e.currentTarget);
-	const handleClose = useCallback(() => setAnchorEl(null), []);
+	}, []);
 
-	const handleEdit = () => {
+	// Close menu
+	const handleClose = useCallback(() => {
+		setAnchorEl(null);
+	}, []);
+
+	// Edit handler with menu close
+	const handleEdit = useCallback(() => {
 		onEdit();
 		handleClose();
-	};
+	}, [onEdit, handleClose]);
 
-	const handleDelete = () => {
+	// Delete handler with form data
+	const handleDelete = useCallback(() => {
 		startTransition(async () => {
 			const formData = new FormData();
 			formData.append("id", id);
 			await deleteAction(formData);
 		});
-	};
+	}, [id, deleteAction]);
 
 	return (
 		<>
@@ -89,3 +97,6 @@ export default function MoreButton({
 		</>
 	);
 }
+
+// Мemoize to prevent unnecessary re-renders
+export default memo(MoreButton);

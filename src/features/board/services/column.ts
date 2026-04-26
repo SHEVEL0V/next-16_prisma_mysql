@@ -1,11 +1,6 @@
 /** @format */
 
 import prisma from "@/lib/prisma";
-import type { Prisma } from "@g/prisma/client";
-
-export type ColumnType = Prisma.ColumnGetPayload<{
-	include: { tasks: true };
-}>;
 
 export const columnService = {
 	// ------------------------------------------------------------------------------------------

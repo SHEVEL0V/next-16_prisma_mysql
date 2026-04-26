@@ -2,12 +2,12 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { memo, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteSession } from "@/utils/session";
 
-// MUI Компоненти
+// MUI Components
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,46 +15,44 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 
-// MUI Іконки
+// MUI Icons
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
 import Person from "@mui/icons-material/Person";
 
-export default function ButtonUser() {
+function ButtonUser() {
 	const router = useRouter();
 
-	// Стан для керування меню (відкрито/закрито)
+	// Menu state management
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 
-	// Відкриття меню при кліку на іконку
-	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+	// Open menu on click
+	const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
-	};
+	}, []);
 
-	// Закриття меню
-	const handleClose = () => {
+	// Close menu
+	const handleClose = useCallback(() => {
 		setAnchorEl(null);
-	};
+	}, []);
 
-	// Логіка виходу
-	const handleLogout = async () => {
-		handleClose(); // Спочатку закриваємо меню
+	// Logout handler with error handling
+	const handleLogout = useCallback(async () => {
+		handleClose();
 
 		try {
-			await deleteSession(); // Викликаємо функцію для видалення сесії на сервері
-
-			console.log("User logged out");
-			router.push("/signin"); // Перенаправляємо користувача на сторінку входу
-			router.refresh(); // Оновлення стану сторінки
+			await deleteSession();
+			router.push("/signin");
+			router.refresh();
 		} catch (error) {
-			console.error("Logout failed", error);
+			console.error("Logout failed:", error);
 		}
-	};
+	}, [router, handleClose]);
 
 	return (
 		<>
-			{/* Кнопка-тригер */}
+			{/* Menu trigger button */}
 			<Tooltip title="Налаштування профілю">
 				<IconButton
 					onClick={handleClick}
@@ -71,20 +69,19 @@ export default function ButtonUser() {
 				</IconButton>
 			</Tooltip>
 
-			{/* Випадаюче меню */}
+			{/* Dropdown menu */}
 			<Menu
 				anchorEl={anchorEl}
 				id="account-menu"
 				open={open}
 				onClose={handleClose}
-				onClick={handleClose} // Закривати меню при кліку на будь-який пункт
+				onClick={handleClose}
 				slotProps={{
 					paper: {
-						elevation: 4, // Тінь меню
+						elevation: 4,
 						sx: {
 							minWidth: 150,
-							mt: 1.5, // Відступ зверху
-							// Стилізація трикутника (стрілочки) зверху меню
+							mt: 1.5,
 							"&::before": {
 								content: '""',
 								display: "block",
@@ -103,7 +100,7 @@ export default function ButtonUser() {
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				{/* Пункт 1: Профіль (посилання) */}
+				{/* Profile menu item */}
 				<MenuItem component={Link} href="/user/profile">
 					<ListItemIcon>
 						<Person fontSize="small" />
@@ -113,7 +110,7 @@ export default function ButtonUser() {
 
 				<Divider />
 
-				{/* Пункт 2: Вихід (кнопка з логікою) */}
+				{/* Logout menu item */}
 				<MenuItem onClick={handleLogout}>
 					<ListItemIcon>
 						<Logout fontSize="small" color="error" />
@@ -124,3 +121,6 @@ export default function ButtonUser() {
 		</>
 	);
 }
+
+// Мemoize to prevent unnecessary re-renders from parent updates
+export default memo(ButtonUser);

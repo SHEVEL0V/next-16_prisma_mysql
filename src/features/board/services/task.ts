@@ -1,12 +1,7 @@
 /** @format */
 
 import prisma from "@/lib/prisma";
-
-import type { TaskCreateInput } from "../../../../generated/prisma/models";
-import type { Task } from "@g/prisma/client";
-
-export type TaskType = Omit<Task, "createdAt" | "updatedAt">;
-export type TaskCreateType = TaskCreateInput;
+import type { Prisma } from "@g/prisma/client";
 
 export const taskService = {
 	// ------------------------------------------------------------------------------------------
@@ -29,7 +24,7 @@ export const taskService = {
 		});
 	},
 	// ------------------------------------------------------------------------------------------
-	update: async (taskId: string, data: Partial<Task>) => {
+	update: async (taskId: string, data: Partial<Prisma.TaskUpdateInput>) => {
 		return prisma.task.update({
 			where: { id: taskId },
 			data,
