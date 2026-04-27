@@ -1,4 +1,7 @@
+/** @format */
+
 "use client";
+
 import { memo, useState } from "react";
 import { Card, CardContent, Stack } from "@mui/material";
 import type { TaskType } from "../../types";
@@ -17,6 +20,16 @@ interface TaskCardContentProps {
 	provided: DraggableProvided;
 }
 
+/**
+ * TaskCardContent Component
+ * Content wrapper for draggable task card with inline editing
+ * Handles task title editing, priority toggle, and details modal
+ * 
+ * @component
+ * @param {TaskType} task - Task data
+ * @param {DraggableStateSnapshot} snapshot - Drag state from dnd provider
+ * @param {DraggableProvided} provided - Draggable props from dnd provider
+ */
 export default memo(function TaskCardContent({
 	task,
 	snapshot,
