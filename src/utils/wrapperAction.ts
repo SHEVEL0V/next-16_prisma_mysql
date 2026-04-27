@@ -5,7 +5,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";
 
-// 1. Оптимізовано тип помилок для кращого Developer Experience (DX)
+/**
+ * Action State Type
+ * Represents the result of a server action - either success with data or failure with validation errors
+ */
 export type ActionState<TInput, TOutput> =
 	| {
 			success: true;
@@ -18,19 +21,32 @@ export type ActionState<TInput, TOutput> =
 			errors: Partial<Record<keyof TInput, string[]>>;
 	  };
 
+/**
+ * Configuration options for server actions
+ */
 interface ActionOptions<TInput, TOutput> {
-	actionName?: string; // Додано для ідентифікації екшену в логах
+	// Identifier for logging and debugging
+	actionName?: string;
+	// Path(s) to revalidate after successful action
 	revalidatePath?: string | ((data: TOutput, input: TInput) => string);
+	// Redirect target after successful action
 	redirectTo?: string | ((data: TOutput, input: TInput) => string);
 }
 
+/**
+ * Database error with Prisma-specific fields
+ */
 interface DatabaseError extends Error {
 	code?: string;
 	digest?: string;
 }
 
-// Утиліта для визначення системних помилок Next.js (redirect, notFound),
-// які не можна перехоплювати в catch.
+/**
+ * Checks if error is a Next.js routing error (redirect/notFound)
+ * These errors should not be caught as they control routing flow
+ * @param error - Unknown error object
+ * @returns True if error is Next.js routing related
+ */
 const isNextjsRoutingError = (error: unknown): boolean => {
 	if (error instanceof Error) {
 		return (
@@ -42,6 +58,29 @@ const isNextjsRoutingError = (error: unknown): boolean => {
 	return false;
 };
 
+/**
+ * Create a safe server action with validation, error handling, and caching
+ * 
+ * Features:
+ * - Zod schema validation with field-level error reporting
+ * - Automatic session retrieval and user ID injection
+ * - Database error handling with specific conflict detection
+ * - Cache revalidation support
+ * - Optional redirect on success
+ * - Development-only logging to minimize production overhead
+ * 
+ * @param schema - Zod schema for input validation
+ * @param handler - Async handler function that processes validated input
+ * @param options - Configuration for revalidation and redirect
+ * @returns Server action function compatible with useActionState
+ * 
+ * @example
+ * const updateAction = createSafeAction(
+ *   updateSchema,
+ *   async (data, userId) => updateService.update(userId, data),
+ *   { revalidatePath: "/dashboard", actionName: "updateItem" }
+ * )
+ */
 export function createSafeAction<TInput, TOutput>(
 	schema: z.ZodSchema<TInput>,
 	handler: (data: TInput, userId: string | undefined) => Promise<TOutput>,
@@ -53,11 +92,10 @@ export function createSafeAction<TInput, TOutput>(
 	): Promise<ActionState<TInput, TOutput>> => {
 		const actionCtx = options?.actionName || "UnnamedAction";
 		const isDev = process.env.NODE_ENV === "development";
-		
-		// Development logging only
-		if (isDev) console.log(`[ACTION_START] [${actionCtx}] Ініціалізація...`);
 
-		// Parse and validate form data
+		if (isDev) console.log(`[ACTION_START] [${actionCtx}] Initialization...`);
+
+		// Parse form data and validate against schema
 		const rawData = Object.fromEntries(formData.entries());
 		const validatedFields = schema.safeParse(rawData);
 
@@ -74,7 +112,7 @@ export function createSafeAction<TInput, TOutput>(
 
 			return {
 				success: false,
-				message: "Помилка валідації даних.",
+				message: "Validation error",
 				errors: fieldErrors,
 			};
 		}
@@ -82,13 +120,13 @@ export function createSafeAction<TInput, TOutput>(
 		const inputData = validatedFields.data;
 		let result: TOutput;
 
-		// Execute the handler with session
+		// Execute handler with session context
 		try {
 			const session = await getSession();
 			result = await handler(inputData, session?.id);
 
 			if (isDev) {
-				console.log(`[ACTION_SUCCESS] [${actionCtx}] Успішно виконано.`);
+				console.log(`[ACTION_SUCCESS] [${actionCtx}] Completed successfully.`);
 			}
 
 			// Revalidate cache if specified
@@ -100,7 +138,7 @@ export function createSafeAction<TInput, TOutput>(
 				revalidatePath(path);
 				if (isDev) {
 					console.log(
-						`[ACTION_REVALIDATE] [${actionCtx}] Шлях оновлено: ${path}`,
+						`[ACTION_REVALIDATE] [${actionCtx}] Path revalidated: ${path}`,
 					);
 				}
 			}
@@ -109,7 +147,7 @@ export function createSafeAction<TInput, TOutput>(
 			if (isNextjsRoutingError(error)) {
 				if (isDev) {
 					console.log(
-						`[ACTION_ROUTING] [${actionCtx}] Перехоплено Next.js роутинг (redirect/notFound).`,
+						`[ACTION_ROUTING] [${actionCtx}] Next.js routing detected (redirect/notFound).`,
 					);
 				}
 				throw error;
@@ -117,11 +155,11 @@ export function createSafeAction<TInput, TOutput>(
 
 			const dbError = error as DatabaseError;
 
-			// Handle database conflicts (e.g., unique constraint violations)
+			// Handle database uniqueness constraint violations
 			if (dbError.code === "P2002") {
 				if (isDev) {
 					console.warn(
-						`[ACTION_DB_CONFLICT] [${actionCtx}] Конфлікт унікальності (P2002):`,
+						`[ACTION_DB_CONFLICT] [${actionCtx}] Uniqueness conflict (P2002):`,
 						{
 							input: inputData,
 							errorMessage: dbError.message,
@@ -131,13 +169,13 @@ export function createSafeAction<TInput, TOutput>(
 
 				return {
 					success: false,
-					message: "Запис із такими даними вже існує.",
+					message: "Record with this data already exists",
 					errors: {},
 				};
 			}
 
-			// Handle unexpected errors
-			console.error(`[ACTION_ERROR] [${actionCtx}] ${error instanceof Error ? error.message : "Непередбачувана помилка"}`);
+			// Log production errors with minimal context
+			console.error(`[ACTION_ERROR] [${actionCtx}] ${error instanceof Error ? error.message : "Unexpected error"}`);
 			if (isDev) {
 				console.error({
 					stack: error instanceof Error ? error.stack : error,
@@ -150,12 +188,12 @@ export function createSafeAction<TInput, TOutput>(
 				message:
 					error instanceof Error
 						? error.message
-						: "Сталася непередбачувана помилка.",
+						: "An unexpected error occurred",
 				errors: {},
 			};
 		}
 
-		// Redirect after successful action
+		// Redirect after successful action (outside try/catch to ensure it executes)
 		if (options?.redirectTo) {
 			const target =
 				typeof options.redirectTo === "function"
@@ -164,7 +202,7 @@ export function createSafeAction<TInput, TOutput>(
 
 			if (isDev) {
 				console.log(
-					`[ACTION_REDIRECT] [${actionCtx}] Виконується редирект на: ${target}`,
+					`[ACTION_REDIRECT] [${actionCtx}] Redirecting to: ${target}`,
 				);
 			}
 			redirect(target);
@@ -172,7 +210,7 @@ export function createSafeAction<TInput, TOutput>(
 
 		return {
 			success: true,
-			message: "Операція успішна",
+			message: "Operation successful",
 			data: result,
 		};
 	};

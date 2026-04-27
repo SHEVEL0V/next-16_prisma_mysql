@@ -7,7 +7,7 @@ import { Paper, Typography, Stack, Box, alpha, useTheme } from "@mui/material";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskCard from "./TaskCard";
 import TaskCreateForm from "./TaskForm";
-import type { ColumnType } from "../../types";
+import type { ColumnType, ColumnTaskType } from "../../types";
 import TitleColumn from "./ColumnTitle";
 
 interface BoardColumnProps {
@@ -15,6 +15,15 @@ interface BoardColumnProps {
 	boardId: string;
 }
 
+/**
+ * BoardColumn Component
+ * Renders a single column with tasks, title, and creation form
+ * Supports drag-and-drop functionality for task reordering
+ * 
+ * @component
+ * @param {ColumnType} column - Column data with nested tasks
+ * @param {string} boardId - Parent board ID for task creation
+ */
 export default memo(function BoardColumn({
 	column,
 	boardId,
@@ -23,17 +32,17 @@ export default memo(function BoardColumn({
 
 	return (
 		<Paper variant="boardColumn" className="glass-effect bordered">
-			{/* Заголовок колонки */}
+			{/* Column header with title and task count */}
 			<TitleColumn
 				id={column.id}
 				title={column.title}
 				taskCount={column.tasks.length}
 			/>
 
-			{/* Форма винесена в окремий клієнтський компонент */}
+			{/* Task creation form */}
 			<TaskCreateForm columnId={column.id} boardId={boardId} />
 
-			{/* Список завдань зі скролом */}
+			{/* Droppable zone for drag-and-drop task reordering */}
 			<Droppable droppableId={column.id} type="task">
 				{(provided) => (
 					<Stack
@@ -44,15 +53,18 @@ export default memo(function BoardColumn({
 							overflowY: "auto",
 							overflowX: "hidden",
 							pr: 0.5,
-							minHeight: 20, // Щоб було куди кидати завдання при Drag-n-Drop
+							minHeight: 20,
 						}}
 					>
-						{column.tasks.map((task: any, index: number) => (
+						{/* Task cards mapped from column tasks */}
+						{column.tasks.map((task: ColumnTaskType, index: number) => (
 							<TaskCard key={task.id} task={task} index={index} />
 						))}
 
+						{/* Drag-and-drop placeholder */}
 						{provided.placeholder}
 
+						{/* Empty state when no tasks */}
 						{column.tasks.length === 0 && (
 							<Box
 								sx={{
@@ -64,7 +76,7 @@ export default memo(function BoardColumn({
 								}}
 							>
 								<Typography variant="caption" color="text.secondary">
-									Немає завдань
+									No tasks
 								</Typography>
 							</Box>
 						)}

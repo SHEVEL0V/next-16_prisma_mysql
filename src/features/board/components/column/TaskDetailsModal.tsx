@@ -21,7 +21,7 @@ export default function TaskDetailsModal({
   task,
 }: {
   open: boolean;
-  onClose: void;
+  onClose: () => void;
   task: TaskType;
 }) {
   const [state, formAction, isPending] = useActionState(
