@@ -12,6 +12,17 @@ A modern, full-stack Kanban board application built with **Next.js 16**, **React
 - **Modern UI**: Material-UI (MUI) components with emotion styling
 - **Server Actions**: Next.js server actions with validation and error handling
 - **Performance Optimized**: Memoized components, dev-only logging, efficient queries
+- **Well Documented**: Comprehensive documentation with JSDoc comments
+
+## 📚 Documentation
+
+**Start here**: [Documentation Index](./docs/INDEX.md)
+
+- 📖 [Development Guide](./docs/DEVELOPMENT.md) - Getting started and code standards
+- 🏗️ [Architecture Guide](./docs/ARCHITECTURE.md) - Design patterns and system design
+- 🧩 [Components Reference](./docs/COMPONENTS.md) - UI components and usage
+- 📡 [API Reference](./docs/API.md) - Complete API documentation
+- 🐛 [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues and solutions
 
 ## 📋 Table of Contents
 
@@ -26,7 +37,8 @@ A modern, full-stack Kanban board application built with **Next.js 16**, **React
 9. [Development Guidelines](#-development-guidelines)
 10. [Performance Considerations](#-performance-considerations)
 11. [Security](#-security)
-12. [Troubleshooting](#-troubleshooting)
+12. [Documentation](#-documentation)
+13. [Troubleshooting](#-troubleshooting)
 
 ## 🛠️ Technology Stack
 
