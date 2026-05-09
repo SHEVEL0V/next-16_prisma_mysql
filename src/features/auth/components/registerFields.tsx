@@ -1,7 +1,9 @@
 /** @format */
-import { TextField, Stack, Alert } from "@mui/material";
-import type { ActionResponse } from "@/types";
-import { SubmitButton } from "@/components/ui/SubmitButton";
+
+import { TextField, Stack, Alert } from '@mui/material';
+import { Button } from '@/components/ui/buttons';
+import { MESSAGES } from '@/constants';
+import type { ActionResponse } from '@/types';
 
 interface RegisterFieldsProps<T> {
 	state: ActionResponse<T>;
@@ -10,34 +12,38 @@ interface RegisterFieldsProps<T> {
 
 const FIELDS = [
 	{
-		id: "name",
-		name: "name",
-		label: "Full Name",
-		type: "text",
-		autoComplete: "name",
+		id: 'name',
+		name: 'name',
+		label: 'Full Name',
+		type: 'text',
+		autoComplete: 'name',
 		autoFocus: true,
 	},
 	{
-		id: "email",
-		name: "email",
-		label: "Email Address",
-		type: "email",
-		autoComplete: "email",
+		id: 'email',
+		name: 'email',
+		label: 'Email Address',
+		type: 'email',
+		autoComplete: 'email',
 	},
-	{ id: "password", name: "password", label: "Password", type: "password" },
+	{ id: 'password', name: 'password', label: 'Password', type: 'password' },
 	{
-		id: "confirmPassword",
-		name: "confirmPassword",
-		label: "Confirm Password",
-		type: "password",
+		id: 'confirmPassword',
+		name: 'confirmPassword',
+		label: 'Confirm Password',
+		type: 'password',
 	},
 ] as const;
 
+/**
+ * RegisterFields Component
+ * Renders registration form fields (name, email, password, confirmation)
+ */
 export function RegisterFields<T>({
 	state,
 	isPending,
 }: RegisterFieldsProps<T>) {
-	const errors = "errors" in state ? state.errors : undefined;
+	const errors = 'errors' in state ? state.errors : undefined;
 
 	return (
 		<Stack spacing={2.5}>
@@ -59,11 +65,13 @@ export function RegisterFields<T>({
 				</Alert>
 			)}
 
-			<SubmitButton
-				isPending={isPending}
-				label="Create Account"
-				loadingText="Creating account..."
-			/>
+			<Button
+				variant="submit"
+				loading={isPending}
+				loadingText={MESSAGES.loading}
+			>
+				{MESSAGES.register}
+			</Button>
 		</Stack>
 	);
 }

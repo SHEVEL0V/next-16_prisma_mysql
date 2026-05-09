@@ -1,7 +1,9 @@
 /** @format */
-import { TextField, Stack, Alert } from "@mui/material";
-import type { ActionResponse } from "@/types";
-import { SubmitButton } from "@/components/ui/SubmitButton";
+
+import { TextField, Stack, Alert } from '@mui/material';
+import { Button } from '@/components/ui/buttons';
+import type { ActionResponse } from '@/types';
+import { MESSAGES } from '@/constants';
 
 interface LoginFieldsProps<T> {
 	state: ActionResponse<T>;
@@ -10,24 +12,28 @@ interface LoginFieldsProps<T> {
 
 const LOGIN_FIELDS = [
 	{
-		id: "email",
-		name: "email",
-		label: "Email",
-		type: "email",
-		autoComplete: "email",
+		id: 'email',
+		name: 'email',
+		label: 'Email',
+		type: 'email',
+		autoComplete: 'email',
 		autoFocus: true,
 	},
 	{
-		id: "password",
-		name: "password",
-		label: "Password",
-		type: "password",
-		autoComplete: "current-password",
+		id: 'password',
+		name: 'password',
+		label: 'Password',
+		type: 'password',
+		autoComplete: 'current-password',
 	},
 ] as const;
 
+/**
+ * LoginFields Component
+ * Renders login form fields (email, password) and submit button
+ */
 export function LoginFields<T>({ state, isPending }: LoginFieldsProps<T>) {
-	const errors = "errors" in state ? state.errors : undefined;
+	const errors = 'errors' in state ? state.errors : undefined;
 
 	return (
 		<Stack spacing={2.5}>
@@ -43,18 +49,20 @@ export function LoginFields<T>({ state, isPending }: LoginFieldsProps<T>) {
 				/>
 			))}
 
-			{/* Alert лише при помилці */}
+			{/* Error alert only on failure */}
 			{!state.success && state.message && (
 				<Alert severity="error" variant="filled">
 					{state.message}
 				</Alert>
 			)}
 
-			<SubmitButton
-				isPending={isPending}
-				label="Sign in"
-				loadingText="Signing in..."
-			/>
+			<Button
+				variant="submit"
+				loading={isPending}
+				loadingText={MESSAGES.loading}
+			>
+				{MESSAGES.login}
+			</Button>
 		</Stack>
 	);
 }

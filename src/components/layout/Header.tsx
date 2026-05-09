@@ -1,41 +1,43 @@
 /** @format */
-"use client";
 
-import React from "react";
+'use client';
 
-import { AppBar, Toolbar, Typography, Box, Container } from "@mui/material";
+import React from 'react';
+import { AppBar, Toolbar, Typography, Box, Container } from '@mui/material';
+import { Button } from '@/components/ui/buttons';
+import UserButton from '@/components/ui/UserButton';
 
-import UserButton from "@/components/ui/UserButton";
-import DarkModeButton from "@/components/ui/DarkModeButton";
-import BackButton from "@/components/ui/BackButton";
-import HomeButton from "../ui/HomeButton";
-
+/**
+ * Header Component
+ * Main application header with navigation buttons
+ * Displays back, home, theme toggle, and user menu
+ */
 export default function Header() {
 	return (
 		<AppBar>
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
-					{/* ЛІВА СЕКЦІЯ */}
-					<Box sx={{ flex: 1, display: "flex" }}>
-						<BackButton />
-						<HomeButton />
+					{/* Left section - navigation buttons */}
+					<Box sx={{ flex: 1, display: 'flex' }}>
+						<Button variant="back" tooltip="Go back" />
+						<Button variant="home" tooltip="Go to home" />
 					</Box>
 
-					{/* ЦЕНТРАЛЬНА СЕКЦІЯ */}
-					<Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+					{/* Center section - title */}
+					<Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
 						Welcome to UI
 					</Typography>
 
-					{/* ПРАВА СЕКЦІЯ */}
+					{/* Right section - theme and user menu */}
 					<Box
 						sx={{
 							flex: 1,
-							display: "flex",
-							justifyContent: "flex-end",
+							display: 'flex',
+							justifyContent: 'flex-end',
 							gap: 1,
 						}}
 					>
-						<DarkModeButton />
+						<Button variant="darkMode" tooltip="Toggle theme" />
 						<UserButton />
 					</Box>
 				</Toolbar>
