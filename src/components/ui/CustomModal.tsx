@@ -1,27 +1,13 @@
 /** @format */
-"use client";
 
-import { useActionState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import {
-	Alert,
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	DialogActions,
-	IconButton,
-	Typography,
-	Box,
-	Grid,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+'use client';
 
-import FormInput from "./fields/FormInput";
-import { SubmitButton } from "./SubmitButton";
-import type { ActionResponse } from "@/types";
+import { useRouter } from 'next/navigation';
+import { FormModal } from './modals';
+import type { ActionResponse } from '@/types';
 
-interface ModalProps<T> {
-	fields: { name: string; label: string; type: string; required?: boolean }[];
+interface CustomModalProps<T extends Record<string, unknown> = Record<string, unknown>> {
+	fields: Array<{ name: string; label: string; type: string; required?: boolean }>;
 	title?: string;
 	action: (
 		prevState: ActionResponse<T>,
@@ -29,77 +15,32 @@ interface ModalProps<T> {
 	) => Promise<ActionResponse<T>>;
 }
 
-export default function DynamicModal<T>({
+/**
+ * CustomModal Component (Deprecated)
+ * Use FormModal instead - this is kept for backwards compatibility
+ * Wraps FormModal with router-based close behavior
+ *
+ * @deprecated Use FormModal from src/components/ui/modals instead
+ */
+export default function CustomModal<T extends Record<string, unknown> = Record<string, unknown>>({
 	fields,
-	title,
+	title = 'Fill out the form',
 	action,
-}: ModalProps<T>) {
+}: CustomModalProps<T>) {
 	const router = useRouter();
-	const [state, formAction, isPending] = useActionState(action, {
-		success: false,
-		errors: {},
-	});
 
-	const handleClose = useCallback(() => router.back(), [router]);
-
-	useEffect(() => {
-		if (state.success) {
-			const timer = setTimeout(() => handleClose(), 1500);
-			return () => clearTimeout(timer);
-		}
-	}, [state.success, handleClose]);
+	const handleClose = () => router.back();
+	const handleSuccess = () => handleClose();
 
 	return (
-		<Dialog open onClose={handleClose} fullWidth maxWidth="sm">
-			<DialogTitle sx={{ m: 0, p: 2, pr: 6 }}>
-				<Typography variant="h6" fontWeight="bold">
-					{title || "Заповніть форму"}
-				</Typography>
-				<IconButton
-					onClick={handleClose}
-					sx={{ position: "absolute", right: 8, top: 8, color: "grey.500" }}
-				>
-					<CloseIcon />
-				</IconButton>
-			</DialogTitle>
-
-			<DialogContent dividers>
-				{state.message && (
-					<Alert
-						severity={state.success ? "success" : "error"}
-						variant="outlined"
-					>
-						{state.message}
-					</Alert>
-				)}
-
-				<Box component="form" action={formAction} id="modal-form" noValidate>
-					<Grid container spacing={2}>
-						{fields.map((field) => (
-							<FormInput
-								key={field.name}
-								field={field}
-								disabled={isPending}
-								error={
-									"errors" in state
-										? state.errors?.[field.name as keyof typeof state.errors]
-										: undefined
-								}
-							/>
-						))}
-					</Grid>
-				</Box>
-			</DialogContent>
-
-			<DialogActions sx={{ p: 2, gap: 1 }}>
-				<SubmitButton
-					isPending={isPending}
-					label="Зберегти"
-					loadingText="Збереження..."
-					form="modal-form"
-					sx={{ width: "auto", px: 4 }}
-				/>
-			</DialogActions>
-		</Dialog>
+		<FormModal
+			open
+			onClose={handleClose}
+			title={title}
+			fields={fields}
+			action={action}
+			onSuccess={handleSuccess}
+		/>
 	);
 }
+
