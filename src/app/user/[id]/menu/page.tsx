@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import DashboardGrid from "@/components/ui/DashboardGrid";
+import { DashboardGrid } from "@/components/ui/grids";
 import Container from "@mui/material/Container";
 
 const card = [

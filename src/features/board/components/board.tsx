@@ -2,7 +2,7 @@
 
 // features/board/components/board-canvas.tsx
 import { Box } from "@mui/material";
-import CenteredMessage from "@/components/ui/CenteredMessage";
+import { CenteredMessage } from "@/components/ui/utilities";
 import DragDropWrapper from "@/features/board/components/DragDrop";
 import Sidebar from "@/features/board/components/sidebar/Sidebar";
 import { getBoardById, getBoards } from "@/features/board/queries";

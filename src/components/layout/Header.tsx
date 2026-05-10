@@ -4,8 +4,7 @@
 
 import React from 'react';
 import { AppBar, Toolbar, Typography, Box, Container } from '@mui/material';
-import { Button } from '@/components/ui/buttons';
-import UserButton from '@/components/ui/UserButton';
+import { Button, UserButton } from '@/components/ui/buttons';
 
 /**
  * Header Component

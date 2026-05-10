@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { useActionState, useRef, useState } from "react";
 import EditableTextField from "@/components/ui/fields/EditableTextField";
-import MoreButton from "@/components/ui/MoreButton";
+import { MoreButton } from "@/components/ui/buttons";
 import { deleteBoardAction, updateBoardAction } from "../../actions";
 
 interface SidebarItemProps {

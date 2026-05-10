@@ -8,7 +8,7 @@ import {
 	type GridRowSelectionModel,
 } from "@mui/x-data-grid";
 
-interface GridProps {
+export interface GridProps {
 	data: GridValidRowModel[];
 	onSelectionChange?: (ids: GridRowSelectionModel) => void;
 }

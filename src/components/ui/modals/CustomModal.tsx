@@ -3,16 +3,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FormModal } from './modals';
+import { FormModal } from './FormModal';
 import type { ActionResponse } from '@/types';
 
-interface CustomModalProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface CustomModalProps {
 	fields: Array<{ name: string; label: string; type: string; required?: boolean }>;
 	title?: string;
 	action: (
-		prevState: ActionResponse<T>,
+		prevState: ActionResponse<Record<string, unknown>>,
 		formData: FormData,
-	) => Promise<ActionResponse<T>>;
+	) => Promise<ActionResponse<Record<string, unknown>>>;
 }
 
 /**
@@ -22,11 +22,11 @@ interface CustomModalProps<T extends Record<string, unknown> = Record<string, un
  *
  * @deprecated Use FormModal from src/components/ui/modals instead
  */
-export default function CustomModal<T extends Record<string, unknown> = Record<string, unknown>>({
+export default function CustomModal({
 	fields,
 	title = 'Fill out the form',
 	action,
-}: CustomModalProps<T>) {
+}: CustomModalProps) {
 	const router = useRouter();
 
 	const handleClose = () => router.back();

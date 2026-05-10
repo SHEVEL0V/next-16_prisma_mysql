@@ -54,7 +54,7 @@ export interface FormModalProps<T extends Record<string, unknown> = Record<strin
 	fields?: FormField[];
 	/** Server action function */
 	action: (
-		prevState: ActionResponse<Record<string, unknown>>,
+		prevState: ActionResponse<T>,
 		formData: FormData,
 	) => Promise<ActionResponse<T>>;
 	/** Modal size */
@@ -100,7 +100,10 @@ export interface FormModalProps<T extends Record<string, unknown> = Record<strin
  * </FormModal>
  */
 export const FormModal = memo(
-	React.forwardRef<HTMLDivElement, FormModalProps>(
+	React.forwardRef<
+		HTMLDivElement,
+		FormModalProps<Record<string, unknown>>
+	>(
 		(
 			{
 				open,
@@ -117,7 +120,7 @@ export const FormModal = memo(
 			},
 			ref,
 		) => {
-			const [state, formAction, isPending] = useActionState<ActionResponse<Record<string, unknown>>>(
+			const [state, formAction, isPending] = useActionState(
 				action,
 				{
 					success: false,

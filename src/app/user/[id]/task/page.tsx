@@ -1,6 +1,6 @@
 /** @format */
 
-import { Grid } from "@/components/ui/CustomDataGrid";
+import { Grid } from "@/components/ui/grids";
 import { getTasksAll } from "@/features/board/queries";
 
 export default async function Tasks() {
