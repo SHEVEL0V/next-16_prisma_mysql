@@ -1,6 +1,6 @@
 /** @format */
 
-import Board from "@/features/board/components/Board";
+import Board from "@/features/board/components/board";
 
 interface Props {
 	searchParams: Promise<{ id?: string }>;
