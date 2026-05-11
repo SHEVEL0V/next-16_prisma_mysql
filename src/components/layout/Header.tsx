@@ -28,8 +28,8 @@ export default function Header() {
 					{/* Left section - navigation buttons */}
 					<Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
 						<Button variant="back" tooltip="Go back" />
-						<Button 
-							variant="home" 
+						<Button
+							variant="home"
 							tooltip="Go to home"
 							onHome={handleHomeClick}
 						/>
