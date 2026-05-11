@@ -6,7 +6,7 @@
 import React, { useActionState } from "react";
 import { loginAction } from "@/features/auth/actions";
 import { Box, Typography, Link } from "@mui/material";
-import { LoginFields } from "./loginFields";
+import { LoginFields } from "./LoginFields";
 
 import ContainerForm from "./ContainerForm";
 import NextLink from "next/link";
