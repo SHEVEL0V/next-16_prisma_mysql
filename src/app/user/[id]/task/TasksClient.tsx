@@ -147,6 +147,7 @@ export function TasksClient({ rows }: TasksClientProps) {
 				columns={columns}
 				pageSize={25}
 				disablePagination={false}
+				fullScreen
 			/>
 		</Box>
 	);

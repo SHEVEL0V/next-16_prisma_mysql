@@ -20,6 +20,7 @@ export interface GridProps {
 	height?: string | number;
 	disableSelection?: boolean;
 	disablePagination?: boolean;
+	fullScreen?: boolean;
 }
 
 /**
@@ -35,8 +36,10 @@ export function Grid({
 	height = 600,
 	disableSelection = false,
 	disablePagination = false,
+	fullScreen = false,
 }: GridProps) {
 	const theme = useTheme();
+	const gridHeight = fullScreen ? "100%" : height;
 
 	// Generate columns from data if not provided
 	const columns = useMemo(() => {
@@ -66,9 +69,8 @@ export function Grid({
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-					height,
+					height: gridHeight,
 					backgroundColor: theme.palette.background.paper,
-					borderRadius: theme.shape.borderRadius,
 					color: theme.palette.text.secondary,
 					fontSize: "1rem",
 				}}
@@ -81,11 +83,11 @@ export function Grid({
 	return (
 		<Box
 			sx={{
-				height,
+				height: gridHeight,
 				width: "100%",
 				"& .MuiDataGrid-root": {
 					border: `1px solid ${theme.palette.divider}`,
-					borderRadius: theme.shape.borderRadius,
+					borderRadius: 0,
 					backgroundColor: theme.palette.background.paper,
 				},
 				"& .MuiDataGrid-cell": {
