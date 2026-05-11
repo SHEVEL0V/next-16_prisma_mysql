@@ -5,4 +5,10 @@
 
 export { Grid, type GridProps } from './CustomDataGrid';
 export { default as DashboardGrid } from './DashboardGrid';
+export {
+  createColumnDefs,
+  autoGenerateColumns,
+  type ColumnConfig
+} from './GridColumnConfig';
+
 

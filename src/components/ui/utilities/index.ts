@@ -4,3 +4,4 @@
  */
 
 export { default as CenteredMessage } from './CenteredMessage';
+export { PriorityBadge, type PriorityLevel } from './PriorityBadge';
