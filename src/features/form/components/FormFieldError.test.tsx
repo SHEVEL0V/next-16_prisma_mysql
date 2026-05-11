@@ -3,13 +3,12 @@
  * Verifies inline field error message display
  */
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 // Mock the FormHelperText component
 jest.mock('@mui/material', () => ({
 	...jest.requireActual('@mui/material'),
-	FormHelperText: ({ children, error }: any) => (
+	FormHelperText: ({ children, error }: { children: React.ReactNode; error: boolean }) => (
 		<div role="status" data-error={error}>
 			{children}
 		</div>

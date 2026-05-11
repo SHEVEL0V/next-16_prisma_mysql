@@ -3,12 +3,11 @@
  * Verifies modal action buttons and form handling
  */
 
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 // Mock the Button component to avoid dependency issues
 jest.mock('@/components/ui/buttons', () => ({
-	Button: ({ children, onClick, disabled, loading, type, form, variant }: any) => (
+	Button: ({ children, onClick, disabled, loading, type, form, variant }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; loading?: boolean; type?: string; form?: string; variant?: string }) => (
 		<button
 			onClick={onClick}
 			disabled={disabled || loading}

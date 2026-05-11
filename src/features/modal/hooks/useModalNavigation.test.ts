@@ -12,7 +12,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('useModalNavigation Hook', () => {
-	let mockRouter: any;
+	let mockRouter: Record<string, jest.Mock>;
 
 	beforeEach(() => {
 		mockRouter = {
@@ -111,7 +111,7 @@ describe('useModalNavigation Hook', () => {
 		it('should return true', () => {
 			const { result } = renderHook(() => useModalNavigation());
 
-			const isOpen = act(() => result.current.open());
+			act(() => result.current.open());
 
 			// open should return true (modal is rendered)
 			expect(typeof result.current.open).toBe('function');

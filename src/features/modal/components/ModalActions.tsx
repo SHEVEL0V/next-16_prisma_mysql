@@ -3,7 +3,7 @@
 'use client';
 
 import React from 'react';
-import { DialogActions, Button as MuiButton } from '@mui/material';
+import { DialogActions } from '@mui/material';
 import { Button } from '@/components/ui/buttons';
 import { MESSAGES } from '@/constants';
 

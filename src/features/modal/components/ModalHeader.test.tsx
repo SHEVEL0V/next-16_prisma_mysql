@@ -3,7 +3,6 @@
  * Verifies modal header title and close button functionality
  */
 
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ModalHeader from '@/features/modal/components/ModalHeader';
 

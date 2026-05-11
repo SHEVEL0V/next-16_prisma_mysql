@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 /**

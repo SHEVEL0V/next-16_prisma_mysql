@@ -3,13 +3,12 @@
  * Verifies form submission error and success message display
  */
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 // Mock the Alert component to avoid dependency issues
 jest.mock('@mui/material', () => ({
 	...jest.requireActual('@mui/material'),
-	Alert: ({ children, severity }: any) => (
+	Alert: ({ children, severity }: { children: React.ReactNode; severity: string }) => (
 		<div role="alert" data-severity={severity}>
 			{children}
 		</div>
