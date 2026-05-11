@@ -5,3 +5,4 @@
 
 export { useFormAction } from './useFormAction';
 export { useModal } from './useModal';
+// useThemeToggle is now exported from @/components/layout/ThemeContextProvider

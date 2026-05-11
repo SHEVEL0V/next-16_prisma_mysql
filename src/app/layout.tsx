@@ -1,7 +1,8 @@
 /** @format */
 import "./globals.css";
-import { getTheme } from "@/utils/theme"; // Приклад твого імпорту
-import ThemeProvider from "@/components/layout/MuiThemeProvider"; // Приклад твого імпорту
+import { getTheme } from "@/utils/theme";
+import ThemeProvider from "@/components/layout/MuiThemeProvider";
+import { ThemeContextProvider } from "@/components/layout/ThemeContextProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 export default async function RootLayout({
@@ -15,7 +16,9 @@ export default async function RootLayout({
 		<html lang="uk">
 			<body>
 				<AppRouterCacheProvider>
-					<ThemeProvider mode={theme}>{children}</ThemeProvider>
+					<ThemeContextProvider>
+						<ThemeProvider mode={theme}>{children}</ThemeProvider>
+					</ThemeContextProvider>
 				</AppRouterCacheProvider>
 			</body>
 		</html>

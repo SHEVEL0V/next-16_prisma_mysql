@@ -57,6 +57,8 @@ export interface ButtonProps extends Omit<MuiButtonProps, "variant"> {
   tooltipPlacement?: "top" | "right" | "bottom" | "left";
   /** Callback for back button */
   onBack?: () => void;
+  /** Callback for home button */
+  onHome?: () => void;
   /** Callback for dark mode toggle */
   onThemeToggle?: (isDark: boolean) => void;
   /** Current theme mode (for dark mode button) */
@@ -91,6 +93,7 @@ export const Button = memo(
     tooltip,
     tooltipPlacement = "top",
     onBack,
+    onHome,
     onThemeToggle,
     themeMode = "light",
     children,
@@ -109,10 +112,26 @@ export const Button = memo(
       }
     }, [router, onBack]);
 
+    // Handle home button click
+    const handleHomeClick = useCallback(() => {
+      if (onHome) {
+        onHome();
+      } else {
+        router.push("/");
+      }
+    }, [router, onHome]);
+
     // Handle dark mode toggle
-    const handleThemeToggle = useCallback(() => {
-      onThemeToggle?.(themeMode === "dark");
-    }, [themeMode, onThemeToggle]);
+    const handleThemeToggle = useCallback(
+      (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (onThemeToggle) {
+          // Pass the NEW theme mode (opposite of current)
+          onThemeToggle(themeMode === "light");
+        }
+      },
+      [themeMode, onThemeToggle],
+    );
 
     // Handle generic click
     const handleClick = useCallback(
@@ -176,7 +195,7 @@ export const Button = memo(
         return renderIconButton(<CloseIcon />, "inherit", handleClick);
 
       case "home":
-        return renderIconButton(<HomeIcon />, "inherit", handleClick);
+        return renderIconButton(<HomeIcon />, "inherit", handleHomeClick);
 
       case "more":
         return renderIconButton(<MoreVertIcon />, "inherit", handleClick);
