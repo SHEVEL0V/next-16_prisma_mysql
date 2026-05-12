@@ -11,18 +11,21 @@ import {
 import { useActionState } from "react";
 import { updateProfileAction } from "../actions";
 
+
 interface ProfileFormProps {
   user: {
     id: string;
-    name: string;
     email: string;
-    profile: {
-      position: string;
-      bio: string | null;
-      image: string | null;
-    } | null;
+    name: string;
+    profile?: {
+      position?: string;
+      image?: string;
+      bio?: string;
+    };
   };
 }
+
+
 
 export default function ProfileForm({ user }: ProfileFormProps) {
   const [state, action, isPending] = useActionState(updateProfileAction, {
