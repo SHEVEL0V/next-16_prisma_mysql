@@ -14,11 +14,4 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
-
-// Auth models - User authentication and profiles
-include "./auth.prisma"
-
-// Board models - Project management and task tracking
-include "./board.prisma"
