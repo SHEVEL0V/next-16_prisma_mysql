@@ -30,7 +30,7 @@ model User {
 model Profile {
   id       String  @id @default(uuid())
   image    String? // URL до зображення профілю
-  position String // Посада
+  position String? // Посада
   bio      String? // Додаткова інформація
 
   // Relations
