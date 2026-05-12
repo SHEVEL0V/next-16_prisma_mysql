@@ -5,7 +5,11 @@
 		"target": "ES2023",
 		"strict": true,
 		"esModuleInterop": true,
-		"lib": ["dom", "dom.iterable", "esnext"],
+		"lib": [
+			"dom",
+			"dom.iterable",
+			"esnext"
+		],
 		"allowJs": true,
 		"skipLibCheck": true,
 		"noEmit": true,
@@ -19,8 +23,12 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./src/*"],
-			"@g/*": ["./generated/*"]
+			"@/*": [
+				"./src/*"
+			],
+			"@g/*": [
+				"./generated/*"
+			]
 		}
 	},
 	"include": [
@@ -30,8 +38,9 @@
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts",
 		"**/*.mts",
-		"src/proxy.",
-		"src/proxy.tsss"
+		"src/proxy.ts"
 	],
-	"exclude": ["node_modules"]
+	"exclude": [
+		"node_modules"
+	]
 }

@@ -1,17 +1,24 @@
+/**
+ * Prisma Schema
+ * Main schema file that consolidates all models from separate domain files
+ * Structure:
+ * - auth.prisma: User, Profile, Role enum
+ * - board.prisma: Board, Column, Task, TaskType, Priority enums
+ */
 
+// Database generator and configuration
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
-
 }
 
-  datasource db {
-    provider = "mysql"
-  }
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
+// Auth models - User authentication and profiles
+include "./auth.prisma"
 
-
-
-
-
-
+// Board models - Project management and task tracking
+include "./board.prisma"
