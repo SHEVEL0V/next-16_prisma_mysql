@@ -12,22 +12,17 @@ export default async function Board({ boardId }: { boardId?: string }) {
 
   const activeBoard = boardId || boards[0]?.id;
 
-  if (!activeBoard) {
-    return (
-      <CenteredMessage message="Будь ласка, створіть або виберіть дошку." />
-    );
-  }
 
-  const boardResponse = await getBoardById(activeBoard);
-  const board = boardResponse?.data;
+  const data = activeBoard ? (await getBoardById(activeBoard)).data : null;
+
 
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar boards={boards} activeBoard={activeBoard} />
-      {board ? (
-        <DragDropWrapper boardId={activeBoard} initialData={board.columns} />
+      {data ? (
+        <DragDropWrapper boardId={activeBoard} initialData={data.columns} />
       ) : (
-        <CenteredMessage message="Дошку не знайдено або сталася помилка." />
+        <CenteredMessage message="Будь ласка, створіть новудошку." />
       )}
     </Box>
   );
