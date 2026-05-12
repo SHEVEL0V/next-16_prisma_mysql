@@ -7,28 +7,28 @@ import ProfileForm from "@/features/user/components/ProfileForm";
 import { Container } from "@mui/material";
 
 export const metadata = {
-	title: "Профіль | Project UI",
+  title: "Профіль | Project UI",
 };
 
 export default async function ProfilePage() {
-	const session = await getSession();
+  const session = await getSession();
 
-	if (!session || !session.id) {
-		redirect("/signin");
-	}
+  if (!session || !session.id) {
+    redirect("/signin");
+  }
 
-	const user = await prisma.user.findUnique({
-		where: { id: session.id },
-		include: { profile: true },
-	});
+  const user = await prisma.user.findUnique({
+    where: { id: session.id },
+    // include: { profile: true },
+  });
 
-	if (!user) {
-		redirect("/signin");
-	}
+  if (!user) {
+    redirect("/signin");
+  }
 
-	return (
-		<Container maxWidth="xl" sx={{ py: 6 }}>
-			<ProfileForm user={user} />
-		</Container>
-	);
+  return (
+    <Container maxWidth="xl" sx={{ py: 6 }}>
+      <ProfileForm user={user} />
+    </Container>
+  );
 }
