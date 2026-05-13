@@ -1,7 +1,13 @@
 /** @format */
 "use client";
 
-import { CircularProgress, IconButton as MuiIconButton, type IconButtonProps as MuiIconButtonProps, Tooltip, type TooltipProps } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton as MuiIconButton,
+  type IconButtonProps as MuiIconButtonProps,
+  Tooltip,
+  type TooltipProps,
+} from "@mui/material";
 import { type ReactNode } from "react";
 
 export interface IconButtonBaseProps extends Omit<MuiIconButtonProps, "variant"> {
@@ -31,7 +37,10 @@ export const IconButtonBase = ({
       {...props}
     >
       {loading ? (
-        <CircularProgress size={size === "small" ? 20 : 24} color={color === "inherit" ? "inherit" : "primary"} />
+        <CircularProgress
+          size={size === "small" ? 20 : 24}
+          color={color === "inherit" ? "inherit" : "primary"}
+        />
       ) : (
         icon
       )}

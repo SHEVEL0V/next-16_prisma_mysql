@@ -1,39 +1,25 @@
-/** @format */
-
+// app/providers/MuiThemeClient.tsx
 "use client";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useEffect, useState } from "react";
-import { getTheme } from "@/theme";
-import { useThemeToggle } from "./ThemeContextProvider";
+import { getThemeMui } from "@/theme";
+import { useMemo } from "react";
+import type { PaletteMode } from "@mui/material";
 
-function ThemeConsumer({
-	children,
-	initialMode,
+export default function MuiThemeClient({
+  children,
+  mode,
 }: {
-	children: React.ReactNode;
-	initialMode: "light" | "dark";
+  children: React.ReactNode;
+  mode: PaletteMode;
 }) {
-	const { theme } = useThemeToggle();
-	const muiTheme = createTheme(getTheme(theme));
+  const theme = useMemo(() => createTheme(getThemeMui(mode)), [mode]);
 
-	return (
-		<ThemeProvider theme={muiTheme}>
-			<CssBaseline />
-			{children}
-		</ThemeProvider>
-	);
-}
-
-export default function ThemeClientProvider({
-	children,
-	mode,
-}: {
-	children: React.ReactNode;
-	mode: "light" | "dark";
-}) {
-	return (
-		<ThemeConsumer initialMode={mode}>{children}</ThemeConsumer>
-	);
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
+  );
 }

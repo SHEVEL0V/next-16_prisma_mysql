@@ -1,26 +1,23 @@
+"use server";
 /** @format */
 import "./globals.css";
-import { getTheme } from "@/utils/theme";
-import ThemeProvider from "@/components/layout/MuiThemeProvider";
-import { ThemeContextProvider } from "@/components/layout/ThemeContextProvider";
+import MuiThemeProvider from "@/components/layout/MuiThemeProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { getThemeCookie } from "@/utils/themeCookie";
 
 export default async function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	const theme = (await getTheme()) || "light";
-
-	return (
-		<html lang="uk">
-			<body>
-				<AppRouterCacheProvider>
-					<ThemeContextProvider>
-						<ThemeProvider mode={theme}>{children}</ThemeProvider>
-					</ThemeContextProvider>
-				</AppRouterCacheProvider>
-			</body>
-		</html>
-	);
+  const mode = await getThemeCookie();
+  return (
+    <html lang="uk">
+      <body>
+        <AppRouterCacheProvider>
+          <MuiThemeProvider mode={mode}>{children}</MuiThemeProvider>
+        </AppRouterCacheProvider>
+      </body>
+    </html>
+  );
 }

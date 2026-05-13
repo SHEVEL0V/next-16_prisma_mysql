@@ -3,7 +3,7 @@
 "use client";
 
 import React from "react";
-import { Chip, Box, useTheme, type ChipProps } from "@mui/material";
+import { Chip, useTheme, type ChipProps } from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
 
 export type PriorityLevel = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
@@ -72,11 +72,9 @@ export const PriorityBadge: React.FC<PriorityBadgeProps> = ({
       variant={variant}
       size={size}
       sx={{
-        backgroundColor:
-          variant === "filled" ? config.bgColor : "transparent",
+        backgroundColor: variant === "filled" ? config.bgColor : "transparent",
         color: config.textColor,
-        border:
-          variant === "outlined" ? `1.5px solid ${config.textColor}` : "none",
+        border: variant === "outlined" ? `1.5px solid ${config.textColor}` : "none",
         fontWeight: 600,
         fontSize: size === "small" ? "0.75rem" : "0.875rem",
         "& .MuiChip-icon": {
