@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { getThemeCookie } from "@/utils/themeCookie";
+import { DESIGN_TOKENS } from "@/theme/constants";
 
 export default async function ProfileLayout({ children }: { children: React.ReactNode }) {
   const mode = await getThemeCookie();
@@ -17,6 +18,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
           flex: "1 0 auto",
           width: "100%",
           animation: "fadeIn 0.5s ease-in-out",
+          paddingTop: DESIGN_TOKENS.headerHeight + "px", // Adjust for AppBar height
         }}
       >
         {children}
