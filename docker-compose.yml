@@ -20,18 +20,18 @@ services:
       timeout: 5s
       retries: 10
 
-  studio:
-    build: .
-    container_name: prisma_studio
-    ports:
-      - "5555:5555"
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      BROWSER: none
-    depends_on:
-      db:
-        condition: service_healthy
-    command: npx prisma studio --port 5555
+  # studio:
+  #   build: .
+  #   container_name: prisma_studio
+  #   ports:
+  #     - "5555:5555"
+  #   environment:
+  #     DATABASE_URL: ${DATABASE_URL}
+  #     BROWSER: none
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   command: npx prisma studio --port 5555
 
   app:
     build:
