@@ -4,7 +4,7 @@
 
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import EditableTextField from "@/components/ui/fields/EditableTextField";
 import EditableTypography from "@/components/ui/fields/EditableTypography";
 import { deleteColumnAction, updateColumnAction } from "../../actions";
@@ -23,15 +23,26 @@ export default function TitleColumn({
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const [isPendingDelete, startTransitionDelete] = useTransition();
   const [, actionUpdate, isPendingUpdate] = useActionState(updateColumnAction, {
     success: false,
     errors: {},
   });
 
-  const [, actionDelete, isPendingDelete] = useActionState(deleteColumnAction, {
+  const [, actionDelete] = useActionState(deleteColumnAction, {
     success: false,
     errors: {},
   });
+
+  const handleDelete = () => {
+    startTransitionDelete(async () => {
+      if (confirm("Ви впевнені, що хочете видалити?")) {
+        const formData = new FormData();
+        formData.append("id", id);
+        actionDelete(formData);
+      }
+    },)
+  };
 
   useEffect(() => {
     if (isEditing) {
@@ -86,7 +97,7 @@ export default function TitleColumn({
       {/* Delete Column Form */}
       <Box
         component="form"
-        action={actionDelete}
+
         sx={{
           position: "absolute",
           right: 0,
@@ -105,7 +116,7 @@ export default function TitleColumn({
         >
           <span>
             <IconButton
-              type="submit"
+              onClick={handleDelete}
               size="small"
               disabled={isPendingDelete || hasTasks}
               sx={{

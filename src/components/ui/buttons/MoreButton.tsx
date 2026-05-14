@@ -49,9 +49,11 @@ function MoreButton({
 	// Delete handler with form data
 	const handleDelete = useCallback(() => {
 		startTransition(async () => {
-			const formData = new FormData();
-			formData.append("id", id);
-			await deleteAction(formData);
+			if (confirm("Ви впевнені, що хочете видалити?")) {
+				const formData = new FormData();
+				formData.append("id", id);
+				await deleteAction(formData);
+			}
 		});
 	}, [id, deleteAction]);
 
