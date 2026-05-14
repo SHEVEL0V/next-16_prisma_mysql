@@ -2,33 +2,29 @@
 
 /**
  * Prisma Client Singleton
- * Manages database connection through MariaDB adapter
+ * Manages database connection through PostgreSQL adapter
  * Implements singleton pattern to ensure single connection pool across app
  */
 
 import "dotenv/config";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+// import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client";
 
-/**
- * MariaDB connection adapter with connection pool settings
- * Limits concurrent connections to 5 per pool
- * Configuration from environment variables:
- * - MYSQL_HOST: Database hostname
- * - MYSQL_USER: Database username
- * - MYSQL_PASSWORD: Database password
- * - MYSQL_DATABASE: Database name
- */
-const adapter = new PrismaMariaDb({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  connectionLimit: 5,
-});
+
+// const adapter = new PrismaMariaDb({
+//   host: process.env.MYSQL_HOST,
+//   user: process.env.MYSQL_USER,
+//   password: process.env.MYSQL_PASSWORD,
+//   database: process.env.MYSQL_DATABASE,
+//   connectionLimit: 5,
+// });
+
+const connectionString = `${process.env.DATABASE_URL}`;
+const adapter = new PrismaPg({ connectionString });
 
 /**
- * Create Prisma client with MariaDB adapter
+ * Create Prisma client with PostgreSQL adapter
  * Used as factory function for singleton pattern
  */
 const prismaClientSingleton = () => new PrismaClient({ adapter });
