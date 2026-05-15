@@ -31,9 +31,9 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       NODE_ENV: development
     volumes:
-      - .:/app                        
-      - /app/node_modules            
-    command: sh -c "npm ci && npx prisma migrate deploy && npm run dev"
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npx prisma migrate deploy && npm run dev"
     depends_on:
       db:
         condition: service_healthy
