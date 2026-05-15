@@ -15,12 +15,12 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function MoreButton({
-  onClickEdit,
-  onClickDelete,
+  onClickEditAction,
+  onClickDeleteAction,
   isPending = false,
 }: {
-  onClickEdit: () => void;
-  onClickDelete: () => void;
+  onClickEditAction: () => void;
+  onClickDeleteAction: () => void;
   isPending?: boolean;
 }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -36,13 +36,13 @@ export default function MoreButton({
 
   const handleEdit = useCallback(() => {
     handleClose();
-    onClickEdit();
-  }, [onClickEdit]);
+    onClickEditAction();
+  }, [onClickEditAction]);
 
   const handleDelete = useCallback(() => {
     handleClose();
-    onClickDelete();
-  }, [onClickDelete]);
+    onClickDeleteAction();
+  }, [onClickDeleteAction]);
 
   return (
     <>

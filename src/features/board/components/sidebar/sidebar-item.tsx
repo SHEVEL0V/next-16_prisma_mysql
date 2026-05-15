@@ -95,8 +95,8 @@ export default function SidebarItem({ id, title, isActive, isOpen }: SidebarItem
                       sx={{ opacity: { xs: 1, md: 0 }, transition: "0.2s" }}
                     >
                       <MoreButton
-                        onClickEdit={() => setIsEditing(true)}
-                        onClickDelete={() => setIsDeleteDialogOpen(true)}
+                        onClickEditAction={() => setIsEditing(true)}
+                        onClickDeleteAction={() => setIsDeleteDialogOpen(true)}
                         isPending={isPending}
                       />
                     </Box>
