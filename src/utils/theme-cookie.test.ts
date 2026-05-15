@@ -69,7 +69,11 @@ describe("Theme Utilities", () => {
 
     it("should set cookie with secure flag in production", async () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "production";
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: "production",
+        writable: true,
+        configurable: true,
+      });
 
       const mockSet = jest.fn();
       mockCookies.mockResolvedValue({
@@ -85,12 +89,20 @@ describe("Theme Utilities", () => {
         expect.objectContaining({ secure: true }),
       );
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: originalEnv,
+        writable: true,
+        configurable: true,
+      });
     });
 
     it("should set cookie without secure flag in development", async () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "development";
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: "development",
+        writable: true,
+        configurable: true,
+      });
 
       const mockSet = jest.fn();
       mockCookies.mockResolvedValue({
@@ -106,7 +118,11 @@ describe("Theme Utilities", () => {
         expect.objectContaining({ secure: false }),
       );
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: originalEnv,
+        writable: true,
+        configurable: true,
+      });
     });
 
     it("should handle invalid cookie values gracefully", async () => {
