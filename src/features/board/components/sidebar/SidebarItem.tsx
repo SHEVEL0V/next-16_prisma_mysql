@@ -10,10 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { useActionState, useRef, useState } from "react";
+import { useActionState, startTransition, useRef, useState } from "react";
 import EditableTextField from "@/components/ui/fields/EditableTextField";
 import { MoreButton } from "@/components/ui/buttons";
 import { deleteBoardAction, updateBoardAction } from "../../actions";
+import CustomDialog from "@/components/ui/modals/CustomDialog";
 
 interface SidebarItemProps {
   id: string;
@@ -30,12 +31,13 @@ export default function SidebarItem({
 }: SidebarItemProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const [, updateAction] = useActionState(updateBoardAction, {
+  const [, updateAction, isPendingUpdate] = useActionState(updateBoardAction, {
     success: false,
     errors: {},
   });
-  const [, deleteAction] = useActionState(deleteBoardAction, {
+  const [deleteState, deleteAction, isPendingDelete] = useActionState(deleteBoardAction, {
     success: false,
     errors: {},
   });
@@ -45,74 +47,95 @@ export default function SidebarItem({
     setIsEditing(false);
   };
 
-  return (
-    <ListItem
-      disablePadding
-      sx={{ mb: 0.5, "&:hover .more-btn": { opacity: 1 } }}
-    >
-      <Tooltip title={title} placement="right" disableHoverListener={isOpen}>
-        <ListItemButton
-          selected={isOpen && isActive}
-          component={isEditing ? "div" : Link}
-          href={isEditing ? undefined : `?id=${id}`}
-          sx={{ borderRadius: 2, px: isOpen ? 2 : 1, minHeight: 48 }}
-        >
-          <ListItemIcon
-            sx={{
-              display: "flex",
-              // minWidth: isOpen ? 40 : "auto",
-              // mr: isOpen ? 1 : "auto",
-              justifyContent: "center",
-            }}
-          >
-            <ViewKanbanIcon color={isActive ? "primary" : "inherit"} />
-          </ListItemIcon>
+  const handleConfirmDelete = () => {
+    const formData = new FormData();
+    formData.append("id", id);
+    startTransition(() => {
+      deleteAction(formData);
+    });
+    setIsDeleteDialogOpen(false);
+  };
 
-          {isOpen && (
-            <Box
+  const isPending = isPendingUpdate || isPendingDelete;
+
+  return (
+    <>
+      <ListItem
+        disablePadding
+        sx={{ mb: 0.5, "&:hover .more-btn": { opacity: 1 } }}
+      >
+        <Tooltip title={title} placement="right" disableHoverListener={isOpen}>
+          <ListItemButton
+            selected={isOpen && isActive}
+            component={isEditing ? "div" : Link}
+            href={isEditing ? undefined : `?id=${id}`}
+            sx={{ borderRadius: 2, px: isOpen ? 2 : 1, minHeight: 48 }}
+          >
+            <ListItemIcon
               sx={{
-                flexGrow: 1,
                 display: "flex",
-                alignItems: "center",
-                overflow: "hidden",
+                justifyContent: "center",
               }}
             >
-              {isEditing ? (
-                <form
-                  action={handleSubmit}
-                  ref={formRef}
-                  style={{ width: "100%" }}
-                >
-                  <input type="hidden" name="id" value={id} />
-                  <EditableTextField
-                    defaultValue={title}
-                    name="title"
-                    autoFocus
-                    handleToggleEdit={setIsEditing}
-                    formRef={formRef}
-                  />
-                </form>
-              ) : (
-                <>
-                  <Typography variant="body1" noWrap sx={{ flexGrow: 1 }}>
-                    {title}
-                  </Typography>
-                  <Box
-                    className="more-btn"
-                    sx={{ opacity: { xs: 1, md: 0 }, transition: "0.2s" }}
+              <ViewKanbanIcon color={isActive ? "primary" : "inherit"} />
+            </ListItemIcon>
+
+            {isOpen && (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  overflow: "hidden",
+                }}
+              >
+                {isEditing ? (
+                  <form
+                    action={handleSubmit}
+                    ref={formRef}
+                    style={{ width: "100%" }}
                   >
-                    <MoreButton
-                      onEdit={() => setIsEditing(true)}
-                      id={id}
-                      deleteAction={deleteAction}
+                    <input type="hidden" name="id" value={id} />
+                    <EditableTextField
+                      defaultValue={title}
+                      name="title"
+                      autoFocus
+                      handleToggleEdit={setIsEditing}
+                      formRef={formRef}
                     />
-                  </Box>
-                </>
-              )}
-            </Box>
-          )}
-        </ListItemButton>
-      </Tooltip>
-    </ListItem>
+                  </form>
+                ) : (
+                  <>
+                    <Typography variant="body1" noWrap sx={{ flexGrow: 1 }}>
+                      {title}
+                    </Typography>
+                    <Box
+                      className="more-btn"
+                      sx={{ opacity: { xs: 1, md: 0 }, transition: "0.2s" }}
+                    >
+                      <MoreButton
+                        onClickEdit={() => setIsEditing(true)}
+                        onClickDelete={() => setIsDeleteDialogOpen(true)}
+                        isPending={isPending}
+                      />
+                    </Box>
+                  </>
+                )}
+              </Box>
+            )}
+          </ListItemButton>
+        </Tooltip>
+      </ListItem>
+
+      <CustomDialog
+        open={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Видалити дошку"
+        description={`Ви впевнені, що хочете видалити дошку "${title}"? Цю дію неможливо буде скасувати.`}
+        state={deleteState}
+        isPending={isPendingDelete}
+      />
+    </>
   );
 }

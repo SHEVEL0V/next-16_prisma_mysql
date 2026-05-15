@@ -14,48 +14,39 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-interface MoreButtonProps {
-	onEdit: () => void;
-	id: string;
-	deleteAction: (payload: FormData) => void;
-}
 
-function MoreButton({
-	onEdit,
-	id,
-	deleteAction,
-}: MoreButtonProps) {
+
+export default function MoreButton({
+	onClickEdit,
+	onClickDelete,
+	isPending = false,
+}: {
+	onClickEdit: () => void;
+	onClickDelete: () => void;
+	isPending?: boolean;
+}) {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [isPending, startTransition] = useTransition();
-
 	const open = Boolean(anchorEl);
 
-	// Open menu
-	const handleOpen = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-		setAnchorEl(e.currentTarget);
-	}, []);
+	const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
 
-	// Close menu
-	const handleClose = useCallback(() => {
+	const handleClose = () => {
 		setAnchorEl(null);
-	}, []);
+	};
 
-	// Edit handler with menu close
 	const handleEdit = useCallback(() => {
-		onEdit();
 		handleClose();
-	}, [onEdit, handleClose]);
+		onClickEdit();
+	}, [onClickEdit]);
 
-	// Delete handler with form data
 	const handleDelete = useCallback(() => {
-		startTransition(async () => {
-			if (confirm("Ви впевнені, що хочете видалити?")) {
-				const formData = new FormData();
-				formData.append("id", id);
-				await deleteAction(formData);
-			}
-		});
-	}, [id, deleteAction]);
+		handleClose();
+		onClickDelete();
+	}, [onClickDelete]);
+
+
 
 	return (
 		<>
@@ -100,5 +91,4 @@ function MoreButton({
 	);
 }
 
-// Мemoize to prevent unnecessary re-renders
-export default memo(MoreButton);
+
