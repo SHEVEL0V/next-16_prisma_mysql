@@ -1,19 +1,28 @@
-# Kanban Board - Next.js Application
+# Kanban Board — Next.js Application
 
-A modern, full-stack Kanban board application built with **Next.js 16**, **React 19**, **TypeScript**, and **Prisma ORM**. Features drag-and-drop task management, secure JWT authentication, and a responsive Material-UI interface.
+A modern, full-stack Kanban board built with **Next.js 16**, **React 19**, **TypeScript**, and **Prisma ORM**. Features drag-and-drop task management, secure JWT authentication, and a responsive Material-UI interface.
+
+## 🌐 Live Demo
+
+**[https://kanban-cuec.onrender.com](https://kanban-cuec.onrender.com)**
+
+> Hosted on Render (free tier — first load may take ~30s to wake up)
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- MySQL 8+ or MariaDB 10.5+
+
+- Node.js 20+
+- PostgreSQL 16+
 
 ### Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/SHEVEL0V/next-16_prisma_mysql.git
-cd next-16_prisma_mysql
+git clone https://github.com/SHEVEL0V/next-16_prisma.git
+cd next-16_prisma
 
 # Install dependencies
 npm install
@@ -22,9 +31,11 @@ npm install
 cp .env.example .env.local
 # Edit .env.local with your settings
 
-# Setup database
-npx prisma db push
+# Generate Prisma client
 npx prisma generate
+
+# Apply migrations
+npx prisma migrate deploy
 
 # Run development server
 npm run dev
@@ -32,44 +43,46 @@ npm run dev
 
 Server runs at `http://localhost:3000`
 
-## 📚 Documentation
-
-For detailed documentation, see:
-- **[📖 Documentation Index](./docs/INDEX.md)** - Start here
-- [API Reference](./docs/API.md) - All services and actions
-- [Architecture Guide](./docs/ARCHITECTURE.md) - Design patterns
-- [Components Reference](./docs/COMPONENTS.md) - UI components
-- [Development Guide](./docs/DEVELOPMENT.md) - Code standards
-- [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues
+---
 
 ## 🎯 Key Features
 
-- **Drag-and-Drop**: Seamless task and column management
-- **Authentication**: Secure JWT with bcrypt password hashing
-- **Type-Safe**: Full TypeScript with Zod validation
-- **Optimized**: React.memo, dev-only logging, efficient queries
-- **Modern UI**: Material-UI with emotion styling
-- **Well Documented**: JSDoc comments and comprehensive guides
+- **Drag-and-Drop** — seamless task and column reordering
+- **Authentication** — secure JWT with bcrypt password hashing
+- **Type-Safe** — full TypeScript with Zod validation
+- **Modern UI** — Material-UI with Emotion styling
+- **Optimistic Updates** — instant UI feedback with `useOptimistic`
+- **SSR-safe** — server-side rendering with Next.js App Router
+
+---
 
 ## 🛠️ Technology Stack
 
-| Tech | Version | Purpose |
-|------|---------|---------|
-| Next.js | 16.1.1 | React framework |
-| React | 19.2.0 | UI library |
-| TypeScript | ^5 | Type safety |
-| Prisma | ^7.3.0 | ORM |
-| Material-UI | ^7.3.6 | Components |
-| MariaDB | ^7.3.0 | Database adapter |
+| Tech        | Version | Purpose                      |
+| ----------- | ------- | ---------------------------- |
+| Next.js     | 16      | React framework (App Router) |
+| React       | 19      | UI library                   |
+| TypeScript  | 5       | Type safety                  |
+| Prisma      | 7       | ORM                          |
+| PostgreSQL  | 16      | Database                     |
+| Material-UI | 7       | Component library            |
+| Jose        | 6       | JWT encryption               |
+| Zod         | 4       | Schema validation            |
+| bcrypt      | 6       | Password hashing             |
+
+---
 
 ## 📋 Environment Variables
 
 ```env
-# Database
-DATABASE_URL="mysql://user:password@localhost:3306/kanban_db"
+# Database (PostgreSQL)
+DATABASE_URL="postgresql://user:password@localhost:5432/kanban_db"
 
-# Authentication (min 32 chars each)
-AUTH_SECRET="your-secret-key-min-32-chars"
+# Session secret (min 32 chars) — generate: openssl rand -base64 32
+SESSION_SECRET="your-session-secret-min-32-chars"
+
+# Auth secrets (min 32 chars each)
+AUTH_SECRET="your-auth-secret-min-32-chars"
 JWT_SECRET="your-jwt-secret-min-32-chars"
 JWT_EXPIRATION_DAYS=7
 
@@ -78,88 +91,100 @@ NODE_ENV="development"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-Generate secrets with: `openssl rand -base64 32`
+---
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app/                 # Next.js pages and layouts
-├── components/          # Shared UI components
-├── features/            # Feature modules (board, auth, user)
-│   ├── board/          # Board CRUD and management
-│   ├── auth/           # Authentication (login/register)
-│   └── user/           # User profile management
-├── utils/              # Utilities (session, validation)
-└── lib/                # Core libraries (Prisma client)
+├── app/                    # Next.js pages and layouts (App Router)
+├── components/             # Shared UI components (kebab-case)
+│   ├── layout/             # header, footer, mui-theme-provider
+│   └── ui/                 # buttons, modals, fields, grids, editor
+├── features/               # Feature modules
+│   ├── auth/               # Login, register, JWT sessions
+│   ├── board/              # Board, columns, tasks (drag-and-drop)
+│   ├── form/               # Form helpers
+│   ├── modal/              # Modal navigation hooks
+│   └── user/               # User profile
+├── hooks/                  # Shared React hooks
+├── lib/                    # Prisma client
+├── utils/                  # Session, validation, wrappers
+└── types/                  # Global TypeScript types
 
 prisma/
-├── schema.prisma       # Main database schema
-├── auth.prisma         # Auth models
-└── board.prisma        # Board models
+├── schema.prisma           # Generator config + datasource
+├── auth.prisma             # User, Profile models
+├── board.prisma            # Board, Column, Task models
+└── migrations/             # SQL migration history
 ```
+
+---
 
 ## 🚀 Available Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Production build
-npm start        # Run production server
-npm run lint     # Check code style
+npm run dev          # Development server (Turbopack)
+npm run build        # Production build
+npm start            # Production server
+npm run lint         # ESLint check
+npm test             # Jest tests
+npm run test:watch   # Jest in watch mode
+npm run test:coverage # Coverage report
 ```
 
-## 📡 API Overview
+---
 
-### Board Service
-- Get all boards
-- Get board with columns and tasks
-- Create/update/delete boards
+## 🐳 Deployment (Docker / Render)
 
-### Column Service
-- Create columns with auto-ordering
-- Update/delete columns
-- Reorder columns
+The project includes a production-ready Docker setup.
 
-### Task Service
-- Create/update/delete tasks
-- Reorder tasks across columns
-- Update priority
+### Run locally with Docker Compose
 
-### Auth Service
-- User registration with email validation
-- Secure login with bcrypt
-- JWT session management
+```bash
+cp .env.example .env.local
+# Fill in DATABASE_URL, SESSION_SECRET, AUTH_SECRET, JWT_SECRET
 
-### User Service
-- Get user profile
-- Update profile information
+docker compose up --build
+```
 
-See [API Reference](./docs/API.md) for complete documentation.
+### Deploy to Render
 
-## 🔒 Security Features
+1. Push to GitHub
+2. **Render Dashboard → New → Blueprint** — select your repo
+3. Render reads `render.yaml` and provisions:
+   - **Web Service** (Docker) — Next.js app
+   - **PostgreSQL** — managed database with auto-injected `DATABASE_URL`
+4. After first deploy, set secrets manually:
+   ```
+   Dashboard → kanban-app → Environment → Add Environment Variable
+   SESSION_SECRET = <openssl rand -base64 32>
+   AUTH_SECRET    = <openssl rand -base64 32>
+   JWT_SECRET     = <openssl rand -base64 32>
+   ```
 
-✅ **Bcrypt** password hashing (10 rounds)  
-✅ **JWT** encryption (HS256 + AES-256-GCM)  
-✅ **HTTP-only** cookies with SameSite=Lax  
-✅ **Timing-safe** password comparison  
-✅ **Input validation** with Zod schemas  
-✅ **CSRF protection** via cookies  
+---
 
-## ⚡ Performance
+## 🔒 Security
 
-- **30-40% fewer re-renders** with React.memo memoization
-- **5-10% faster** in production with dev-only logging removed
-- **Atomic queries** with React cache()
-- **Optimized Prisma** includes for related data
+- **Bcrypt** password hashing (10 rounds)
+- **JWT** session encryption (HS256)
+- **HTTP-only** cookies with `SameSite=Lax`
+- **Input validation** with Zod schemas
+- **Server Actions** for all mutations
 
-## 🤝 Contributing
+---
 
-1. Create feature branch: `git checkout -b feature/name`
-2. Follow [code standards](./docs/DEVELOPMENT.md#code-standards)
-3. Verify TypeScript: `npx tsc --noEmit`
-4. Run linter: `npm run lint`
-5. Commit with descriptive message
-6. Create pull request
+## 🧪 Tests
+
+```
+Test Suites: 17 passed
+Tests:       273 passed
+```
+
+Covers: services, schemas, hooks, form components, modal components, utilities.
+
+---
 
 ## 📄 License
 
@@ -167,6 +192,7 @@ This project is private and not for public distribution.
 
 ---
 
-**Version**: 0.1.1  
-**Repository**: [SHEVEL0V/next-16_prisma_mysql](https://github.com/SHEVEL0V/next-16_prisma_mysql)  
-**Last Updated**: 2026-04-28
+**Version**: 0.1.1
+**Repository**: [SHEVEL0V/next-16_prisma](https://github.com/SHEVEL0V/next-16_prisma)
+**Live**: [kanban-cuec.onrender.com](https://kanban-cuec.onrender.com)
+**Last Updated**: 2026-05-15
