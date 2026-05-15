@@ -1,64 +1,69 @@
-// /** @format */
+/** @format */
 
-// "use client";
+"use client";
 
-// import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
-// /**
-//  * useLocalStorage Hook
-//  * Manages localStorage with React state synchronization
-//  *
-//  * @example
-//  * const [token, setToken] = useLocalStorage('auth_token', '');
-//  */
-// export function useLocalStorage<T>(
-//   key: string,
-//   initialValue: T,
-// ): [T, (value: T) => void, () => void] {
-//   const [storedValue, setStoredValue] = useState<T>(initialValue);
-//   const [isClient, setIsClient] = useState(false);
+/**
+ * useLocalStorage Hook
+ * Manages localStorage with React state synchronization.
+ * SSR-safe: initial render always uses initialValue, localStorage is read after mount.
+ *
+ * @example
+ * const [token, setToken, removeToken] = useLocalStorage('auth_token', '');
+ * setToken('abc');              // direct value
+ * setToken(prev => prev + '!'); // functional updater
+ * removeToken();                // clear and reset to initialValue
+ */
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+): [T, (value: T | ((prev: T) => T)) => void, () => void] {
+  // Keep initialValue in a ref so it never needs to be a useCallback dependency
+  const initialValueRef = useRef<T>(initialValue);
 
-//   // Hydrate from localStorage on mount
-//   useEffect(() => {
-//     setIsClient(true);
-//     try {
-//       const item = window.localStorage.getItem(key);
-//       if (item) {
-//         setStoredValue(JSON.parse(item));
-//       }
-//     } catch (error) {
-//       console.error(`Error reading localStorage key "${key}":`, error);
-//     }
-//   }, [key]);
+  // Always start with initialValue for SSR consistency (avoid hydration mismatch)
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
 
-//   // Set value in state and localStorage
-//   const setValue = useCallback(
-//     (value: T) => {
-//       try {
-//         setStoredValue(value);
-//         if (isClient) {
-//           window.localStorage.setItem(key, JSON.stringify(value));
-//         }
-//       } catch (error) {
-//         console.error(`Error setting localStorage key "${key}":`, error);
-//       }
-//     },
-//     [key, isClient],
-//   );
+  // Hydrate from localStorage after mount and whenever key changes
+  useEffect(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      setStoredValue(item !== null ? (JSON.parse(item) as T) : initialValueRef.current);
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+    }
+  }, [key]);
 
-//   // Remove value from localStorage
-//   const removeValue = useCallback(() => {
-//     try {
-//       setStoredValue(initialValue);
-//       if (isClient) {
-//         window.localStorage.removeItem(key);
-//       }
-//     } catch (error) {
-//       console.error(`Error removing localStorage key "${key}":`, error);
-//     }
-//   }, [key, initialValue, isClient]);
+  // Set value in state and persist to localStorage.
+  // Uses functional setStoredValue so no dependency on storedValue is needed.
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      setStoredValue((prev) => {
+        try {
+          const newValue = typeof value === "function" ? (value as (prev: T) => T)(prev) : value;
+          window.localStorage.setItem(key, JSON.stringify(newValue));
+          return newValue;
+        } catch (error) {
+          console.error(`Error setting localStorage key "${key}":`, error);
+          return prev;
+        }
+      });
+    },
+    [key],
+  );
 
-//   return [storedValue, setValue, removeValue];
-// }
+  // Remove value from localStorage and reset state to initialValue
+  const removeValue = useCallback(() => {
+    try {
+      setStoredValue(initialValueRef.current);
+      window.localStorage.removeItem(key);
+    } catch (error) {
+      console.error(`Error removing localStorage key "${key}":`, error);
+    }
+  }, [key]);
 
-// export default useLocalStorage;
+  return [storedValue, setValue, removeValue];
+}
+
+export default useLocalStorage;
