@@ -3,7 +3,7 @@
 import { getSession } from "@/utils/session";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import ProfileForm from "@/features/user/components/ProfileForm";
+import ProfileForm from "@/features/user/components/profile-form";
 import { Container } from "@mui/material";
 
 export const metadata = {

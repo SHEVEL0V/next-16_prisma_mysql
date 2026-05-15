@@ -8,7 +8,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IconButtonBase, type IconButtonBaseProps } from "./IconButtonBase";
+import { IconButtonBase, type IconButtonBaseProps } from "./icon-button-base";
 
 export type IconVariant = "add" | "back" | "close" | "home" | "more" | "darkMode";
 
@@ -23,7 +23,6 @@ export const IconButton = ({
   themeMode = "light",
   ...props
 }: IconButtonProps) => {
-
   // Map variants to icons
   const getIcon = (value: string) => {
     switch (value) {

@@ -3,6 +3,6 @@
  * Centralized exports for form field components
  */
 
-export { default as FormInput } from './FormInput';
-export { default as EditableTextField } from './EditableTextField';
-export { default as EditableTypography } from './EditableTypography';
+export { default as FormInput } from "./form-input";
+export { default as EditableTextField } from "./editable-text-field";
+export { default as EditableTypography } from "./editable-typography";

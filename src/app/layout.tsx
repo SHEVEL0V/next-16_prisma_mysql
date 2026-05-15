@@ -1,7 +1,7 @@
 "use server";
 /** @format */
 import "./globals.css";
-import MuiThemeProvider from "@/components/layout/MuiThemeProvider";
+import MuiThemeProvider from "@/components/layout/mui-theme-provider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { getThemeCookie } from "@/utils/themeCookie";
 

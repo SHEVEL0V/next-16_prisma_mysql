@@ -3,8 +3,8 @@
 // features/board/components/board-canvas.tsx
 import { Box } from "@mui/material";
 import { CenteredMessage } from "@/components/ui/utilities";
-import DragDropWrapper from "@/features/board/components/DragDrop";
-import Sidebar from "@/features/board/components/sidebar/Sidebar";
+import DragDropWrapper from "@/features/board/components/drag-drop";
+import Sidebar from "@/features/board/components/sidebar/sidebar";
 import { getBoardById, getBoards } from "@/features/board/queries";
 
 export default async function Board({ boardId }: { boardId?: string }) {
@@ -12,9 +12,7 @@ export default async function Board({ boardId }: { boardId?: string }) {
 
   const activeBoard = boardId || boards[0]?.id;
 
-
   const data = activeBoard ? (await getBoardById(activeBoard)).data : null;
-
 
   return (
     <Box sx={{ display: "flex" }}>

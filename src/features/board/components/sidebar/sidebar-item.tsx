@@ -1,20 +1,13 @@
 /** @format */
 "use client";
 import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
-import {
-  Box,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, ListItem, ListItemButton, ListItemIcon, Tooltip, Typography } from "@mui/material";
 import Link from "next/link";
 import { useActionState, startTransition, useRef, useState } from "react";
-import EditableTextField from "@/components/ui/fields/EditableTextField";
+import EditableTextField from "@/components/ui/fields/editable-text-field";
 import { MoreButton } from "@/components/ui/buttons";
 import { deleteBoardAction, updateBoardAction } from "../../actions";
-import CustomDialog from "@/components/ui/modals/CustomDialog";
+import CustomDialog from "@/components/ui/modals/custom-dialog";
 
 interface SidebarItemProps {
   id: string;
@@ -23,12 +16,7 @@ interface SidebarItemProps {
   isOpen: boolean;
 }
 
-export default function SidebarItem({
-  id,
-  title,
-  isActive,
-  isOpen,
-}: SidebarItemProps) {
+export default function SidebarItem({ id, title, isActive, isOpen }: SidebarItemProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -60,10 +48,7 @@ export default function SidebarItem({
 
   return (
     <>
-      <ListItem
-        disablePadding
-        sx={{ mb: 0.5, "&:hover .more-btn": { opacity: 1 } }}
-      >
+      <ListItem disablePadding sx={{ mb: 0.5, "&:hover .more-btn": { opacity: 1 } }}>
         <Tooltip title={title} placement="right" disableHoverListener={isOpen}>
           <ListItemButton
             selected={isOpen && isActive}
@@ -90,11 +75,7 @@ export default function SidebarItem({
                 }}
               >
                 {isEditing ? (
-                  <form
-                    action={handleSubmit}
-                    ref={formRef}
-                    style={{ width: "100%" }}
-                  >
+                  <form action={handleSubmit} ref={formRef} style={{ width: "100%" }}>
                     <input type="hidden" name="id" value={id} />
                     <EditableTextField
                       defaultValue={title}

@@ -1,39 +1,40 @@
 /** @format */
+
+// features/auth/components/LoginForm.tsx
 "use client";
 
 import React, { useActionState } from "react";
-import { registerAction } from "@/features/auth/actions";
+import { loginAction } from "@/features/auth/actions";
 import { Box, Typography, Link } from "@mui/material";
-import RegisterFields from "./RegisterFields";
+import LoginFields from "./login-fields";
 
+import ContainerForm from "./container-form";
 import NextLink from "next/link";
-import ContainerForm from "./ContainerForm";
 
 const initialState = { success: false as const, message: "", errors: {} };
 
-export default function RegisterForm() {
-  const [state, formAction, isPending] = useActionState(registerAction, initialState);
+export default function LoginForm() {
+  const [state, formAction, isPending] = useActionState(loginAction, initialState);
 
   return (
     <ContainerForm>
       <Box sx={{ mb: 4, textAlign: "center" }}>
         <Typography variant="h5" fontWeight={700} gutterBottom>
-          Create an account
+          Welcome back
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Join us to start managing your menu
+          Please enter your details to sign in
         </Typography>
       </Box>
 
       <Box component="form" action={formAction} noValidate sx={{ width: "100%" }}>
-        <RegisterFields state={state} isPending={isPending} />
+        <LoginFields state={state} isPending={isPending} />
       </Box>
-
       <Box sx={{ mt: 3, textAlign: "center" }}>
         <Typography variant="body2" color="text.secondary">
-          Already have an account?{" "}
-          <Link component={NextLink} href="/signin" fontWeight={600} underline="hover">
-            Sign in
+          {"Don't have an account?"}{" "}
+          <Link component={NextLink} href="/signup" fontWeight={600} underline="hover">
+            Sign up
           </Link>
         </Typography>
       </Box>

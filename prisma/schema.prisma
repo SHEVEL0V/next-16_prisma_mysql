@@ -8,10 +8,8 @@
 
 // Database generator and configuration
 generator client {
-  provider      = "prisma-client"
-  output        = "../generated/prisma"
-  // Alpine Linux (musl libc) target — required for node:alpine Docker images
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {

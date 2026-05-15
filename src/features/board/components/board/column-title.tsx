@@ -5,10 +5,10 @@
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
-import EditableTextField from "@/components/ui/fields/EditableTextField";
-import EditableTypography from "@/components/ui/fields/EditableTypography";
+import EditableTextField from "@/components/ui/fields/editable-text-field";
+import EditableTypography from "@/components/ui/fields/editable-typography";
 import { deleteColumnAction, updateColumnAction } from "../../actions";
-import CustomDialog from "@/components/ui/modals/CustomDialog";
+import CustomDialog from "@/components/ui/modals/custom-dialog";
 
 interface BoardColumnProps {
   id: string;
@@ -16,11 +16,7 @@ interface BoardColumnProps {
   taskCount?: number;
 }
 
-export default function TitleColumn({
-  id,
-  title,
-  taskCount = 0,
-}: BoardColumnProps) {
+export default function TitleColumn({ id, title, taskCount = 0 }: BoardColumnProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -105,11 +101,7 @@ export default function TitleColumn({
           }}
         >
           <Tooltip
-            title={
-              hasTasks
-                ? "Очистіть колонку від завдань, щоб видалити"
-                : "Видалити колонку"
-            }
+            title={hasTasks ? "Очистіть колонку від завдань, щоб видалити" : "Видалити колонку"}
             placement="top"
           >
             <span>

@@ -2,8 +2,8 @@
 
 import type React from "react";
 import { Box } from "@mui/material";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 import { getThemeCookie } from "@/utils/themeCookie";
 import { DESIGN_TOKENS } from "@/theme/constants";
 

@@ -5,7 +5,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { memo } from "react";
 import { createPortal } from "react-dom";
 import type { TaskType } from "../../types";
-import TaskCardContent from "./TaskCardContent";
+import TaskCardContent from "./task-card-content";
 
 interface TaskCardProps {
   task: TaskType;
@@ -16,13 +16,7 @@ export default memo(function TaskCard({ task, index }: TaskCardProps) {
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => {
-        const child = (
-          <TaskCardContent
-            task={task}
-            snapshot={snapshot}
-            provided={provided}
-          />
-        );
+        const child = <TaskCardContent task={task} snapshot={snapshot} provided={provided} />;
 
         if (snapshot.isDragging && typeof document !== "undefined") {
           return createPortal(child, document.body);

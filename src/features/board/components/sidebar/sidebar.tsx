@@ -5,8 +5,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { Box, Divider, IconButton, List, Typography } from "@mui/material";
 import { useState } from "react";
-import CreateBoardForm from "./CreateBoardForm";
-import BoardItem from "./SidebarItem";
+import CreateBoardForm from "./create-board-form";
+import BoardItem from "./sidebar-item";
 
 const DRAWER_WIDTH = 280;
 const COLLAPSED_WIDTH = 80;
@@ -48,9 +48,7 @@ export default function Sidebar({ boards, activeBoard }: SidebarProps) {
             Дошки
           </Typography>
         )}
-        <IconButton onClick={toggleSidebar}>
-          {isOpen ? <MenuOpenIcon /> : <MenuIcon />}
-        </IconButton>
+        <IconButton onClick={toggleSidebar}>{isOpen ? <MenuOpenIcon /> : <MenuIcon />}</IconButton>
       </Box>
 
       <Divider />

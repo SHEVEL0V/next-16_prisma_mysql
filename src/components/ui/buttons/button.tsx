@@ -1,8 +1,8 @@
 /** @format */
 "use client";
 
-import { IconButton, type IconVariant, type IconButtonProps } from "./IconButton";
-import { TextButton, type TextButtonVariant, type TextButtonProps } from "./TextButton";
+import { IconButton, type IconVariant, type IconButtonProps } from "./icon-button";
+import { TextButton, type TextButtonVariant, type TextButtonProps } from "./text-button";
 
 export type ButtonVariant = TextButtonVariant | IconVariant;
 

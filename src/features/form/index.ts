@@ -3,6 +3,6 @@
  * Provides a collection of form-related components to reduce duplication
  */
 
-export { default as FormSection } from './components/FormSection';
-export { default as FormErrorAlert } from './components/FormErrorAlert';
-export { default as FormFieldError } from './components/FormFieldError';
+export { default as FormSection } from "./components/form-section";
+export { default as FormErrorAlert } from "./components/form-error-alert";
+export { default as FormFieldError } from "./components/form-field-error";

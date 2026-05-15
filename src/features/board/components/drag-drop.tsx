@@ -2,18 +2,13 @@
 
 "use client";
 
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  type DropResult,
-} from "@hello-pangea/dnd";
+import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { Stack } from "@mui/material";
 import { useOptimistic, useTransition } from "react";
 import { reorderAction } from "../actions";
 import type { ColumnType } from "../types";
-import Column from "./board/BoardColumn";
-import ColumnCreateForm from "./board/ColumnCreateForm";
+import Column from "./board/board-column";
+import ColumnCreateForm from "./board/column-create-form";
 
 export default function DragDropWrapper({
   initialData,
@@ -24,18 +19,17 @@ export default function DragDropWrapper({
 }) {
   const [isPending, startTransitionAction] = useTransition();
 
-  const [optimisticColumns, setOptimisticColumns] = useOptimistic<
-    ColumnType[],
-    ColumnType[]
-  >(initialData, (_currentColumns, newColumns) => newColumns);
+  const [optimisticColumns, setOptimisticColumns] = useOptimistic<ColumnType[], ColumnType[]>(
+    initialData,
+    (_currentColumns, newColumns) => newColumns,
+  );
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
 
     if (
       !destination ||
-      (destination.droppableId === source.droppableId &&
-        destination.index === source.index)
+      (destination.droppableId === source.droppableId && destination.index === source.index)
     ) {
       return;
     }
@@ -55,12 +49,8 @@ export default function DragDropWrapper({
       }
 
       if (type === "task") {
-        const sourceColIndex = newColumns.findIndex(
-          (col) => col.id === source.droppableId,
-        );
-        const destColIndex = newColumns.findIndex(
-          (col) => col.id === destination.droppableId,
-        );
+        const sourceColIndex = newColumns.findIndex((col) => col.id === source.droppableId);
+        const destColIndex = newColumns.findIndex((col) => col.id === destination.droppableId);
 
         if (sourceColIndex !== -1 && destColIndex !== -1) {
           const sourceColumn = newColumns[sourceColIndex];
