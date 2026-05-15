@@ -2,7 +2,7 @@
  * Tests for safeQuery wrapper
  * Verifies error handling and result standardization
  */
-import { safeQuery } from "./wrapperQuery";
+import { safeQuery } from "./wrapper-query";
 
 describe("safeQuery", () => {
   describe("successful queries", () => {
