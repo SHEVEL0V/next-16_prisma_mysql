@@ -10,12 +10,20 @@ import type { User } from "../../generated/prisma/client";
  * Handles JWT-based session encryption, decryption, and cookie management
  */
 
-// Load and validate session secret from environment
-const secretKey = process.env.SESSION_SECRET;
-if (!secretKey) {
-  throw new Error("SESSION_SECRET is not defined in environment variables");
+// Lazy-initialized encoded key — validated at call time, not at module load.
+// This prevents next build from failing when env vars are not available at build time.
+let _encodedKey: Uint8Array | null = null;
+
+function getEncodedKey(): Uint8Array {
+  if (!_encodedKey) {
+    const secretKey = process.env.SESSION_SECRET;
+    if (!secretKey) {
+      throw new Error("SESSION_SECRET is not defined in environment variables");
+    }
+    _encodedKey = new TextEncoder().encode(secretKey);
+  }
+  return _encodedKey;
 }
-const encodedKey = new TextEncoder().encode(secretKey);
 
 /**
  * Session payload structure stored in JWT
@@ -38,7 +46,7 @@ export async function encrypt(payload: SessionPayload) {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(encodedKey);
+    .sign(getEncodedKey());
 }
 
 /**
@@ -52,7 +60,7 @@ export async function decrypt(session: string | undefined = "") {
   if (!session) return null;
 
   try {
-    const { payload } = await jwtVerify(session, encodedKey, {
+    const { payload } = await jwtVerify(session, getEncodedKey(), {
       algorithms: ["HS256"],
     });
     return payload as SessionPayload;

@@ -48,6 +48,8 @@ services:
       # Set these manually in Render dashboard after first deploy:
       # Dashboard → kanban-app → Environment → Add Environment Variable
       # Generate with: openssl rand -base64 32
+      - key: SESSION_SECRET
+        sync: false
       - key: AUTH_SECRET
         sync: false
       - key: JWT_SECRET
