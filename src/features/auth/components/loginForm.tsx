@@ -6,7 +6,7 @@
 import React, { useActionState } from "react";
 import { loginAction } from "@/features/auth/actions";
 import { Box, Typography, Link } from "@mui/material";
-import { LoginFields } from "./LoginFields";
+import LoginFields from "./LoginFields";
 
 import ContainerForm from "./ContainerForm";
 import NextLink from "next/link";
@@ -14,10 +14,7 @@ import NextLink from "next/link";
 const initialState = { success: false as const, message: "", errors: {} };
 
 export default function LoginForm() {
-  const [state, formAction, isPending] = useActionState(
-    loginAction,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(loginAction, initialState);
 
   return (
     <ContainerForm>
@@ -30,23 +27,13 @@ export default function LoginForm() {
         </Typography>
       </Box>
 
-      <Box
-        component="form"
-        action={formAction}
-        noValidate
-        sx={{ width: "100%" }}
-      >
+      <Box component="form" action={formAction} noValidate sx={{ width: "100%" }}>
         <LoginFields state={state} isPending={isPending} />
       </Box>
       <Box sx={{ mt: 3, textAlign: "center" }}>
         <Typography variant="body2" color="text.secondary">
           {"Don't have an account?"}{" "}
-          <Link
-            component={NextLink}
-            href="/signup"
-            fontWeight={600}
-            underline="hover"
-          >
+          <Link component={NextLink} href="/signup" fontWeight={600} underline="hover">
             Sign up
           </Link>
         </Typography>

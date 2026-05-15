@@ -4,7 +4,7 @@
 import React, { useActionState } from "react";
 import { registerAction } from "@/features/auth/actions";
 import { Box, Typography, Link } from "@mui/material";
-import { RegisterFields } from "./RegisterFields";
+import RegisterFields from "./RegisterFields";
 
 import NextLink from "next/link";
 import ContainerForm from "./ContainerForm";
@@ -12,10 +12,7 @@ import ContainerForm from "./ContainerForm";
 const initialState = { success: false as const, message: "", errors: {} };
 
 export default function RegisterForm() {
-  const [state, formAction, isPending] = useActionState(
-    registerAction,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(registerAction, initialState);
 
   return (
     <ContainerForm>
@@ -28,24 +25,14 @@ export default function RegisterForm() {
         </Typography>
       </Box>
 
-      <Box
-        component="form"
-        action={formAction}
-        noValidate
-        sx={{ width: "100%" }}
-      >
+      <Box component="form" action={formAction} noValidate sx={{ width: "100%" }}>
         <RegisterFields state={state} isPending={isPending} />
       </Box>
 
       <Box sx={{ mt: 3, textAlign: "center" }}>
         <Typography variant="body2" color="text.secondary">
           Already have an account?{" "}
-          <Link
-            component={NextLink}
-            href="/signin"
-            fontWeight={600}
-            underline="hover"
-          >
+          <Link component={NextLink} href="/signin" fontWeight={600} underline="hover">
             Sign in
           </Link>
         </Typography>
