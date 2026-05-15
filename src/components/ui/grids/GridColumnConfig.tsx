@@ -1,6 +1,6 @@
 /** @format */
 
-import type { GridColDef } from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 /**
  * Grid Column Configuration Types
@@ -14,7 +14,7 @@ export interface ColumnConfig {
   editable?: boolean;
   sortable?: boolean;
   filterable?: boolean;
-  renderCell?: (params: any) => React.ReactNode;
+  renderCell?: (params: GridRenderCellParams) => React.ReactNode;
 }
 
 /**
@@ -38,7 +38,7 @@ export const createColumnDefs = (columns: ColumnConfig[]): GridColDef[] => {
  * Auto-generate column definitions from data
  */
 export const autoGenerateColumns = (
-  data: Record<string, any>[],
+  data: Record<string, unknown>[],
   exclude: string[] = ["id"],
 ): GridColDef[] => {
   if (!data || data.length === 0) return [];
@@ -59,4 +59,5 @@ export const autoGenerateColumns = (
     }));
 };
 
-export default { createColumnDefs, autoGenerateColumns };
+const columnConfigExports = { createColumnDefs, autoGenerateColumns };
+export default columnConfigExports;

@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect, useState, ReactNode, Component } from "react";
+import React, { ReactNode, Component } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
@@ -19,10 +19,7 @@ interface ErrorState {
  * Error Boundary Component (Client)
  * Catches errors in child components during rendering
  */
-export class ClientErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorState
-> {
+export class ClientErrorBoundary extends Component<ErrorBoundaryProps, ErrorState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
