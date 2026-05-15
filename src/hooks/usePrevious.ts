@@ -1,25 +1,15 @@
-/** @format */
+import { useState } from "react";
 
-"use client";
-
-import { useEffect, useRef } from "react";
-
-/**
- * usePrevious Hook
- * Returns previous value of a variable
- *
- * @example
- * const [count, setCount] = useState(0);
- * const prevCount = usePrevious(count);
- */
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T | undefined>(undefined);
+  const [previous, setPrevious] = useState<T | undefined>(undefined);
+  const [current, setCurrent] = useState<T>(value);
 
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
+  if (current !== value) {
+    setPrevious(current);
+    setCurrent(value);
+  }
 
-  return ref.current;
+  return previous;
 }
 
 export default usePrevious;
