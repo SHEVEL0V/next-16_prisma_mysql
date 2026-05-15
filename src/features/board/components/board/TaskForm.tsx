@@ -31,7 +31,7 @@ export default function TaskCreateForm({
 		errors: {},
 	});
 
-	// Очищення інпуту після успішного створення завдання
+// react to successful task creation by resetting the form
 	useEffect(() => {
 		if (state.success) {
 			formRef.current?.reset();
@@ -45,7 +45,7 @@ export default function TaskCreateForm({
 			ref={formRef}
 			sx={{ mb: 2, px: 0.5 }}
 		>
-			{/* Приховані дані для екшену */}
+			{/* Hidden inputs for the action */}
 			<input type="hidden" name="columnId" value={columnId} />
 			<input type="hidden" name="boardId" value={boardId} />
 

@@ -12,8 +12,8 @@ import { Stack } from "@mui/material";
 import { useOptimistic, useTransition } from "react";
 import { reorderAction } from "../actions";
 import type { ColumnType } from "../types";
-import Column from "./column/BoardColumn";
-import ColumnCreateForm from "./column/ColumnCreateForm";
+import Column from "./board/BoardColumn";
+import ColumnCreateForm from "./board/ColumnCreateForm";
 
 export default function DragDropWrapper({
   initialData,

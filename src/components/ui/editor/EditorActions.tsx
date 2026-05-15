@@ -1,14 +1,14 @@
 /** @format */
-/** @format */
 "use client";
 
-import React, { useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { Box, Tooltip, IconButton, CircularProgress } from "@mui/material";
 import {
 	Edit as EditIcon,
 	Close as CloseIcon,
 	Delete as DeleteIcon,
 } from "@mui/icons-material";
+import CustomDialog from "@/components/ui/modals/CustomDialog";
 
 type EditorProps = {
 	isEditing: boolean;
@@ -26,39 +26,30 @@ export default function EditorActions({
 	onCancel,
 	actionDelete,
 	id,
-}: EditorProps & { id: string }) {
+}: EditorProps) {
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [isDeleting, startDelete] = useTransition();
-	const handelDelete = () =>
+
+	const handleConfirmDelete = () => {
 		startDelete(() => {
-			if (confirm("Ви впевнені, що хочете видалити?")) {
-				const formData = new FormData();
-				formData.append("id", id);
-				actionDelete(formData);
-			}
+			const formData = new FormData();
+			formData.append("id", id);
+			actionDelete(formData);
 		});
+		setIsDeleteDialogOpen(false);
+	};
 
 	if (isPending || isDeleting)
 		return (
-			<Box
-				sx={{
-					minHeight: 40,
-					display: "flex",
-					alignItems: "center",
-				}}
-			>
+			<Box sx={{ minHeight: 40, display: "flex", alignItems: "center" }}>
 				<CircularProgress size={20} />
 			</Box>
 		);
 
 	return (
-		<Box sx={{ minHeight: 40, display: "flex", gap: 0.5, ml: "auto" }}>
-			{isEditing ? (
-				<>
-					{/* <Tooltip title="Зберегти">
-            <IconButton size="small" color="success" type="submit">
-              <CheckIcon fontSize="small" />
-            </IconButton>
-          </Tooltip> */}
+		<>
+			<Box sx={{ minHeight: 40, display: "flex", gap: 0.5, ml: "auto" }}>
+				{isEditing ? (
 					<Tooltip title="Скасувати">
 						<IconButton
 							size="small"
@@ -70,28 +61,39 @@ export default function EditorActions({
 							<CloseIcon fontSize="small" />
 						</IconButton>
 					</Tooltip>
-				</>
-			) : (
-				<>
-					<Tooltip title="Редагувати">
-						<IconButton
-							size="small"
-							color="primary"
-							onClick={(e) => {
-								e.preventDefault();
-								onEdit();
-							}}
-						>
-							<EditIcon fontSize="small" />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Видалити">
-						<IconButton size="small" color="error" onClick={handelDelete}>
-							<DeleteIcon fontSize="small" />
-						</IconButton>
-					</Tooltip>
-				</>
-			)}
-		</Box>
+				) : (
+					<>
+						<Tooltip title="Редагувати">
+							<IconButton
+								size="small"
+								color="primary"
+								onClick={(e) => {
+									e.preventDefault();
+									onEdit();
+								}}
+							>
+								<EditIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Видалити">
+							<IconButton
+								size="small"
+								color="error"
+								onClick={() => setIsDeleteDialogOpen(true)}
+							>
+								<DeleteIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
+					</>
+				)}
+			</Box>
+
+			<CustomDialog
+				open={isDeleteDialogOpen}
+				onClose={() => setIsDeleteDialogOpen(false)}
+				onConfirm={handleConfirmDelete}
+				isPending={isDeleting}
+			/>
+		</>
 	);
 }
