@@ -1,10 +1,21 @@
-# @format
+# =============================================================================
+# Local Development — Docker Compose
+# NOT used in production. Render builds and runs the Dockerfile directly.
+#
+# Usage:
+#   cp .env.example .env.local
+#   # fill in values in .env.local, then:
+#   docker compose up --build
+# =============================================================================
 
 services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL database
+  # ---------------------------------------------------------------------------
   db:
     image: postgres:16-alpine
     container_name: postgres_db
-    restart: always
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -19,20 +30,29 @@ services:
       timeout: 5s
       retries: 10
 
+  # ---------------------------------------------------------------------------
+  # Next.js application (development mode with hot reload)
+  # ---------------------------------------------------------------------------
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      target: builder # stop at the builder stage — no need for the lean runner
     container_name: next_app
-    restart: always
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_DAYS: ${JWT_EXPIRATION_DAYS:-7}
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
       NODE_ENV: development
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/app # mount source for hot reload
+      - /app/node_modules # keep container's node_modules (not the host's)
+      - /app/.next # keep container's build cache
     command: sh -c "npx prisma migrate deploy && npm run dev"
     depends_on:
       db:
