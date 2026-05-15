@@ -2,8 +2,7 @@
  * Export button components
  */
 
-export { Button, type ButtonVariant } from "./button";
-export type { ButtonProps } from "./button";
+export { Button, type ButtonVariant, type ButtonProps } from "./button";
 export { IconButton, type IconVariant } from "./icon-button";
 export type { IconButtonProps } from "./icon-button";
 export { TextButton, type TextButtonVariant } from "./text-button";

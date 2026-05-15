@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { toggleTheme, getTheme } from "@/utils/theme";
+import { toggleThemeCookie, getThemeCookie } from "@/utils/theme-cookie";
 import { cookies } from "next/headers";
 
 type MockCookieStore = Awaited<ReturnType<typeof cookies>>;
@@ -19,7 +19,7 @@ describe("Theme Utilities", () => {
     jest.clearAllMocks();
   });
 
-  describe("toggleTheme", () => {
+  describe("toggleThemeCookie", () => {
     it("should toggle from light to dark", async () => {
       const mockSet = jest.fn();
       mockCookies.mockResolvedValue({
@@ -27,7 +27,7 @@ describe("Theme Utilities", () => {
         set: mockSet,
       } as unknown as MockCookieStore);
 
-      const result = await toggleTheme();
+      const result = await toggleThemeCookie();
 
       expect(result).toBe("dark");
       expect(mockSet).toHaveBeenCalledWith(
@@ -48,7 +48,7 @@ describe("Theme Utilities", () => {
         set: mockSet,
       } as unknown as MockCookieStore);
 
-      const result = await toggleTheme();
+      const result = await toggleThemeCookie();
 
       expect(result).toBe("light");
       expect(mockSet).toHaveBeenCalledWith("theme", "light", expect.any(Object));
@@ -61,7 +61,7 @@ describe("Theme Utilities", () => {
         set: mockSet,
       } as unknown as MockCookieStore);
 
-      const result = await toggleTheme();
+      const result = await toggleThemeCookie();
 
       // No cookie means default light, so toggle to dark
       expect(result).toBe("dark");
@@ -77,7 +77,7 @@ describe("Theme Utilities", () => {
         set: mockSet,
       } as unknown as MockCookieStore);
 
-      await toggleTheme();
+      await toggleThemeCookie();
 
       expect(mockSet).toHaveBeenCalledWith(
         "theme",
@@ -98,7 +98,7 @@ describe("Theme Utilities", () => {
         set: mockSet,
       } as unknown as MockCookieStore);
 
-      await toggleTheme();
+      await toggleThemeCookie();
 
       expect(mockSet).toHaveBeenCalledWith(
         "theme",
@@ -116,20 +116,20 @@ describe("Theme Utilities", () => {
         set: mockSet,
       } as unknown as MockCookieStore);
 
-      const result = await toggleTheme();
+      const result = await toggleThemeCookie();
 
       // Invalid value should be treated as light
       expect(result).toBe("dark");
     });
   });
 
-  describe("getTheme", () => {
+  describe("getThemeCookie", () => {
     it("should return dark when cookie is set to dark", async () => {
       mockCookies.mockResolvedValue({
         get: jest.fn().mockReturnValue({ value: "dark" }),
       } as unknown as MockCookieStore);
 
-      const result = await getTheme();
+      const result = await getThemeCookie();
 
       expect(result).toBe("dark");
     });
@@ -139,7 +139,7 @@ describe("Theme Utilities", () => {
         get: jest.fn().mockReturnValue({ value: "light" }),
       } as unknown as MockCookieStore);
 
-      const result = await getTheme();
+      const result = await getThemeCookie();
 
       expect(result).toBe("light");
     });
@@ -149,7 +149,7 @@ describe("Theme Utilities", () => {
         get: jest.fn().mockReturnValue(undefined),
       } as unknown as MockCookieStore);
 
-      const result = await getTheme();
+      const result = await getThemeCookie();
 
       expect(result).toBe("light");
     });
@@ -159,7 +159,7 @@ describe("Theme Utilities", () => {
         get: jest.fn().mockReturnValue({ value: "invalid" }),
       } as unknown as MockCookieStore);
 
-      const result = await getTheme();
+      const result = await getThemeCookie();
 
       expect(result).toBe("light");
     });
@@ -169,7 +169,7 @@ describe("Theme Utilities", () => {
         get: jest.fn().mockReturnValue({ value: "" }),
       } as unknown as MockCookieStore);
 
-      const result = await getTheme();
+      const result = await getThemeCookie();
 
       expect(result).toBe("light");
     });
@@ -179,7 +179,7 @@ describe("Theme Utilities", () => {
         get: jest.fn().mockReturnValue({ value: "Dark" }),
       } as unknown as MockCookieStore);
 
-      const result = await getTheme();
+      const result = await getThemeCookie();
 
       expect(result).toBe("light");
     });
@@ -199,7 +199,7 @@ describe("Theme Utilities", () => {
           }) as unknown as MockCookieStore,
       );
 
-      let result = await toggleTheme();
+      let result = await toggleThemeCookie();
       expect(result).toBe("dark");
 
       // Update mock to return new theme
@@ -208,7 +208,7 @@ describe("Theme Utilities", () => {
         set: jest.fn(),
       } as unknown as MockCookieStore);
 
-      result = await toggleTheme();
+      result = await toggleThemeCookie();
       expect(result).toBe("light");
     });
   });

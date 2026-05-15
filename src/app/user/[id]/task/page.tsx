@@ -2,7 +2,7 @@
 
 import { getTasksAll } from "@/features/board/queries";
 import { Box } from "@mui/material";
-import { formatDate } from "@/utils/formatDate";
+import { formatDate } from "@/utils/format-date";
 import { TasksClient } from "./tasks-client";
 import type { TaskRow } from "./tasks-client";
 

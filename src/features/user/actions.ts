@@ -7,7 +7,7 @@
 
 "use server";
 
-import { createSafeAction } from "@/utils/wrapperAction";
+import { createSafeAction } from "@/utils/wrapper-action";
 import { updateProfileSchema } from "./schema";
 import { userService } from "./services";
 

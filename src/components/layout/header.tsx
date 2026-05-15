@@ -6,7 +6,7 @@ import React, { useTransition } from "react";
 import { AppBar, Toolbar, Typography, Box, Container } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Button, UserButton } from "@/components/ui/buttons";
-import { toggleThemeCookie } from "@/utils/themeCookie";
+import { toggleThemeCookie } from "@/utils/theme-cookie";
 import type { PaletteMode } from "@mui/material";
 
 export default function Header({ mode }: { mode: PaletteMode }) {

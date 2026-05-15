@@ -4,7 +4,7 @@ import type React from "react";
 import { Box } from "@mui/material";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { getThemeCookie } from "@/utils/themeCookie";
+import { getThemeCookie } from "@/utils/theme-cookie";
 import { DESIGN_TOKENS } from "@/theme/constants";
 
 export default async function ProfileLayout({ children }: { children: React.ReactNode }) {

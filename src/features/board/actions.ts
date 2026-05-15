@@ -1,6 +1,6 @@
 /** @format */
 "use server";
-import { createSafeAction } from "@/utils/wrapperAction";
+import { createSafeAction } from "@/utils/wrapper-action";
 
 import { boardService } from "./services/board";
 import { columnService } from "./services/column";

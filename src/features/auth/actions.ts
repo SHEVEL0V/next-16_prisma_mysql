@@ -1,7 +1,7 @@
 /** @format */
 "use server";
 
-import { createSafeAction } from "@/utils/wrapperAction";
+import { createSafeAction } from "@/utils/wrapper-action";
 import { loginSchema, registerSchema } from "./schema";
 import { authService } from "./services";
 import { deleteSession } from "@/utils/session";

@@ -9,7 +9,7 @@
 
 "use server";
 import { cache } from "react";
-import { safeQuery } from "@/utils/wrapperQuery";
+import { safeQuery } from "@/utils/wrapper-query";
 import { boardService } from "./services/board";
 import { taskService } from "./services/task";
 
