@@ -50,8 +50,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/generated              ./generate
 # Schema files + migrations (needed for prisma migrate deploy)
 COPY --from=builder --chown=nextjs:nodejs /app/prisma                 ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts       ./prisma.config.ts
-# Native query-engine binary for Alpine Linux
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma   ./node_modules/.prisma
 # Prisma packages: client adapter, CLI, and migration engine
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma   ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma    ./node_modules/prisma
